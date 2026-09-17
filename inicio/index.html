@@ -1,0 +1,145 @@
+<!doctype html><html><head><meta charset=utf8><meta name="robots" content="noindex,nofollow"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Inicio en el iPhone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+:root{--fondo:#000;--vidrio:rgba(18,20,24,.82);--texto:#F2F4F7;--texto2:#B7BDC7;--acento:#5CC3BA;--sobreAcento:#07110F;--usar:#1E7A46;--cambiar:#A13A12;--hoja:#15181D;--linea:#2E343D;--campo:#1F242B;
+  --cuerpo:"Atkinson Hyperlegible",-apple-system,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--fondo);color:var(--texto);font:16px/1.4 var(--cuerpo);-webkit-text-size-adjust:100%;text-size-adjust:100%}
+.cel{position:fixed;inset:0;overflow-y:auto;overscroll-behavior:contain;background:#000}
+.lamina{position:relative;width:100%;max-width:430px;margin:0 auto;touch-action:pan-y}
+.lamina img{display:block;width:100%;height:auto;-webkit-user-select:none;user-select:none;-webkit-user-drag:none}
+.lamina.marcando{outline:3px dashed var(--acento);outline-offset:-3px;cursor:crosshair}
+.fin{height:110px}
+.pastilla{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:5;display:flex;align-items:center;gap:4px;padding:5px;border-radius:999px;background:var(--vidrio);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 6px 24px rgba(0,0,0,.45);transition:opacity .2s,transform .2s;max-width:calc(100vw - 16px)}
+.pastilla.oculta{opacity:0;pointer-events:none;transform:translate(-50%,20px)}
+.pastilla button{appearance:none;border:0;background:transparent;color:var(--texto);font:700 15px var(--cuerpo);min-width:44px;min-height:44px;border-radius:999px;padding:0 11px;cursor:pointer;white-space:nowrap}
+.pastilla button[aria-pressed="true"]{background:var(--texto);color:#111316}
+.pastilla .marcar[aria-pressed="true"]{background:var(--acento);color:var(--sobreAcento)}
+.sep{width:1px;height:24px;background:rgba(255,255,255,.2)}
+button:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--acento);outline-offset:2px}
+.toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:6;background:var(--vidrio);color:var(--texto);padding:8px 14px;border-radius:999px;font:700 14px var(--cuerpo);pointer-events:none;transition:opacity .25s;white-space:nowrap}
+.toast.fuera{opacity:0}
+.pin{position:absolute;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;color:#fff;font:800 13px/28px var(--cuerpo);text-align:center;box-shadow:0 0 0 3px #fff,0 2px 8px rgba(0,0,0,.4);pointer-events:none}
+.pin.usar{background:var(--usar)} .pin.cambiar{background:var(--cambiar)}
+.velo{position:fixed;inset:0;z-index:8;background:rgba(0,0,0,.5)}
+.hoja{position:fixed;left:0;right:0;bottom:0;z-index:9;max-height:86vh;overflow-y:auto;background:var(--hoja);border-radius:22px 22px 0 0;padding:10px 16px calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px}
+.agarre{width:40px;height:5px;border-radius:9px;background:var(--linea);margin:0 auto}
+.fila{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.entre{justify-content:space-between}
+h2{margin:0;font-size:20px}
+.sub{color:var(--texto2)}
+.chip{appearance:none;border:1.5px solid var(--linea);background:var(--campo);color:var(--texto);border-radius:999px;padding:8px 13px;min-height:44px;font:700 14px var(--cuerpo);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--acento);border-color:var(--acento);color:var(--sobreAcento)}
+.marca{background:var(--campo);border-radius:12px;padding:10px;display:grid;grid-template-columns:auto 1fr;gap:8px 10px}
+.marca .n{width:28px;height:28px;border-radius:50%;color:#fff;font:800 13px/28px var(--cuerpo);text-align:center}
+.marca .n.usar{background:var(--usar)} .marca .n.cambiar{background:var(--cambiar)}
+.tipo{display:flex;gap:6px;flex-wrap:wrap}
+.tipo button{border:1.5px solid var(--linea);background:transparent;color:var(--texto);border-radius:999px;padding:6px 10px;min-height:40px;font:700 13px var(--cuerpo);cursor:pointer}
+.tipo button[aria-pressed="true"]{border-color:var(--acento);color:var(--acento)}
+.borrar{border:0;background:none;color:var(--texto2);font:700 13px var(--cuerpo);min-height:40px;text-decoration:underline;cursor:pointer}
+input,textarea{width:100%;font:16px/1.4 var(--cuerpo);color:var(--texto);background:var(--campo);border:1.5px solid var(--linea);border-radius:10px;padding:10px}
+textarea{min-height:70px}
+label{font-weight:700;display:block;margin-bottom:6px}
+.estado{font-size:13px;color:var(--texto2)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<div id="raiz"></div>
+
+<script>
+(() => {
+const VARIANTES = window.__VARIANTES__ || [{ id: 'S', nombre: 'La elegida · tu grilla nueva' }, { id: 'S2', etq: 'S′', nombre: 'La elegida · grilla anterior' }];
+const VER = 'v5';
+const VISTAS = [['claro', 'Claro'], ['oscuro', 'Oscuro'], ['letra', 'Letra grande']];
+const $r = document.getElementById('raiz');
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const leer = (k, d) => { try { return localStorage.getItem(k) || d; } catch (e) { return d; } };
+const escribir = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+let v = { var: leer('vi-var', VARIANTES[0].id), vista: leer('vi-vista', 'claro'), marcar: false, hoja: false, pastilla: true };
+if (!VARIANTES.some(x => x.id === v.var)) v.var = VARIANTES[0].id;
+let db = null, datos = {}, timers = {}, colas = {}, estadoTxt = '';
+const clave = () => v.var + '-' + v.vista;
+const doc = k => datos[k] || (datos[k] = { k, marcas: [], nota: '', elegida: false });
+function guardar(k) {
+  if (!db) { estadoTxt = 'En esta copia pública las marcas no se guardan'; return; }
+  clearTimeout(timers[k]); estadoTxt = 'Guardando…';
+  timers[k] = setTimeout(() => { const c = JSON.parse(JSON.stringify(datos[k])); c.actualizado = new Date().toISOString();
+    colas[k] = (colas[k] || Promise.resolve()).then(() => db.collection('inicio').doc(k).set(c)).then(() => { estadoTxt = 'Guardado'; const e = document.getElementById('estado'); if (e) e.textContent = estadoTxt; }).catch(err => { estadoTxt = 'No se pudo guardar (' + (err && err.code) + ')'; const e = document.getElementById('estado'); if (e) e.textContent = estadoTxt; }); }, 600);
+}
+let toastT;
+function toast(t) { const el = document.getElementById('toast'); if (!el) return; el.textContent = t; el.classList.remove('fuera'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.add('fuera'), 1300); }
+
+function pintar(conservar) {
+  escribir('vi-var', v.var); escribir('vi-vista', v.vista);
+  const cel = document.getElementById('cel'); const sy = conservar && cel ? cel.scrollTop : 0;
+  const k = clave(), d = doc(k), nombreVar = (VARIANTES.find(x => x.id === v.var) || {}).nombre || '';
+  $r.innerHTML = `
+  <div class="cel" id="cel"><div class="lamina ${v.marcar ? 'marcando' : ''}" id="lamina">
+    <img id="img" alt="Inicio ${v.var} ${esc(nombreVar)}, ${v.vista}" src="img/${VER}/${v.var}/${v.vista}-inicio.jpg">
+    ${d.marcas.map(m => `<span class="pin ${m.tipo}" style="left:${m.x * 100}%;top:${m.y * 100}%">${m.n}</span>`).join('')}
+  </div><div class="fin"></div></div>
+  <div class="toast fuera" id="toast"></div>
+  <div class="pastilla ${v.pastilla || v.marcar ? '' : 'oculta'}" role="toolbar" aria-label="Controles">
+    ${VARIANTES.map(x => `<button data-var="${x.id}" aria-pressed="${x.id === v.var}">${x.etq || x.id}</button>`).join('')}
+    <span class="sep"></span>
+    <button id="bVista" aria-label="Cambiar vista">${VISTAS.find(x => x[0] === v.vista)[1]}</button>
+    <button class="marcar" id="bMarcar" aria-pressed="${v.marcar}" aria-label="Marcar">✎${d.marcas.length ? ' ' + d.marcas.length : ''}</button>
+    <button id="bMenu" aria-label="Notas">☰</button>
+  </div>
+  ${v.hoja ? `<div class="velo" id="velo"></div><div class="hoja" role="dialog" aria-label="Notas">
+    <div class="agarre"></div>
+    <div class="fila entre"><h2>Inicio ${v.var} · ${esc(nombreVar)}</h2><button class="chip" id="bListo">Listo</button></div>
+    <div class="fila">${VISTAS.map(([id, t]) => `<button class="chip" data-vista="${id}" aria-pressed="${id === v.vista}">${t}</button>`).join('')}</div>
+    <div class="fila"><button class="chip" id="bElegida" aria-pressed="${!!doc(v.var + '-claro').elegida}">${doc(v.var + '-claro').elegida ? '★ Me quedo con ' + v.var : '☆ Me quedo con ' + v.var}</button></div>
+    <p class="sub">${d.marcas.length ? 'Tus puntos en esta vista:' : 'Tocá ✎ y después tocá el lugar de la pantalla que te gusta o querés cambiar.'}</p>
+    ${d.marcas.map((m, i) => `<div class="marca"><span class="n ${m.tipo}">${m.n}</span><div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+      <div class="tipo"><button data-tipo="usar" data-i="${i}" aria-pressed="${m.tipo === 'usar'}">👍 Me gusta</button><button data-tipo="cambiar" data-i="${i}" aria-pressed="${m.tipo === 'cambiar'}">✋ Cambiar</button><button class="borrar" data-borrar="${i}">Borrar</button></div>
+      <input data-texto="${i}" value="${esc(m.texto)}" placeholder="Qué y por qué (opcional)" aria-label="Nota del punto ${m.n}"></div></div>`).join('')}
+    <div><label for="nota">Notas de esta pantalla</label><textarea id="nota">${esc(d.nota)}</textarea></div>
+    <p class="estado" id="estado">${esc(estadoTxt)}</p>
+  </div>` : ''}`;
+  const c2 = document.getElementById('cel'); if (conservar) c2.scrollTop = sy;
+  const cambiarVar = dir => { const i = VARIANTES.findIndex(x => x.id === v.var); const ratio = c2.scrollHeight ? c2.scrollTop / c2.scrollHeight : 0; v.var = VARIANTES[(i + dir + VARIANTES.length) % VARIANTES.length].id; pintar(); const c3 = document.getElementById('cel'), im = document.getElementById('img'); const fijar = () => { c3.scrollTop = ratio * c3.scrollHeight; }; if (im.complete) fijar(); else im.onload = fijar; toast(((VARIANTES.find(x => x.id === v.var) || {}).etq || v.var) + ' · ' + (VARIANTES.find(x => x.id === v.var) || {}).nombre); };
+  $r.querySelectorAll('.pastilla [data-var]').forEach(b => b.onclick = () => { const i = VARIANTES.findIndex(x => x.id === b.dataset.var), j = VARIANTES.findIndex(x => x.id === v.var); if (i !== j) cambiarVar(i - j); });
+  document.getElementById('bVista').onclick = () => { const i = VISTAS.findIndex(x => x[0] === v.vista); v.vista = VISTAS[(i + 1) % VISTAS.length][0]; pintar(); toast(VISTAS.find(x => x[0] === v.vista)[1]); };
+  document.getElementById('bMarcar').onclick = () => { v.marcar = !v.marcar; pintar(true); toast(v.marcar ? 'Tocá la pantalla para marcar' : 'Marcar apagado'); };
+  document.getElementById('bMenu').onclick = () => { v.hoja = true; pintar(true); };
+  const lam = document.getElementById('lamina'); let t0 = null;
+  lam.addEventListener('touchstart', e => { const t = e.touches[0]; t0 = { x: t.clientX, y: t.clientY }; }, { passive: true });
+  lam.addEventListener('touchend', e => { if (!t0) return; const t = e.changedTouches[0], dx = t.clientX - t0.x, dy = t.clientY - t0.y; t0 = null; if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { e.preventDefault(); cambiarVar(dx < 0 ? 1 : -1); } }, { passive: false });
+  lam.onclick = ev => {
+    if (!v.marcar) { v.pastilla = !v.pastilla; $r.querySelector('.pastilla').classList.toggle('oculta', !v.pastilla); return; }
+    const b = document.getElementById('img').getBoundingClientRect(); const x = (ev.clientX - b.left) / b.width, y = (ev.clientY - b.top) / b.height; if (x < 0 || x > 1 || y < 0 || y > 1) return;
+    d.marcas.push({ x: +x.toFixed(4), y: +y.toFixed(4), n: d.marcas.length + 1, tipo: 'usar', texto: '', ver: VER }); guardar(k); pintar(true); toast('Punto ' + d.marcas.length + ' · abrí ☰ para escribir');
+  };
+  document.onkeydown = e => { if (v.hoja) return; if (e.key === 'ArrowRight') cambiarVar(1); if (e.key === 'ArrowLeft') cambiarVar(-1); };
+  if (!v.hoja) return;
+  const cerrar = () => { v.hoja = false; pintar(true); };
+  document.getElementById('velo').onclick = cerrar; document.getElementById('bListo').onclick = cerrar;
+  $r.querySelectorAll('.hoja [data-vista]').forEach(b => b.onclick = () => { v.vista = b.dataset.vista; pintar(); });
+  document.getElementById('bElegida').onclick = () => { const dc = doc(v.var + '-claro'); dc.elegida = !dc.elegida; guardar(v.var + '-claro'); pintar(true); };
+  $r.querySelectorAll('.hoja [data-tipo]').forEach(b => b.onclick = () => { d.marcas[+b.dataset.i].tipo = b.dataset.tipo; guardar(k); pintar(true); });
+  $r.querySelectorAll('.hoja [data-borrar]').forEach(b => b.onclick = () => { d.marcas.splice(+b.dataset.borrar, 1); d.marcas.forEach((m, i) => m.n = i + 1); guardar(k); pintar(true); });
+  $r.querySelectorAll('.hoja [data-texto]').forEach(i => i.oninput = () => { d.marcas[+i.dataset.texto].texto = i.value; guardar(k); });
+  document.getElementById('nota').oninput = e => { d.nota = e.target.value; guardar(k); };
+}
+
+pintar();
+(async () => {
+  try { db = await window.claude?.use?.('db'); } catch (e) { db = null; }
+  if (!db) return;
+  db.collection('inicio').onSnapshot(s => {
+    let cambio = false;
+    s.docs.forEach(x => { const val = x.data(); if (!val || !val.k || (x.metadata && x.metadata.hasPendingWrites) || timers[val.k + '-vivo']) return; const a = JSON.stringify({ ...val, actualizado: 0 }), b = JSON.stringify({ ...(datos[val.k] || {}), actualizado: 0 }); if (a !== b) { datos[val.k] = JSON.parse(JSON.stringify(val)); cambio = true; } });
+    const escribiendo = document.activeElement && /TEXTAREA|INPUT/.test(document.activeElement.tagName);
+    if (cambio && !escribiendo) pintar(true);
+  }, () => {});
+})();
+})();
+</script>
+
+</body></html>

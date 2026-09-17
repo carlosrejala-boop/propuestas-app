@@ -1,0 +1,333 @@
+<!doctype html><html><head><meta charset=utf8><meta name="robots" content="noindex,nofollow"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>N · O · P pantalla por pantalla</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Schibsted+Grotesk:wght@600;800&display=swap">
+<style>
+:root{
+  --papel:#EEF0F3; --superficie:#FFFFFF; --superficie2:#E3E7EC; --tinta:#15171C; --tinta2:#555C68; --linea:#D2D7DE;
+  --acento:#1D6F6A; --sobreAcento:#FFFFFF; --usar:#1E7A46; --usarTenue:#DDF1E5; --cambiar:#A13A12; --cambiarTenue:#FBE7DC; --estrella:#8A6A00; --estrellaTenue:#FBF1C7;
+  --sombra:0 1px 2px rgba(21,23,28,.08),0 8px 24px rgba(21,23,28,.08);
+  --cuerpo:"Atkinson Hyperlegible",-apple-system,"Segoe UI",Roboto,sans-serif;
+  --titulo:"Schibsted Grotesk","Atkinson Hyperlegible",-apple-system,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --papel:#0E1013; --superficie:#181B20; --superficie2:#232830; --tinta:#ECEEF2; --tinta2:#A4ABB6; --linea:#2E343D;
+  --acento:#5CC3BA; --sobreAcento:#07110F; --usar:#5ACB8C; --usarTenue:#12301F; --cambiar:#FF9A6B; --cambiarTenue:#3A1C10; --estrella:#F2CF4A; --estrellaTenue:#2F2710;
+  --sombra:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+}}
+:root[data-theme="dark"]{
+  --papel:#0E1013; --superficie:#181B20; --superficie2:#232830; --tinta:#ECEEF2; --tinta2:#A4ABB6; --linea:#2E343D;
+  --acento:#5CC3BA; --sobreAcento:#07110F; --usar:#5ACB8C; --usarTenue:#12301F; --cambiar:#FF9A6B; --cambiarTenue:#3A1C10; --estrella:#F2CF4A; --estrellaTenue:#2F2710;
+  --sombra:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+body{background:var(--papel);color:var(--tinta);font:16px/1.45 var(--cuerpo);-webkit-text-size-adjust:100%;text-size-adjust:100%}
+.app{max-width:1400px;margin:0 auto;padding-inline:16px;padding-block:0 110px}
+h1,h2,h3{font-family:var(--titulo);text-wrap:balance;margin:0}
+h1{font-size:22px;font-weight:800;line-height:1.15}
+h2{font-size:20px;font-weight:800}
+h3{font-size:16px;font-weight:600}
+p{margin:0}
+.sub{color:var(--tinta2)}
+.etq{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--tinta2);font-weight:700}
+.cabeza{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--papel);padding-block:10px 8px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid var(--linea)}
+.fila{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.entre{justify-content:space-between}
+.pantallas{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.pantallas::-webkit-scrollbar{display:none}
+.chip{appearance:none;flex:none;border:1.5px solid var(--linea);background:var(--superficie);color:var(--tinta);border-radius:999px;padding:8px 13px;min-height:40px;font:700 14px var(--cuerpo);cursor:pointer;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--acento);border-color:var(--acento);color:var(--sobreAcento)}
+.chip .punto{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--usar);margin-left:6px;vertical-align:middle}
+.seg{display:inline-flex;background:var(--superficie2);border-radius:11px;padding:3px}
+.seg button{border:0;background:transparent;color:var(--tinta);font:700 14px var(--cuerpo);padding:7px 12px;border-radius:8px;min-height:38px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--superficie);box-shadow:var(--sombra)}
+.btn{appearance:none;border:0;border-radius:12px;min-height:48px;padding:10px 16px;font:700 16px var(--cuerpo);cursor:pointer;background:var(--superficie2);color:var(--tinta)}
+.btn.primario{background:var(--acento);color:var(--sobreAcento)}
+.btn:focus-visible,.chip:focus-visible,textarea:focus-visible,input:focus-visible,.seg button:focus-visible{outline:3px solid var(--acento);outline-offset:2px}
+textarea,input{width:100%;font:16px/1.4 var(--cuerpo);color:var(--tinta);background:var(--superficie);border:1.5px solid var(--linea);border-radius:10px;padding:10px}
+textarea{min-height:70px;resize:vertical}
+label{font-weight:700;display:block;margin-bottom:6px}
+/* una por una: carrusel */
+.carrusel{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding-block:14px 6px;margin-inline:-16px;padding-inline:16px;scroll-padding-inline:16px;-webkit-overflow-scrolling:touch}
+.tarjeta{flex:0 0 86%;max-width:420px;scroll-snap-align:start;display:flex;flex-direction:column;gap:10px}
+.juntas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding-block:14px 6px;align-items:start}
+.juntas .tarjeta{flex:none;max-width:none;gap:6px}
+.nombreProp{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.letra{font-family:var(--titulo);font-weight:800;font-size:26px;line-height:1}
+.juntas .letra{font-size:20px}
+.juntas .nombreLargo{display:none}
+.mejor{appearance:none;border:1.5px solid var(--linea);background:var(--superficie);color:var(--tinta);border-radius:999px;padding:6px 12px;min-height:40px;font:700 14px var(--cuerpo);cursor:pointer}
+.mejor[aria-pressed="true"]{background:var(--estrellaTenue);border-color:var(--estrella);color:var(--estrella)}
+.juntas .mejor{padding:4px 8px;font-size:12px;min-height:34px}
+.tel{position:relative;border-radius:22px;overflow:hidden;box-shadow:var(--sombra);background:var(--superficie2);cursor:crosshair}
+.juntas .tel{border-radius:12px;cursor:zoom-in}
+.tel img{display:block;width:100%;height:auto;-webkit-user-select:none;user-select:none;-webkit-user-drag:none}
+.pin{position:absolute;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;color:#fff;font:800 13px/28px var(--titulo);text-align:center;box-shadow:0 0 0 3px #fff,0 2px 8px rgba(0,0,0,.4);pointer-events:none}
+.pin.usar{background:#1E7A46} .pin.cambiar{background:#A13A12}
+.juntas .pin{width:16px;height:16px;margin:-8px 0 0 -8px;font-size:9px;line-height:16px;box-shadow:0 0 0 2px #fff}
+.marcas{display:flex;flex-direction:column;gap:8px}
+.juntas .marcas{display:none}
+.marca{background:var(--superficie);border-radius:12px;padding:10px;display:grid;grid-template-columns:auto 1fr;gap:8px 10px;align-items:start;box-shadow:var(--sombra)}
+.marca .n{width:28px;height:28px;border-radius:50%;color:#fff;font:800 13px/28px var(--titulo);text-align:center}
+.marca .n.usar{background:#1E7A46} .marca .n.cambiar{background:#A13A12}
+.tipo{display:flex;gap:6px;flex-wrap:wrap}
+.tipo button{border:1.5px solid var(--linea);background:var(--superficie);color:var(--tinta);border-radius:999px;padding:6px 10px;min-height:38px;font:700 13px var(--cuerpo);cursor:pointer}
+.tipo button[aria-pressed="true"].u{background:var(--usarTenue);border-color:var(--usar);color:var(--usar)}
+.tipo button[aria-pressed="true"].c{background:var(--cambiarTenue);border-color:var(--cambiar);color:var(--cambiar)}
+.borrar{border:0;background:none;color:var(--tinta2);font:700 13px var(--cuerpo);min-height:38px;cursor:pointer;text-decoration:underline}
+.ayuda{font-size:14px;color:var(--tinta2)}
+.caja{background:var(--superficie);border-radius:16px;padding:14px;box-shadow:var(--sombra);display:flex;flex-direction:column;gap:12px}
+.pie{position:fixed;left:0;right:0;bottom:0;z-index:11;background:var(--papel);border-top:1px solid var(--linea);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))}
+.pie .interno{max-width:640px;margin:0 auto;display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:8px}
+.estado{font-size:13px;color:var(--tinta2);text-align:center}
+.resumen .item{display:grid;grid-template-columns:1fr;gap:8px;border-top:1px solid var(--linea);padding-top:12px}
+.miniaturas{display:flex;gap:8px;overflow-x:auto}
+.mini{position:relative;flex:none;width:96px;border-radius:10px;overflow:hidden}
+.mini img{display:block;width:100%}
+.mini .pin{width:14px;height:14px;margin:-7px 0 0 -7px;font-size:8px;line-height:14px;box-shadow:0 0 0 2px #fff}
+.lista{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.aviso{padding:10px 12px;border-radius:10px;background:var(--cambiarTenue);color:var(--cambiar);font-weight:700}
+@media (min-width:900px){ .tarjeta{flex-basis:32%} }
+/* modo celular: la pantalla a todo el ancho, como en el teléfono */
+.cel{position:fixed;inset:0;z-index:30;background:#000;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.celImg{position:relative;width:100%;max-width:430px;margin:0 auto;touch-action:pan-y}
+.celImg img{display:block;width:100%;height:auto;-webkit-user-select:none;user-select:none;-webkit-user-drag:none}
+.celImg.marcando{cursor:crosshair;outline:3px dashed #5CC3BA;outline-offset:-3px}
+.celFin{height:120px}
+.pastilla{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:31;display:flex;align-items:center;gap:4px;padding:5px;border-radius:999px;background:rgba(18,20,24,.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 6px 24px rgba(0,0,0,.45);transition:opacity .2s,transform .2s;max-width:calc(100vw - 16px)}
+.pastilla.oculta{opacity:0;pointer-events:none;transform:translate(-50%,20px)}
+.pastilla button{appearance:none;border:0;background:transparent;color:#F2F4F7;font:700 15px var(--cuerpo);min-width:44px;min-height:44px;border-radius:999px;padding:0 10px;cursor:pointer}
+.pastilla button[aria-pressed="true"]{background:#F2F4F7;color:#111316}
+.pastilla .sep{width:1px;height:24px;background:rgba(255,255,255,.2)}
+.pastilla .marcar[aria-pressed="true"]{background:#5CC3BA;color:#07110F}
+.toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:32;background:rgba(18,20,24,.85);color:#F2F4F7;padding:8px 14px;border-radius:999px;font:700 14px var(--cuerpo);pointer-events:none;transition:opacity .25s}
+.toast.fuera{opacity:0}
+.fondoHoja{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.45)}
+.hoja{position:fixed;left:0;right:0;bottom:0;z-index:41;max-height:86vh;overflow-y:auto;background:var(--papel);color:var(--tinta);border-radius:22px 22px 0 0;padding:10px 16px calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px}
+.hoja .agarre{width:40px;height:5px;border-radius:9px;background:var(--linea);margin:0 auto}
+.gridPant{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.gridPant .chip{white-space:normal;text-align:left;border-radius:12px}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important}}
+</style>
+
+<div class="app" id="app"><p class="sub" style="padding-top:20px">Cargando…</p></div>
+<div id="celular"></div>
+<div class="pie"><div class="interno"><button class="btn" id="prev">‹ Anterior</button><button class="btn" id="verResumen">Resumen</button><button class="btn primario" id="next">Siguiente ›</button></div><p class="estado" id="estado" aria-live="polite"></p></div>
+
+<script>
+(() => {
+const VER = 'e6';
+const PROP = { N: 'La cifra sobre el mapa', O: 'Tablero', P: 'Mapa vivo' };
+const PANTALLAS = [
+  ['inicio', 'Inicio'], ['mapa', 'Mapa'], ['hoja', 'Tus vehículos'], ['pagar', 'Pagar mi cuota'], ['alta', 'Crear cuenta'],
+  ['aviso', 'Aviso de robo'], ['cuenta', 'Cuenta'], ['tienda', 'Tienda Marketo'], ['clasificados', 'Clasificados'], ['club', 'Club'],
+  ['bloqueada', 'Celular bloqueado'], ['actividad', 'Aviso en vivo'], ['isla', 'Isla del iPhone'],
+];
+const $app = document.getElementById('app'), $estado = document.getElementById('estado');
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const src = (ver, p, pant, modo) => `img/${ver}/${p}/${modo}-${pant}.jpg`;
+const leer = (k, d) => { try { return localStorage.getItem(k) || d; } catch (e) { return d; } };
+const guardarLocal = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+
+let db = null, datos = {}, vista = { i: +leer('cmp-i', '0') || 0, modo: leer('cmp-modo', 'claro'), forma: leer('cmp-v2', '') ? leer('cmp-forma', 'celular') : 'celular', prop: leer('cmp-prop', 'N'), resumen: false, marcar: false, hoja: false };
+guardarLocal('cmp-v2', '1');
+const colas = {}, timers = {};
+function doc(clave) { if (!datos[clave]) datos[clave] = { pantalla: clave, mejor: '', mezcla: '', notas: { N: '', O: '', P: '' }, marcas: [] }; return datos[clave]; }
+function guardar(clave) {
+  if (!db) { $estado.textContent = 'En esta copia pública las marcas no se guardan.'; return; }
+  $estado.textContent = 'Guardando…'; clearTimeout(timers[clave]);
+  timers[clave] = setTimeout(() => {
+    const copia = JSON.parse(JSON.stringify(datos[clave])); copia.actualizado = new Date().toISOString();
+    colas[clave] = (colas[clave] || Promise.resolve()).then(() => db.collection('comparar').doc(clave).set(copia))
+      .then(() => { $estado.textContent = 'Guardado ' + new Date().toLocaleTimeString('es-PY', { hour: '2-digit', minute: '2-digit' }); })
+      .catch(e => { $estado.textContent = 'No se pudo guardar (' + (e && e.code || 'error') + '). Tocá cualquier cosa para reintentar.'; });
+  }, 600);
+}
+
+function pintar() {
+  guardarLocal('cmp-i', vista.i); guardarLocal('cmp-modo', vista.modo); guardarLocal('cmp-forma', vista.forma);
+  guardarLocal('cmp-prop', vista.prop);
+  const cel = vista.forma === 'celular' && !vista.resumen;
+  document.querySelector('.pie').hidden = cel; document.getElementById('app').hidden = cel;
+  document.getElementById('verResumen').textContent = vista.resumen ? 'Volver' : 'Resumen';
+  document.getElementById('prev').hidden = vista.resumen; document.getElementById('next').hidden = vista.resumen;
+  if (cel) return pintarCelular();
+  document.getElementById('celular').innerHTML = '';
+  return vista.resumen ? pintarResumen() : pintarPantalla();
+}
+
+function pintarPantalla() {
+  const [clave, nombre] = PANTALLAS[vista.i], d = doc(clave), modo = vista.modo;
+  const conAlgo = k => { const x = datos[k]; return x && (x.mejor || x.mezcla || (x.marcas || []).length || Object.values(x.notas || {}).some(Boolean)); };
+  $app.innerHTML = `
+  <div class="cabeza">
+    <div class="fila entre"><h1>${esc(nombre)} <span class="sub" style="font-weight:600;font-size:15px">${vista.i + 1} de ${PANTALLAS.length}</span></h1>
+      <div class="fila"><div class="seg" role="group" aria-label="Modo"><button data-modo="claro" aria-pressed="${modo === 'claro'}">Claro</button><button data-modo="oscuro" aria-pressed="${modo === 'oscuro'}">Oscuro</button></div>
+      <div class="seg" role="group" aria-label="Vista"><button data-forma="celular" aria-pressed="false">📱</button><button data-forma="una" aria-pressed="${vista.forma === 'una'}">Grande</button><button data-forma="juntas" aria-pressed="${vista.forma === 'juntas'}">Las 3</button></div></div></div>
+    <div class="pantallas" id="lista">${PANTALLAS.map(([k, t], j) => `<button class="chip" data-ir="${j}" aria-pressed="${j === vista.i}">${esc(t)}${conAlgo(k) ? '<span class="punto" aria-label="con marcas"></span>' : ''}</button>`).join('')}</div>
+  </div>
+  <div class="${vista.forma === 'juntas' ? 'juntas' : 'carrusel'}" id="cartas">
+    ${['N', 'O', 'P'].map(p => {
+      const ms = d.marcas.map((m, idx) => ({ ...m, idx })).filter(m => m.prop === p && m.modo === modo && m.ver === VER);
+      return `<section class="tarjeta" aria-label="${p} ${esc(PROP[p])}">
+        <div class="nombreProp"><div><span class="letra">${p}</span> <span class="sub nombreLargo">${esc(PROP[p])}</span></div>
+          <button class="mejor" data-mejor="${p}" aria-pressed="${d.mejor === p}">${d.mejor === p ? '★ La mejor' : '☆ La mejor'}</button></div>
+        <div class="tel" data-tel="${p}"><img alt="${esc(nombre)} de ${p}, modo ${modo}" src="${src(VER, p, clave, modo)}" loading="${p === 'N' ? 'eager' : 'lazy'}">
+          ${ms.map(m => `<span class="pin ${m.tipo}" style="left:${m.x * 100}%;top:${m.y * 100}%">${m.n}</span>`).join('')}</div>
+        <div class="marcas">${ms.map(m => `<div class="marca"><span class="n ${m.tipo}">${m.n}</span>
+          <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+            <div class="tipo" role="group" aria-label="Qué hacer con el punto ${m.n}"><button class="u" data-tipo="usar" data-idx="${m.idx}" aria-pressed="${m.tipo === 'usar'}">👍 Usar esto</button><button class="c" data-tipo="cambiar" data-idx="${m.idx}" aria-pressed="${m.tipo === 'cambiar'}">✋ Cambiar</button><button class="borrar" data-borrar="${m.idx}">Borrar</button></div>
+            <input data-texto="${m.idx}" placeholder="Qué es y por qué (opcional)" value="${esc(m.texto)}" aria-label="Nota del punto ${m.n}">
+          </div></div>`).join('')}</div>
+        <div class="marcas"><label for="nota-${p}">Qué tomar de ${p} en esta pantalla</label><textarea id="nota-${p}" data-nota="${p}" placeholder="Por ejemplo: los botones de vehículos con la cifra">${esc(d.notas[p])}</textarea></div>
+      </section>`; }).join('')}
+  </div>
+  <p class="ayuda">${vista.forma === 'juntas' ? 'Tocá una pantalla para verla grande y marcar.' : 'Deslizá para ver N, O y P. Tocá la pantalla para marcar un punto: 👍 usar esto o ✋ cambiarlo.'}</p>
+  <div class="caja" style="margin-top:12px">
+    <h2>La mezcla ideal para «${esc(nombre)}»</h2>
+    <div class="fila" role="group" aria-label="La mejor">${['N', 'O', 'P'].map(p => `<button class="chip" data-mejor="${p}" aria-pressed="${d.mejor === p}">${d.mejor === p ? '★ ' : ''}${p} es la mejor</button>`).join('')}<button class="chip" data-mejor="mezcla" aria-pressed="${d.mejor === 'mezcla'}">Una mezcla</button></div>
+    <div><label for="mezcla">Cómo la armarías</label><textarea id="mezcla" placeholder="Por ejemplo: el mapa de P, los botones de N y el aviso de O">${esc(d.mezcla)}</textarea></div>
+  </div>`;
+  const lista = document.getElementById('lista'); const act = lista.querySelector('[aria-pressed="true"]'); if (act) lista.scrollLeft = act.offsetLeft - 16;
+  $app.querySelectorAll('[data-modo]').forEach(b => b.onclick = () => { vista.modo = b.dataset.modo; pintar(); });
+  $app.querySelectorAll('[data-forma]').forEach(b => b.onclick = () => { vista.forma = b.dataset.forma; pintar(); });
+  $app.querySelectorAll('[data-ir]').forEach(b => b.onclick = () => { vista.i = +b.dataset.ir; pintar(); scrollTo(0, 0); });
+  $app.querySelectorAll('[data-mejor]').forEach(b => b.onclick = () => { d.mejor = d.mejor === b.dataset.mejor ? '' : b.dataset.mejor; guardar(clave); repintar(); });
+  $app.querySelectorAll('[data-tel]').forEach(t => t.onclick = ev => {
+    const p = t.dataset.tel;
+    if (vista.forma === 'juntas') { vista.forma = 'una'; pintar(); const c = document.querySelector(`[aria-label^="${p} "]`); if (c) c.scrollIntoView({ inline: 'start', block: 'nearest' }); return; }
+    const box = t.querySelector('img').getBoundingClientRect(); const x = (ev.clientX - box.left) / box.width, y = (ev.clientY - box.top) / box.height;
+    if (x < 0 || x > 1 || y < 0 || y > 1) return;
+    const n = d.marcas.filter(m => m.prop === p && m.modo === modo && m.ver === VER).length + 1;
+    d.marcas.push({ prop: p, modo, ver: VER, x: +x.toFixed(4), y: +y.toFixed(4), n, tipo: 'usar', texto: '' }); guardar(clave); repintar(p);
+  });
+  $app.querySelectorAll('[data-tipo]').forEach(b => b.onclick = () => { const m = d.marcas[+b.dataset.idx]; m.tipo = b.dataset.tipo; guardar(clave); repintar(m.prop); });
+  $app.querySelectorAll('[data-borrar]').forEach(b => b.onclick = () => { const m = d.marcas[+b.dataset.borrar]; d.marcas.splice(+b.dataset.borrar, 1); d.marcas.filter(x => x.prop === m.prop && x.modo === m.modo && x.ver === m.ver).forEach((x, k) => x.n = k + 1); guardar(clave); repintar(m.prop); });
+  $app.querySelectorAll('[data-texto]').forEach(i => i.oninput = () => { d.marcas[+i.dataset.texto].texto = i.value; guardar(clave); });
+  $app.querySelectorAll('[data-nota]').forEach(i => i.oninput = () => { d.notas[i.dataset.nota] = i.value; guardar(clave); });
+  document.getElementById('mezcla').oninput = e => { d.mezcla = e.target.value; guardar(clave); };
+  function repintar(p) { const sy = scrollY, cartas = document.getElementById('cartas'), sx = cartas ? cartas.scrollLeft : 0; pintar(); scrollTo(0, sy); const c2 = document.getElementById('cartas'); if (c2) c2.scrollLeft = sx; }
+}
+
+let toastT = null, pastillaVisible = true;
+function toast(t) { const el = document.getElementById('toast'); if (!el) return; el.textContent = t; el.classList.remove('fuera'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.add('fuera'), 1300); }
+function pintarCelular() {
+  const [clave, nombre] = PANTALLAS[vista.i], d = doc(clave), modo = vista.modo, p = vista.prop;
+  const cont = document.getElementById('celular');
+  const celPrev = document.getElementById('cel'), sy = celPrev ? celPrev.scrollTop : 0, mismo = cont.dataset.k === clave + p + modo;
+  const ms = d.marcas.map((m, idx) => ({ ...m, idx })).filter(m => m.prop === p && m.modo === modo && m.ver === VER);
+  cont.dataset.k = clave + p + modo;
+  cont.innerHTML = `
+  <div class="cel" id="cel">
+    <div class="celImg ${vista.marcar ? 'marcando' : ''}" id="celImg"><img alt="${esc(nombre)} de ${p}, modo ${modo}" src="${src(VER, p, clave, modo)}">
+      ${ms.map(m => `<span class="pin ${m.tipo}" style="left:${m.x * 100}%;top:${m.y * 100}%">${m.n}</span>`).join('')}</div>
+    <div class="celFin"></div>
+  </div>
+  <div class="toast fuera" id="toast"></div>
+  <div class="pastilla ${pastillaVisible || vista.marcar ? '' : 'oculta'}" id="pastilla" role="toolbar" aria-label="Controles">
+    <button id="cPrev" aria-label="Pantalla anterior">‹</button>
+    ${['N', 'O', 'P'].map(x => `<button data-p="${x}" aria-pressed="${x === p}" aria-label="Propuesta ${x}">${x}</button>`).join('')}
+    <button id="cNext" aria-label="Pantalla siguiente">›</button>
+    <span class="sep"></span>
+    <button class="marcar" id="cMarcar" aria-pressed="${vista.marcar}" aria-label="Marcar puntos">✎${ms.length ? ' ' + ms.length : ''}</button>
+    <button id="cMenu" aria-label="Menú">☰</button>
+  </div>
+  ${vista.hoja ? `<div class="fondoHoja" id="fondoHoja"></div>
+  <div class="hoja" role="dialog" aria-label="Menú">
+    <div class="agarre"></div>
+    <div class="fila entre"><h2>${esc(nombre)} · ${p}</h2><button class="btn" id="cerrarHoja">Listo</button></div>
+    <div class="fila"><div class="seg" role="group" aria-label="Modo"><button data-modo="claro" aria-pressed="${modo === 'claro'}">Claro</button><button data-modo="oscuro" aria-pressed="${modo === 'oscuro'}">Oscuro</button></div>
+      <button class="chip" id="irJuntas">Comparar las 3</button><button class="chip" id="irResumen">Resumen</button></div>
+    <div><p class="etq" style="margin-bottom:8px">Pantallas</p><div class="gridPant">${PANTALLAS.map(([k, t], j) => `<button class="chip" data-ir="${j}" aria-pressed="${j === vista.i}">${esc(t)}</button>`).join('')}</div></div>
+    <div class="caja">
+      <h3>Tus marcas en ${p}</h3>
+      ${ms.length ? '' : '<p class="sub">Tocá ✎ y después tocá la pantalla donde está lo que te gusta o querés cambiar.</p>'}
+      <div class="marcas" style="display:flex">${ms.map(m => `<div class="marca"><span class="n ${m.tipo}">${m.n}</span>
+        <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+          <div class="tipo" role="group"><button class="u" data-tipo="usar" data-idx="${m.idx}" aria-pressed="${m.tipo === 'usar'}">👍 Usar esto</button><button class="c" data-tipo="cambiar" data-idx="${m.idx}" aria-pressed="${m.tipo === 'cambiar'}">✋ Cambiar</button><button class="borrar" data-borrar="${m.idx}">Borrar</button></div>
+          <input data-texto="${m.idx}" placeholder="Qué es y por qué (opcional)" value="${esc(m.texto)}" aria-label="Nota del punto ${m.n}">
+        </div></div>`).join('')}</div>
+      <div><label for="nota-cel">Qué tomar de ${p} en esta pantalla</label><textarea id="nota-cel" data-nota="${p}">${esc(d.notas[p])}</textarea></div>
+    </div>
+    <div class="caja">
+      <h3>La mejor en «${esc(nombre)}»</h3>
+      <div class="fila">${['N', 'O', 'P'].map(x => `<button class="chip" data-mejor="${x}" aria-pressed="${d.mejor === x}">${d.mejor === x ? '★ ' : ''}${x}</button>`).join('')}<button class="chip" data-mejor="mezcla" aria-pressed="${d.mejor === 'mezcla'}">Una mezcla</button></div>
+      <div><label for="mezcla-cel">Cómo la armarías</label><textarea id="mezcla-cel">${esc(d.mezcla)}</textarea></div>
+    </div>
+  </div>` : ''}`;
+  const cel = document.getElementById('cel'); if (mismo) cel.scrollTop = sy;
+  const cambiarProp = dir => { const ps = ['N', 'O', 'P']; const ratio = cel.scrollHeight > 0 ? cel.scrollTop / cel.scrollHeight : 0; vista.prop = ps[(ps.indexOf(vista.prop) + dir + 3) % 3]; pintar(); const c2 = document.getElementById('cel'); const im = c2.querySelector('img'); const fijar = () => { c2.scrollTop = ratio * c2.scrollHeight; }; if (im.complete) fijar(); else im.onload = fijar; toast(vista.prop + ' · ' + PROP[vista.prop]); };
+  const cambiarPant = dir => { vista.i = (vista.i + dir + PANTALLAS.length) % PANTALLAS.length; cont.dataset.k = ''; pintar(); toast(PANTALLAS[vista.i][1]); };
+  document.getElementById('cPrev').onclick = () => cambiarPant(-1);
+  document.getElementById('cNext').onclick = () => cambiarPant(1);
+  cont.querySelectorAll('[data-p]').forEach(b => b.onclick = () => { const ps = ['N', 'O', 'P']; cambiarProp(ps.indexOf(b.dataset.p) - ps.indexOf(vista.prop)); });
+  document.getElementById('cMarcar').onclick = () => { vista.marcar = !vista.marcar; toast(vista.marcar ? 'Tocá la pantalla para marcar' : 'Marcar apagado'); pintar(); };
+  document.getElementById('cMenu').onclick = () => { vista.hoja = true; pintar(); };
+  // tocar: marca (si ✎ está prendido) o muestra/oculta la pastilla; deslizar: cambia N/O/P
+  const zona = document.getElementById('celImg'); let t0 = null;
+  zona.addEventListener('touchstart', e => { const t = e.touches[0]; t0 = { x: t.clientX, y: t.clientY, s: Date.now() }; }, { passive: true });
+  zona.addEventListener('touchend', e => { if (!t0) return; const t = e.changedTouches[0], dx = t.clientX - t0.x, dy = t.clientY - t0.y; if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { e.preventDefault(); cambiarProp(dx < 0 ? 1 : -1); t0 = null; } }, { passive: false });
+  zona.onclick = ev => {
+    if (!vista.marcar) { pastillaVisible = !pastillaVisible; document.getElementById('pastilla').classList.toggle('oculta', !pastillaVisible); return; }
+    const box = zona.querySelector('img').getBoundingClientRect(); const x = (ev.clientX - box.left) / box.width, y = (ev.clientY - box.top) / box.height;
+    if (x < 0 || x > 1 || y < 0 || y > 1) return;
+    d.marcas.push({ prop: p, modo, ver: VER, x: +x.toFixed(4), y: +y.toFixed(4), n: ms.length + 1, tipo: 'usar', texto: '' }); guardar(clave);
+    toast('Punto ' + (ms.length + 1) + ' · abrí ☰ para escribir qué es'); pintar();
+  };
+  document.onkeydown = e => { if (vista.forma !== 'celular' || vista.hoja) return; if (e.key === 'ArrowRight') cambiarProp(1); if (e.key === 'ArrowLeft') cambiarProp(-1); if (e.key === 'ArrowDown' && e.altKey) cambiarPant(1); };
+  if (!vista.hoja) return;
+  const cerrar = () => { vista.hoja = false; pintar(); };
+  document.getElementById('fondoHoja').onclick = cerrar; document.getElementById('cerrarHoja').onclick = cerrar;
+  cont.querySelectorAll('.hoja [data-modo]').forEach(b => b.onclick = () => { vista.modo = b.dataset.modo; pintar(); });
+  cont.querySelectorAll('.hoja [data-ir]').forEach(b => b.onclick = () => { vista.i = +b.dataset.ir; vista.hoja = false; cont.dataset.k = ''; pintar(); });
+  document.getElementById('irJuntas').onclick = () => { vista.hoja = false; vista.forma = 'juntas'; pintar(); scrollTo(0, 0); };
+  document.getElementById('irResumen').onclick = () => { vista.hoja = false; vista.resumen = true; pintar(); scrollTo(0, 0); };
+  const repH = () => { const h = cont.querySelector('.hoja'), hs = h ? h.scrollTop : 0; pintar(); const h2 = cont.querySelector('.hoja'); if (h2) h2.scrollTop = hs; };
+  cont.querySelectorAll('.hoja [data-mejor]').forEach(b => b.onclick = () => { d.mejor = d.mejor === b.dataset.mejor ? '' : b.dataset.mejor; guardar(clave); repH(); });
+  cont.querySelectorAll('.hoja [data-tipo]').forEach(b => b.onclick = () => { d.marcas[+b.dataset.idx].tipo = b.dataset.tipo; guardar(clave); repH(); });
+  cont.querySelectorAll('.hoja [data-borrar]').forEach(b => b.onclick = () => { const m = d.marcas[+b.dataset.borrar]; d.marcas.splice(+b.dataset.borrar, 1); d.marcas.filter(x => x.prop === m.prop && x.modo === m.modo && x.ver === m.ver).forEach((x, k) => x.n = k + 1); guardar(clave); repH(); });
+  cont.querySelectorAll('.hoja [data-texto]').forEach(i => i.oninput = () => { d.marcas[+i.dataset.texto].texto = i.value; guardar(clave); });
+  document.getElementById('nota-cel').oninput = e => { d.notas[p] = e.target.value; guardar(clave); };
+  document.getElementById('mezcla-cel').oninput = e => { d.mezcla = e.target.value; guardar(clave); };
+}
+
+function pintarResumen() {
+  const hay = PANTALLAS.filter(([k]) => { const x = datos[k]; return x && (x.mejor || x.mezcla || (x.marcas || []).length || Object.values(x.notas || {}).some(Boolean)); });
+  const votos = { N: 0, O: 0, P: 0, mezcla: 0 }; PANTALLAS.forEach(([k]) => { const m = datos[k]?.mejor; if (m) votos[m]++; });
+  $app.innerHTML = `<div class="cabeza"><h1>Resumen de tus marcas</h1><p class="sub">${hay.length} de ${PANTALLAS.length} pantallas con algo marcado · la mejor: N ${votos.N} · O ${votos.O} · P ${votos.P} · mezcla ${votos.mezcla}</p></div>
+  <div class="caja resumen" style="margin-top:12px">
+    ${hay.length ? hay.map(([k, nombre]) => { const x = datos[k]; const grupos = ['N', 'O', 'P'].map(p => ({ p, ms: (x.marcas || []).filter(m => m.prop === p) })).filter(g => g.ms.length || x.notas?.[g.p]);
+      return `<div class="item"><div class="fila entre"><h3>${esc(nombre)}</h3><span class="etq">${x.mejor ? (x.mejor === 'mezcla' ? 'una mezcla' : '★ ' + x.mejor) : ''}</span></div>
+        ${x.mezcla ? `<p><b>Mezcla:</b> ${esc(x.mezcla)}</p>` : ''}
+        ${grupos.map(g => { const primero = g.ms[0]; return `<div class="fila" style="align-items:flex-start;flex-wrap:nowrap">
+          ${primero ? `<div class="mini"><img alt="" src="${src(primero.ver, g.p, k, primero.modo)}">${g.ms.filter(m => m.modo === primero.modo && m.ver === primero.ver).map(m => `<span class="pin ${m.tipo}" style="left:${m.x * 100}%;top:${m.y * 100}%">${m.n}</span>`).join('')}</div>` : ''}
+          <div style="min-width:0"><p><b>${g.p}</b>${x.notas?.[g.p] ? ': ' + esc(x.notas[g.p]) : ''}</p>
+          <ul class="lista">${g.ms.map(m => `<li>${m.tipo === 'usar' ? '👍' : '✋'} ${m.n} (${m.modo}) ${esc(m.texto)}</li>`).join('')}</ul></div></div>`; }).join('')}
+      </div>`; }).join('') : '<p class="sub">Todavía no marcaste nada.</p>'}
+  </div>`;
+}
+
+document.getElementById('prev').onclick = () => { vista.i = (vista.i + PANTALLAS.length - 1) % PANTALLAS.length; pintar(); scrollTo(0, 0); };
+document.getElementById('next').onclick = () => { vista.i = (vista.i + 1) % PANTALLAS.length; pintar(); scrollTo(0, 0); };
+document.getElementById('verResumen').onclick = () => { vista.resumen = !vista.resumen; pintar(); scrollTo(0, 0); };
+
+pintar();
+(async () => {
+  try { db = await window.claude?.use?.('db'); } catch (e) { db = null; }
+  if (!db) { $estado.textContent = 'En esta copia pública las marcas no se guardan.'; return; }
+  $estado.textContent = 'Conectado';
+  let primera = true;
+  db.collection('comparar').onSnapshot(s => {
+    const escribiendo = document.activeElement && /TEXTAREA|INPUT/.test(document.activeElement.tagName);
+    let cambio = false;
+    const sinHora = o => { const c = JSON.parse(JSON.stringify(o || {})); delete c.actualizado; return JSON.stringify(c); };
+    s.docs.forEach(x => { const v = x.data(); if (!v || !v.pantalla || (x.metadata && x.metadata.hasPendingWrites) || timers[v.pantalla + '-vivo']) return;
+      if (sinHora(v) !== sinHora(datos[v.pantalla])) { datos[v.pantalla] = JSON.parse(JSON.stringify(v)); cambio = true; } });
+    if (primera || (cambio && !escribiendo)) { const sy = scrollY, c = document.getElementById('cartas'), sx = c ? c.scrollLeft : 0; pintar(); scrollTo(0, sy); const c2 = document.getElementById('cartas'); if (c2) c2.scrollLeft = sx; primera = false; }
+  }, e => { $estado.textContent = 'Se cortó la conexión con la base (' + (e && e.code) + '). Recargá la página.'; });
+})();
+})();
+</script>
+
+</body></html>
