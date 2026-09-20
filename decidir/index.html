@@ -56,7 +56,7 @@ a{color:var(--acento)}
 <header style="display:flex;flex-direction:column;gap:10px">
 <p class="sub">Alarmas Py · para Carlos · 19-sep-2026, medido hasta las 21:14 -03</p>
 <h1>Todo lo que hay que decidir</h1>
-<p class="sub">Once decisiones. <b>Una ya está decidida</b> (la grilla: opción A). Las cuatro siguientes están dibujadas y medidas y se pueden cerrar hoy. Las seis siguientes esperan desde hace días y no dependen de un dibujo. Cada una trae mi recomendación y qué pasa si no se decide.</p>
+<p class="sub">Once decisiones. <b>Cinco ya están decididas.</b> Lo que queda de arriba es una sola: el punto de Servicios. Las seis siguientes esperan desde hace días y no dependen de un dibujo. Cada una trae mi recomendación y qué pasa si no se decide.</p>
 </header>
 
 <nav class="indice" aria-label="Las decisiones">
@@ -64,7 +64,7 @@ a{color:var(--acento)}
 <a href="#d2">2 · El punto de Servicios <span>· recomiendo: V6a, plano</span></a>
 <a href="#d3">3 · El botón de «Me están robando» <span>· recomiendo: la tarjeta</span></a>
 <a href="#d4">4 · El Club, que aparece dos veces <span>· recomiendo: dejar el de abajo</span></a>
-<a href="#d5">5 · «Estacionado» y «Sin señal» son el mismo color <span>· recomiendo: separarlos ya</span></a>
+<a href="#d5">5 · «Estacionado» y «Sin señal» <span>· ✅ DECIDIDA: se queda como está</span></a>
 <a href="#d6">6 · Qué promete ZyCheck <span>· espera desde el 19-sep</span></a>
 <a href="#d7">7 · Los cupos de ventas y retención <span>· espera desde el 16-sep</span></a>
 <a href="#d8">8 · El reparto de causas de baja <span>· espera desde el 2-sep</span></a>
@@ -181,25 +181,36 @@ a{color:var(--acento)}
 </section>
 
 <!-- ══════════ 5 ══════════ -->
-<section class="ya" id="d5">
-<span class="chapa">Decisión 5 · es un defecto, pido tu visto bueno</span>
-<h2>«Estacionado» y «Sin señal» se pintan exactamente igual</h2>
-<p>Lo verifiqué yo en el código a las 21:09, en <code>theme/sistemaS.ts</code>:</p>
+<section class="decidida" id="d5">
+<span class="chapa hecha">Decisión 5 · ✅ DECIDIDA por Carlos el 19-sep 21:36 — se queda como está</span>
+<h2>«Estacionado» y «Sin señal»: la app ya los distingue</h2>
+
+<p><b>Acá decía que los dos estados «se pintan exactamente igual» y que había que separarlos. Eso estaba a medias, y la mitad que faltaba era la que decidía.</b></p>
+
+<figure>
+<img src="chip-tres-formas.png" alt="Los tres chips de estado tal como los dibuja la app, en claro y en oscuro: En movimiento con un triángulo verde, Estacionado con un cuadrado gris, y Sin señal con un anillo hueco gris.">
+<figcaption>Lo que la app dibuja de verdad, en claro y en oscuro. Medido en el componente el 19-sep a las 21:34.</figcaption>
+</figure>
+
 <div class="desliza">
 <table>
-<thead><tr><th></th><th>«Estacionado»</th><th>«Sin señal»</th></tr></thead>
+<thead><tr><th>estado</th><th>forma que ya dibuja</th><th>color</th></tr></thead>
 <tbody>
-<tr><td>modo oscuro · color</td><td class="num">#A7B2D1</td><td class="num mal">#A7B2D1 · igual</td></tr>
-<tr><td>modo oscuro · tinta</td><td class="num">#C9D2EA</td><td class="num mal">#C9D2EA · igual</td></tr>
-<tr><td>modo claro · los tres valores</td><td class="num">#5A6682 · #EEF1F7 · #3D4966</td><td class="num mal">idénticos, los tres</td></tr>
+<tr><td>En movimiento</td><td><b>▲ triángulo</b></td><td>verde</td></tr>
+<tr><td>Estacionado</td><td><b>■ cuadrado</b></td><td class="num">gris</td></tr>
+<tr><td>Sin señal</td><td><b>○ anillo hueco</b></td><td class="num">el mismo gris</td></tr>
 </tbody>
 </table>
 </div>
-<p><b>Qué significa:</b> «tu auto está tranquilo en la puerta de tu casa» y «perdimos tu auto» se dibujan con el mismo color. Sólo los separa la palabra. En modo claro no hay ninguna diferencia, ni en el fondo.</p>
-<div class="reco">
-<p><b>Recomiendo: separarlos ya.</b> «Estacionado» se queda con el gris tranquilo, y «Sin señal» pasa al color de atención que la app ya tiene. No hace falta inventar ningún color nuevo.</p>
+
+<p><b>Lo que sigue siendo cierto:</b> «Estacionado» y «Sin señal» comparten exactamente el mismo color — en modo claro, los tres valores. <b>Lo que yo no había medido:</b> las formas ya son distintas, y además «Sin señal» lleva un segundo chip tocable, «¿Por qué pasa?», que «Estacionado» no tiene.</p>
+
+<p class="mal">Y mi propuesta era peor que lo que hay: le ponía un triángulo a «Sin señal», y el triángulo ya es el de «En movimiento». Habría creado el defecto que decía arreglar.</p>
+
+<div class="hecho">
+<p><b>Decidido: se queda como está. Sin cambio en el código.</b></p>
+<p>La forma y la palabra ya distinguen los tres estados, que es exactamente lo que la regla de esta app pide para los estados. El color compartido queda anotado y no es urgente.</p>
 </div>
-<p class="sub"><b>Si no se decide:</b> el cliente no puede distinguir de un vistazo el estado bueno del estado malo.</p>
 </section>
 
 <!-- ══════════ 6 ══════════ -->
@@ -302,7 +313,7 @@ a{color:var(--acento)}
 <section>
 <h2>Cómo contestar, en una línea</h2>
 <ol>
-<li><b>Lo que falta de arriba:</b> alcanza con «V6a / tarjeta / Club abajo / separar los grises» — o dónde no estás de acuerdo. La grilla ya está decidida: A.</li>
+<li><b>Lo que falta de arriba:</b> una sola palabra, «V6a». Las otras cuatro ya están decididas.</li>
 <li><b>Las seis de abajo:</b> contestá las que puedas ahora; las demás siguen esperando y no bloquean el dibujo.</li>
 </ol>
 <p class="sub">Los dibujos completos, con más detalle, están en Figma: <a href="https://www.figma.com/design/CrPRdExHSgS593o4TnmQbc?node-id=1-3">la página para decidir</a>. Esa necesita cuenta de Figma; esta página no.</p>
