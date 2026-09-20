@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Todo lo que hay que decidir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Schibsted+Grotesk:wght@700;800&display=swap">
+<style>
+:root{--papel:#EEF0F3;--sup:#FFFFFF;--tinta:#15171C;--tinta2:#555C68;--linea:#D2D7DE;--acento:#1D6F6A;--alerta:#9B2C25;--aviso:#8A6100;
+--cuerpo:"Atkinson Hyperlegible",-apple-system,"Segoe UI",Roboto,sans-serif;--titulo:"Schibsted Grotesk","Atkinson Hyperlegible",-apple-system,sans-serif}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--papel:#0E1013;--sup:#181B20;--tinta:#ECEEF2;--tinta2:#A4ABB6;--linea:#2E343D;--acento:#5CC3BA;--alerta:#FF9B91;--aviso:#E8B84B}}
+:root[data-theme="dark"]{--papel:#0E1013;--sup:#181B20;--tinta:#ECEEF2;--tinta2:#A4ABB6;--linea:#2E343D;--acento:#5CC3BA;--alerta:#FF9B91;--aviso:#E8B84B}
+*{box-sizing:border-box}
+body{margin:0;background:var(--papel);color:var(--tinta);font:16px/1.55 var(--cuerpo)}
+main{max-width:940px;margin:0 auto;padding:32px 16px 56px;display:flex;flex-direction:column;gap:24px}
+h1{font:800 32px/1.1 var(--titulo);margin:0;text-wrap:balance}
+h2{font:800 22px/1.2 var(--titulo);margin:0;text-wrap:balance}
+h3{font:700 17px/1.3 var(--titulo);margin:0}
+p{margin:0}
+.sub{color:var(--tinta2)}
+section{background:var(--sup);border:1px solid var(--linea);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:14px}
+section.ya{border-left:5px solid var(--acento)}
+section.espera{border-left:5px solid var(--aviso)}
+.chapa{align-self:flex-start;font-size:13px;font-weight:700;padding:3px 10px;border-radius:999px;border:1px solid var(--linea);color:var(--tinta2)}
+figure{margin:0;display:flex;flex-direction:column;gap:8px}
+figure img{width:100%;height:auto;border:1px solid var(--linea);border-radius:12px;display:block}
+figcaption{font-size:14px;color:var(--tinta2)}
+.reco{background:color-mix(in srgb,var(--acento) 12%,transparent);border:1px solid var(--acento);border-radius:12px;padding:14px}
+.reco b{color:var(--acento);font-family:var(--titulo)}
+.desliza{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--linea);vertical-align:top}
+th{font-family:var(--titulo);font-weight:700}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.mal{color:var(--alerta);font-weight:700}
+.bien{color:var(--acento);font-weight:700}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px}
+a{color:var(--acento)}
+.pie{font-size:14px;color:var(--tinta2)}
+.indice{display:flex;flex-direction:column;gap:6px}
+.indice a{text-decoration:none;padding:8px 10px;border:1px solid var(--linea);border-radius:10px;color:var(--tinta);min-height:44px;display:flex;align-items:center;gap:10px}
+.indice a span{color:var(--tinta2);font-size:14px}
+</style>
+</head>
+<body>
+<main>
+
+<header style="display:flex;flex-direction:column;gap:10px">
+<p class="sub">Alarmas Py · para Carlos · 19-sep-2026, medido hasta las 21:14 -03</p>
+<h1>Todo lo que hay que decidir</h1>
+<p class="sub">Once decisiones. Las cinco primeras están dibujadas y medidas: se pueden cerrar hoy. Las seis siguientes esperan desde hace días y no dependen de un dibujo. Cada una trae mi recomendación y qué pasa si no se decide.</p>
+</header>
+
+<nav class="indice" aria-label="Las decisiones">
+<a href="#d1">1 · La grilla del Inicio <span>· recomiendo: C, cuatro baldosas</span></a>
+<a href="#d2">2 · El punto de Servicios <span>· recomiendo: V6a, plano</span></a>
+<a href="#d3">3 · El botón de «Me están robando» <span>· recomiendo: la tarjeta</span></a>
+<a href="#d4">4 · El Club, que aparece dos veces <span>· recomiendo: dejar el de abajo</span></a>
+<a href="#d5">5 · «Estacionado» y «Sin señal» son el mismo color <span>· recomiendo: separarlos ya</span></a>
+<a href="#d6">6 · Qué promete ZyCheck <span>· espera desde el 19-sep</span></a>
+<a href="#d7">7 · Los cupos de ventas y retención <span>· espera desde el 16-sep</span></a>
+<a href="#d8">8 · El reparto de causas de baja <span>· espera desde el 2-sep</span></a>
+<a href="#d9">9 · La Fase Casa <span>· espera desde agosto</span></a>
+<a href="#d10">10 · Los Figma en la cuenta de la otra empresa <span>· apareció hoy</span></a>
+<a href="#d11">11 · Si se toca producción <span>· apareció hoy</span></a>
+</nav>
+
+<!-- ══════════ 1 ══════════ -->
+<section class="ya" id="d1">
+<span class="chapa">Decisión 1 · se cierra hoy</span>
+<h2>La grilla «Todo lo que podés hacer»</h2>
+
+<figure>
+<img src="grilla-4-paneles.png" alt="Cuatro pantallas del Inicio lado a lado. Las dos primeras en fondo claro: a la izquierda la grilla de hoy con seis baldosas, dos de ellas con borde punteado y el texto Todavía no está listo; a la derecha la propuesta con cuatro baldosas, cada una con una línea azul debajo que dice el estado vivo, y al pie una línea gris. Las dos siguientes son las mismas en fondo azul oscuro.">
+<figcaption>Izquierda: como está hoy. Derecha: la propuesta. Arriba en claro, abajo en oscuro. Los colores y tamaños salen medidos del Figma de la app.</figcaption>
+</figure>
+
+<div class="desliza">
+<table>
+<thead><tr><th>qué se midió</th><th class="num">hoy</th><th class="num">si se va entera</th><th class="num">la propuesta</th></tr></thead>
+<tbody>
+<tr><td>Alto del recorrido</td><td class="num">1.531 px</td><td class="num bien">1.209 px</td><td class="num">entre las dos</td></tr>
+<tr><td>Lo que cuesta a 320 pt con letra grande</td><td class="num mal">921 px</td><td class="num bien">0</td><td class="num">≈ dos tercios</td></tr>
+<tr><td>Baldosas que el cliente NO puede tocar</td><td class="num mal">2 de 6</td><td class="num bien">0</td><td class="num bien">0</td></tr>
+<tr><td>Destinos que quedan sin puerta</td><td class="num bien">0</td><td class="num mal">5</td><td class="num bien">0</td></tr>
+<tr><td>Usos de la ruta «Servicios» en el código</td><td class="num mal" colspan="3">0 · control positivo del mismo barrido: la ruta «Club» da 4</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="reco">
+<p><b>Recomiendo: C, la de cuatro baldosas.</b></p>
+<p>Sacarla entera ahorra 921 px, pero deja cinco destinos sin ninguna puerta, porque la pestaña «Servicios» todavía no está cableada. Dejarla como está le muestra al cliente dos cosas que no puede tocar. C se queda con las cuatro que sirven, cada una diciendo lo que pasa del otro lado, y baja las dos trabadas a una línea honesta.</p>
+</div>
+<p class="sub"><b>Si no se decide:</b> la grilla se queda como está y el cliente sigue viendo dos baldosas muertas.</p>
+</section>
+
+<!-- ══════════ 2 ══════════ -->
+<section class="ya" id="d2">
+<span class="chapa">Decisión 2 · se cierra hoy</span>
+<h2>El punto de aviso de «Servicios»</h2>
+
+<figure>
+<img src="punto-degrade.png" alt="Franja comparativa: el punto de aviso sobre el ícono de Servicios relleno con el degrade de diez colores de Instagram, en barra clara y en barra oscura, con el texto de la medición al costado.">
+<figcaption>Con el degrade de Instagram, como pediste.</figcaption>
+</figure>
+<figure>
+<img src="punto-plano.png" alt="La misma franja con el punto azul plano con halo, en un azul más oscuro sobre la barra clara y más claro sobre la oscura.">
+<figcaption>V6a: el mismo punto de 8 pt, plano, con el color corregido por modo.</figcaption>
+</figure>
+
+<div class="desliza">
+<table>
+<thead><tr><th>qué se midió · 34 láminas de Mobbin, 9 apps, miradas el 19-sep</th><th class="num">degrade</th><th class="num">V6a plano</th></tr></thead>
+<tbody>
+<tr><td>Se ve en la barra clara <span class="sub">(mínimo 3,00)</span></td><td class="num mal">1,29</td><td class="num bien">6,24</td></tr>
+<tr><td>Se ve en la barra oscura</td><td class="num mal">2,62</td><td class="num bien">7,21</td></tr>
+<tr><td>El amarillo sobre la pestaña elegida</td><td class="num mal">1,15</td><td class="num">—</td></tr>
+<tr><td>Píxeles rojos que mete en la barra</td><td class="num mal">36</td><td class="num bien">0</td></tr>
+<tr><td>Puntos con degrade en 4 láminas de la barra de Instagram</td><td class="num mal" colspan="2">0 · Instagram usa el degrade en un círculo de 56-64 pt, nunca en uno de 8</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="reco">
+<p><b>Recomiendo: V6a, el punto plano.</b></p>
+<p>El degrade va de amarillo a violeta: un extremo siempre desaparece, en la barra clara o en la oscura. A 8 pt el ojo no lee diez colores, lee el promedio. Y mete rojo y coral en la barra, donde hoy el rojo tiene un solo dueño: «Me están robando».</p>
+<p>Y la cuenta que cierra la discusión: el techo de cualquier color único, en las dos barras a la vez, es <b>4,58</b>. El peor caso de V6a es <b>6,24</b>. Ningún color solo puede ganarle.</p>
+</div>
+<p class="sub"><b>Si no se decide:</b> Servicios no avisa nada y una novedad real pasa desapercibida.</p>
+</section>
+
+<!-- ══════════ 3 ══════════ -->
+<section class="ya" id="d3">
+<span class="chapa">Decisión 3 · se cierra hoy</span>
+<h2>El botón de «Me están robando»</h2>
+<p>Los dos lotes de láminas dibujaron dos botones distintos y hay que quedarse con uno.</p>
+
+<div class="desliza">
+<table>
+<thead><tr><th></th><th>la tarjeta <span class="sub">(la que ya está en la app)</span></th><th>la píldora</th></tr></thead>
+<tbody>
+<tr><td>Tamaño</td><td class="num">370 × 84</td><td class="num">370 × 54</td></tr>
+<tr><td>Qué dice</td><td>«Me están robando — llamar ya» <b>y</b> «Mantené apretado 1 s · llama al 911»</td><td>«Me están robando», nada más</td></tr>
+<tr><td>Forma</td><td>tarjeta con disco y anillo</td><td>píldora roja maciza</td></tr>
+</tbody>
+</table>
+</div>
+
+<figure>
+<img src="robo-pildora.png" alt="Pantalla del Inicio propuesta donde el botón de robo es una píldora roja maciza de una sola línea, sin la instrucción de mantener apretado.">
+<figcaption>La píldora, en la lámina B. Fijate que no dice en ningún lado que hay que mantenerlo apretado.</figcaption>
+</figure>
+
+<div class="reco">
+<p><b>Recomiendo: la tarjeta.</b></p>
+<p>La tarjeta trae la segunda línea. Sin ella el cliente toca, no pasa nada, y suelta pensando que está roto. Eso, en una emergencia, no es una diferencia de gusto.</p>
+</div>
+<p class="sub"><b>Si no se decide:</b> conviven las dos y el cliente ve un botón distinto según la pantalla.</p>
+</section>
+
+<!-- ══════════ 4 ══════════ -->
+<section class="ya" id="d4">
+<span class="chapa">Decisión 4 · se cierra hoy</span>
+<h2>El Club aparece dos veces en la misma pantalla</h2>
+<p>En la lámina de la fusión, el Club se dice arriba en la fila («420 pts vencen el 30/9») y otra vez abajo en su tarjeta («1.240 pts · 420 vencen el 30/9»). Es el mismo dato, dos veces, en la misma pantalla.</p>
+<div class="reco">
+<p><b>Recomiendo: dejar la tarjeta de abajo y sacarlo de la fila.</b></p>
+<p>La tarjeta dice las dos mitades (cuántos puntos tenés y cuántos vencen); la fila dice sólo la mitad que asusta. Y la fila queda libre para algo que hoy no se ve en ningún lado.</p>
+</div>
+<p class="sub"><b>Si no se decide:</b> el cliente lee dos veces lo mismo y desconfía del número.</p>
+</section>
+
+<!-- ══════════ 5 ══════════ -->
+<section class="ya" id="d5">
+<span class="chapa">Decisión 5 · es un defecto, pido tu visto bueno</span>
+<h2>«Estacionado» y «Sin señal» se pintan exactamente igual</h2>
+<p>Lo verifiqué yo en el código a las 21:09, en <code>theme/sistemaS.ts</code>:</p>
+<div class="desliza">
+<table>
+<thead><tr><th></th><th>«Estacionado»</th><th>«Sin señal»</th></tr></thead>
+<tbody>
+<tr><td>modo oscuro · color</td><td class="num">#A7B2D1</td><td class="num mal">#A7B2D1 · igual</td></tr>
+<tr><td>modo oscuro · tinta</td><td class="num">#C9D2EA</td><td class="num mal">#C9D2EA · igual</td></tr>
+<tr><td>modo claro · los tres valores</td><td class="num">#5A6682 · #EEF1F7 · #3D4966</td><td class="num mal">idénticos, los tres</td></tr>
+</tbody>
+</table>
+</div>
+<p><b>Qué significa:</b> «tu auto está tranquilo en la puerta de tu casa» y «perdimos tu auto» se dibujan con el mismo color. Sólo los separa la palabra. En modo claro no hay ninguna diferencia, ni en el fondo.</p>
+<div class="reco">
+<p><b>Recomiendo: separarlos ya.</b> «Estacionado» se queda con el gris tranquilo, y «Sin señal» pasa al color de atención que la app ya tiene. No hace falta inventar ningún color nuevo.</p>
+</div>
+<p class="sub"><b>Si no se decide:</b> el cliente no puede distinguir de un vistazo el estado bueno del estado malo.</p>
+</section>
+
+<!-- ══════════ 6 ══════════ -->
+<section class="espera" id="d6">
+<span class="chapa">Decisión 6 · espera desde el 19-sep</span>
+<h2>Qué promete ZyCheck, exactamente</h2>
+<p>En la misma pantalla de compra de un auto usado conviven dos frases nuestras:</p>
+<ul>
+<li>«ZyCheck <b>garantiza al 100 %</b> lo que se ofrece»</li>
+<li>Tres líneas abajo: «Alarmas Py certifica los kilómetros recorridos desde que instalamos el equipo. <b>No</b> certifica el odómetro ni el kilometraje total»</li>
+</ul>
+<p>Si son dos productos distintos, las dos frases pueden convivir. Pero el cliente las lee juntas, mientras decide si compra un auto.</p>
+<div class="reco">
+<p><b>Recomiendo: escribir en una línea qué garantiza ZyCheck y qué no</b>, y que esa línea sea la única que aparezca en la pantalla. Es un texto que el cliente puede usar para reclamar.</p>
+</div>
+<p class="sub"><b>Si no se decide:</b> la app promete algo que nadie midió, en una compra de millones de guaraníes.</p>
+</section>
+
+<!-- ══════════ 7 ══════════ -->
+<section class="espera" id="d7">
+<span class="chapa">Decisión 7 · espera desde el 16-sep</span>
+<h2>Los cupos de ventas y de retención, en la base nueva</h2>
+<p>El plan se mide ahora con la base oficial del tablero. Con esa base, septiembre pide números distintos a los que se le están pidiendo a los equipos:</p>
+<div class="desliza">
+<table>
+<thead><tr><th></th><th class="num">lo que se pide hoy</th><th class="num">lo que pide la base oficial</th></tr></thead>
+<tbody>
+<tr><td>Altas del mes</td><td class="num">2.772</td><td class="num">2.789 · <span class="sub">17 más</span></td></tr>
+<tr><td>Bajas, como máximo</td><td class="num">1.291</td><td class="num mal">1.149 · 142 menos</td></tr>
+</tbody>
+</table>
+</div>
+<div class="reco">
+<p><b>Recomiendo: pasar los dos cupos a la base oficial ya.</b> A ventas casi no le cambia. A retención le cambia mucho: hoy tiene 142 bajas de colchón que no existen en la base con la que se lo va a medir.</p>
+</div>
+<p class="sub"><b>Si no se decide:</b> retención cree que va bien todo el mes y a fin de mes no llega.</p>
+</section>
+
+<!-- ══════════ 8 ══════════ -->
+<section class="espera" id="d8">
+<span class="chapa">Decisión 8 · espera desde el 2-sep</span>
+<h2>El reparto de las causas de baja: 34 · 33 · 26 · 8</h2>
+<p>Ese reparto sostiene buena parte del plan de retención, incluida la frase de que «el 92 % de las bajas tiene dueño en otra área». <b>No está medido.</b> El propio repositorio de Víctor lo marca como «sin fuente» y el documento de decisión lo llama «direccional, no auditada». Su origen conocido —una pasada sobre unas 624 conversaciones— da <b>cinco</b> categorías que suman <b>113 %</b>.</p>
+<div class="reco">
+<p><b>Recomiendo: firmarlo como direccional, por escrito, y pedir el número propio.</b> Sirve para orientar, no para decidir plata. Lo que no se puede es seguir citándolo como si fuera una medición.</p>
+</div>
+<p class="sub"><b>Si no se decide:</b> se siguen tomando decisiones de plata sobre un número que nadie midió.</p>
+</section>
+
+<!-- ══════════ 9 ══════════ -->
+<section class="espera" id="d9">
+<span class="chapa">Decisión 9 · espera desde agosto</span>
+<h2>La Fase Casa</h2>
+<p>Toda la parte de alarmas de casa quedó como fase 2 cuando el producto pivoteó a vehículo primero. Está anotada para revisar el 30 de septiembre.</p>
+<div class="reco">
+<p><b>Recomiendo: confirmar que sigue en fase 2 y poner una fecha,</b> aunque sea lejana. Un «más adelante» sin fecha es lo que hace que un trabajo entero quede sin dueño.</p>
+</div>
+<p class="sub"><b>Si no se decide:</b> nadie sabe si diseñarla o no, y se pierde tiempo preguntando.</p>
+</section>
+
+<!-- ══════════ 10 ══════════ -->
+<section class="espera" id="d10">
+<span class="chapa">Decisión 10 · apareció hoy</span>
+<h2>Los archivos de Figma están en la cuenta de la otra empresa</h2>
+<p>Los archivos nuevos de diseño de Alarmas Py quedaron guardados en una cuenta y un equipo de Figma que son de la otra empresa. La regla de este proyecto es que las dos empresas no comparten contenedores: se comparten ideas, nunca la cuenta.</p>
+<div class="reco">
+<p><b>Recomiendo: crear un equipo de Figma propio de Alarmas Py y mudar los archivos.</b> Mientras tanto lo dejo anotado como deuda, no lo escondo.</p>
+</div>
+<p class="sub"><b>Si no se decide:</b> el diseño de una empresa vive dentro de la cuenta de otra, y separarlo después duele.</p>
+</section>
+
+<!-- ══════════ 11 ══════════ -->
+<section class="espera" id="d11">
+<span class="chapa">Decisión 11 · apareció hoy</span>
+<h2>Si se toca producción</h2>
+<p>La regla de este proyecto dice que la producción de la empresa no se toca sin el visto bueno de Víctor. La orden de llegar al 10/10 y construir todo lo que falte puede chocar con eso en algún punto.</p>
+<div class="reco">
+<p><b>Recomiendo: dejar la regla como está y que yo construya todo hasta el borde.</b> Cuando algo necesite tocar producción, te lo señalo de a uno y lo autorizás ahí, por escrito. Nada que le llegue a un cliente real se dispara como efecto secundario de construir.</p>
+</div>
+<p class="sub"><b>Si no se decide:</b> no pasa nada malo: yo sigo construyendo y nada llega a un cliente.</p>
+</section>
+
+<!-- ══════════ honestidad ══════════ -->
+<section>
+<h2>Lo que todavía no puedo medir, dicho antes de que lo preguntes</h2>
+<ul>
+<li>Los colores exactos del degrade de Instagram <b>no están muestreados</b>: para muestrearlos habría que descargar la lámina y los términos de esa biblioteca lo prohíben. Los usados son los públicos de la marca, y la conclusión no depende de ellos.</li>
+<li>Las láminas están <b>sólo en español</b>. Faltan inglés y portugués, que es donde las palabras se parten.</li>
+<li>El arreglo para la pantalla más chica con letra grande <b>está dibujado pero no aplicado</b> en ninguna lámina.</li>
+<li>La batería del vehículo: la capacidad está construida y probada, pero <b>los 8 equipos del archivo real mandan «-»</b>. Hasta que Víctor diga qué equipos la reportan y en qué unidad, ningún cliente la va a ver.</li>
+<li>Los cinco estados de la opción D <b>no están dibujados</b>: la tanda de ayer midió mucho y no dejó ninguna lámina. Los estoy dibujando yo.</li>
+</ul>
+</section>
+
+<section>
+<h2>Cómo contestar, en una línea</h2>
+<ol>
+<li><b>Las cinco de arriba:</b> alcanza con «C / V6a / tarjeta / Club abajo / separar los grises» — o dónde no estás de acuerdo.</li>
+<li><b>Las seis de abajo:</b> contestá las que puedas ahora; las demás siguen esperando y no bloquean el dibujo.</li>
+</ol>
+<p class="sub">Los dibujos completos, con más detalle, están en Figma: <a href="https://www.figma.com/design/CrPRdExHSgS593o4TnmQbc?node-id=1-3">la página para decidir</a>. Esa necesita cuenta de Figma; esta página no.</p>
+</section>
+
+<p class="pie">Página sin indexar, hecha para revisar. Los montos, patentes y nombres de las láminas son de ejemplo. Alarmas Py · 19-sep-2026.</p>
+
+</main>
+</body>
+</html>
