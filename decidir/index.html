@@ -24,6 +24,10 @@ p{margin:0}
 section{background:var(--sup);border:1px solid var(--linea);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:14px}
 section.ya{border-left:5px solid var(--acento)}
 section.espera{border-left:5px solid var(--aviso)}
+section.decidida{border-left:5px solid var(--tinta2);opacity:.96}
+.chapa.hecha{border-color:var(--acento);color:var(--acento)}
+.hecho{background:color-mix(in srgb,var(--tinta2) 10%,transparent);border:1px solid var(--linea);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.hecho b{font-family:var(--titulo)}
 .chapa{align-self:flex-start;font-size:13px;font-weight:700;padding:3px 10px;border-radius:999px;border:1px solid var(--linea);color:var(--tinta2)}
 figure{margin:0;display:flex;flex-direction:column;gap:8px}
 figure img{width:100%;height:auto;border:1px solid var(--linea);border-radius:12px;display:block}
@@ -52,11 +56,11 @@ a{color:var(--acento)}
 <header style="display:flex;flex-direction:column;gap:10px">
 <p class="sub">Alarmas Py · para Carlos · 19-sep-2026, medido hasta las 21:14 -03</p>
 <h1>Todo lo que hay que decidir</h1>
-<p class="sub">Once decisiones. Las cinco primeras están dibujadas y medidas: se pueden cerrar hoy. Las seis siguientes esperan desde hace días y no dependen de un dibujo. Cada una trae mi recomendación y qué pasa si no se decide.</p>
+<p class="sub">Once decisiones. <b>Una ya está decidida</b> (la grilla: opción A). Las cuatro siguientes están dibujadas y medidas y se pueden cerrar hoy. Las seis siguientes esperan desde hace días y no dependen de un dibujo. Cada una trae mi recomendación y qué pasa si no se decide.</p>
 </header>
 
 <nav class="indice" aria-label="Las decisiones">
-<a href="#d1">1 · La grilla del Inicio <span>· recomiendo: C, cuatro baldosas</span></a>
+<a href="#d1">1 · La grilla del Inicio <span>· ✅ DECIDIDA: A, se queda como está</span></a>
 <a href="#d2">2 · El punto de Servicios <span>· recomiendo: V6a, plano</span></a>
 <a href="#d3">3 · El botón de «Me están robando» <span>· recomiendo: la tarjeta</span></a>
 <a href="#d4">4 · El Club, que aparece dos veces <span>· recomiendo: dejar el de abajo</span></a>
@@ -70,8 +74,8 @@ a{color:var(--acento)}
 </nav>
 
 <!-- ══════════ 1 ══════════ -->
-<section class="ya" id="d1">
-<span class="chapa">Decisión 1 · se cierra hoy</span>
+<section class="decidida" id="d1">
+<span class="chapa hecha">Decisión 1 · ✅ DECIDIDA por Carlos el 19-sep 21:22</span>
 <h2>La grilla «Todo lo que podés hacer»</h2>
 
 <figure>
@@ -92,11 +96,12 @@ a{color:var(--acento)}
 </table>
 </div>
 
-<div class="reco">
-<p><b>Recomiendo: C, la de cuatro baldosas.</b></p>
-<p>Sacarla entera ahorra 921 px, pero deja cinco destinos sin ninguna puerta, porque la pestaña «Servicios» todavía no está cableada. Dejarla como está le muestra al cliente dos cosas que no puede tocar. C se queda con las cuatro que sirven, cada una diciendo lo que pasa del otro lado, y baja las dos trabadas a una línea honesta.</p>
+<div class="hecho">
+<p><b>Decidido: A. La grilla se queda como está.</b></p>
+<p>Yo había recomendado C. Carlos eligió A y va A. Se cierra la discusión de si la grilla se saca: <b>no se saca</b>.</p>
+<p>Lo que eso implica, para que quede escrito: el ahorro de 921 px en la pantalla chica con letra grande <b>no se cobra</b>, y queda como deuda elegida, no como olvido. Y las <b>dos baldosas trabadas siguen ahí</b>: Seguros y Pagá tus servicios le siguen mostrando al cliente algo que no puede tocar.</p>
+<p class="sub">Si querés sacar sólo esas dos y dejar el resto igual, decime «sacá las dos» y se hace: son dos nodos y no toca nada más.</p>
 </div>
-<p class="sub"><b>Si no se decide:</b> la grilla se queda como está y el cliente sigue viendo dos baldosas muertas.</p>
 </section>
 
 <!-- ══════════ 2 ══════════ -->
@@ -292,7 +297,7 @@ a{color:var(--acento)}
 <section>
 <h2>Cómo contestar, en una línea</h2>
 <ol>
-<li><b>Las cinco de arriba:</b> alcanza con «C / V6a / tarjeta / Club abajo / separar los grises» — o dónde no estás de acuerdo.</li>
+<li><b>Lo que falta de arriba:</b> alcanza con «V6a / tarjeta / Club abajo / separar los grises» — o dónde no estás de acuerdo. La grilla ya está decidida: A.</li>
 <li><b>Las seis de abajo:</b> contestá las que puedas ahora; las demás siguen esperando y no bloquean el dibujo.</li>
 </ol>
 <p class="sub">Los dibujos completos, con más detalle, están en Figma: <a href="https://www.figma.com/design/CrPRdExHSgS593o4TnmQbc?node-id=1-3">la página para decidir</a>. Esa necesita cuenta de Figma; esta página no.</p>
