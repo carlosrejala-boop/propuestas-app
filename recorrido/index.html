@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>El recorrido de Alarmas Py</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700&family=Figtree:wght@400;500;600&display=swap">
+<style>
+:root{
+  --fondo:#F5F7FC; --sup:#FFFFFF; --sup2:#E9EEFC;
+  --texto:#0F1B3D; --texto2:#4F5B78; --texto3:#636C85;
+  --linea:#DDE3F2; --primario:#244CCC;
+  --bien:#106D33; --medio:#8A6A00; --flojo:#901A13;
+  --sombra:0 1px 2px rgba(15,27,61,.06), 0 8px 24px rgba(15,27,61,.06);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --fondo:#0A1024; --sup:#131C38; --sup2:#1C2750;
+  --texto:#F2F5FF; --texto2:#B4BEDA; --texto3:#8792B4;
+  --linea:#2A3766; --primario:#7FA1FF;
+  --bien:#BDFFC5; --medio:#F7E177; --flojo:#FF9B91;
+  --sombra:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+}}
+:root[data-theme="dark"]{
+  --fondo:#0A1024; --sup:#131C38; --sup2:#1C2750;
+  --texto:#F2F5FF; --texto2:#B4BEDA; --texto3:#8792B4;
+  --linea:#2A3766; --primario:#7FA1FF;
+  --bien:#BDFFC5; --medio:#F7E177; --flojo:#FF9B91;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--fondo);color:var(--texto);
+  font:400 16px/1.6 Figtree,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  -webkit-font-smoothing:antialiased}
+.env{max-width:1180px;margin:0 auto;padding:0 16px}
+h1,h2,h3{font-family:Sora,Figtree,sans-serif;font-weight:700;letter-spacing:-.015em;text-wrap:balance;margin:0}
+
+header{padding-block:clamp(36px,7vw,72px) 8px}
+.ojo{font:600 12px/1 Figtree,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--texto3);margin:0 0 14px}
+h1{font-size:clamp(30px,5.4vw,50px);line-height:1.08}
+.bajada{color:var(--texto2);max-width:60ch;margin:16px 0 0;font-size:clamp(16px,2vw,18px)}
+
+.marcador{display:flex;flex-wrap:wrap;gap:12px;margin:30px 0 0;align-items:stretch}
+.dato{background:var(--sup);border:1px solid var(--linea);border-radius:14px;
+  padding:14px 18px;box-shadow:var(--sombra);flex:1 1 150px}
+.dato b{display:block;font-family:Sora,sans-serif;font-size:26px;line-height:1.1;
+  font-variant-numeric:tabular-nums}
+.dato span{display:block;color:var(--texto3);font-size:13px;margin-top:4px}
+
+.aviso{background:var(--sup);border:1px solid var(--linea);border-left:3px solid var(--flojo);
+  border-radius:0 14px 14px 0;padding:18px 20px;margin:28px 0 0;box-shadow:var(--sombra)}
+.aviso h3{font-size:16px;margin-bottom:6px}
+.aviso p{margin:6px 0 0;color:var(--texto2);font-size:15px}
+.aviso p:first-of-type{margin-top:0}
+
+nav.indice{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;
+  margin:34px 0 0;padding:0}
+nav.indice a{display:flex;justify-content:space-between;align-items:center;gap:10px;
+  background:var(--sup);border:1px solid var(--linea);border-radius:11px;
+  padding:11px 14px;text-decoration:none;color:var(--texto);font-size:15px;font-weight:500}
+nav.indice a:hover{border-color:var(--primario)}
+nav.indice b{font-family:Sora,sans-serif;font-variant-numeric:tabular-nums;font-size:15px}
+.bien{color:var(--bien)} .medio{color:var(--medio)} .flojo{color:var(--flojo)}
+
+section{padding-block:44px 8px;scroll-margin-top:12px}
+section h2{font-size:clamp(20px,3vw,26px);display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+  padding-bottom:12px;border-bottom:1px solid var(--linea)}
+section h2 .p{font-family:Sora,sans-serif;font-size:19px;font-variant-numeric:tabular-nums}
+section h2 em{margin-left:auto;font-style:normal;font-size:13px;color:var(--texto3);font-weight:400}
+
+.rejilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:18px 14px;margin-top:22px}
+.t{margin:0}
+.t button{display:block;width:100%;padding:0;border:1px solid var(--linea);background:var(--sup);
+  border-radius:13px;overflow:hidden;cursor:zoom-in;box-shadow:var(--sombra);line-height:0}
+.t button:hover{border-color:var(--primario)}
+.t button:focus-visible{outline:3px solid var(--primario);outline-offset:2px}
+.t img{width:100%;height:auto;display:block}
+figcaption{font-size:12.5px;color:var(--texto2);margin-top:8px;line-height:1.35;
+  overflow-wrap:anywhere}
+
+dialog{border:0;padding:0;background:transparent;max-width:100vw;max-height:100vh}
+dialog::backdrop{background:rgba(10,16,36,.86)}
+dialog img{max-width:min(94vw,470px);max-height:86vh;height:auto;border-radius:16px;display:block;
+  box-shadow:0 20px 60px rgba(0,0,0,.5)}
+dialog p{color:#fff;text-align:center;margin:12px 0 0;font-size:14px}
+dialog button{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:12px;
+  width:44px;height:44px;border-radius:50%;border:0;background:#fff;color:#0F1B3D;
+  font-size:22px;cursor:pointer;line-height:1}
+
+footer{margin-top:60px;padding:26px 0 46px;border-top:1px solid var(--linea);
+  color:var(--texto3);font-size:14px}
+footer code{background:var(--sup2);color:var(--texto2);padding:1px 6px;border-radius:5px;font-size:13px}
+@media (max-width:420px){ .rejilla{grid-template-columns:repeat(auto-fill,minmax(128px,1fr))} }
+</style>
+</head>
+<body>
+<div class="env">
+<header>
+  <p class="ojo">Alarmas Py · medido el 20 de septiembre de 2026</p>
+  <h1>El recorrido completo de la app, pantalla por pantalla</h1>
+  <p class="bajada">147 pantallas fotografiadas de punta a punta en el simulador, como las ve
+  un cliente. Están agrupadas por los diez momentos de uso con los que se midió el puntaje,
+  para que cada foto se pueda leer contra su nota.</p>
+
+  <div class="marcador">
+    <div class="dato"><b>147</b><span>pantallas fotografiadas</span></div>
+    <div class="dato"><b class="medio">7,24</b><span>puntaje medido sobre 10</span></div>
+    <div class="dato"><b>80</b><span>celdas: 10 momentos × 8 variables</span></div>
+    <div class="dato"><b>21</b><span>agentes: 10 midieron, 10 refutaron, 1 auditó</span></div>
+  </div>
+
+  <div class="aviso">
+    <h3>Lo que este recorrido NO prueba, dicho antes que lo bueno</h3>
+    <p><b>El 7,24 no salió de estas fotos.</b> Los diez frentes y los diez refutadores midieron
+    código y láminas, y los veinte cerraron en «parcial». Ninguno abrió el simulador. Así que
+    el puntaje es un <b>piso</b>, no una foto de lo que se ve acá.</p>
+    <p><b>Dos fotos son idénticas</b> — «Carrito» y «Checkout» — porque el recorrido camina con
+    el carrito vacío y no se puede pagar un carrito vacío. La app hace lo correcto;
+    <b>la consecuencia es que el pago de la Tienda nunca se fotografió</b>.</p>
+    <p><b>Salieron del árbol de trabajo, no de una versión publicada:</b> commit
+    <code>8043e0e1</code> más lo que cuatro frentes tenían sin cerrar a esa hora. Es la app de
+    hoy a las 17:13, no la que está en las tiendas.</p>
+  </div>
+
+  <nav class="indice">
+      <a href="#robo"><span>Robo y emergencia</span><b class="bien">8,19</b></a>
+      <a href="#mapa"><span>Mapa vivo</span><b class="bien">8,13</b></a>
+      <a href="#plata"><span>Plan y pago</span><b class="medio">7,75</b></a>
+      <a href="#asistencia"><span>Asistencia</span><b class="medio">7,69</b></a>
+      <a href="#tienda"><span>Tienda</span><b class="medio">7,63</b></a>
+      <a href="#historial"><span>Historial</span><b class="flojo">6,98</b></a>
+      <a href="#club"><span>Club</span><b class="flojo">6,94</b></a>
+      <a href="#clasif"><span>Clasificados</span><b class="flojo">6,63</b></a>
+      <a href="#entrada"><span>Entrar a la app</span><b class="flojo">6,31</b></a>
+      <a href="#cuenta"><span>Cuenta y familia</span><b class="flojo">6,19</b></a>
+  </nav>
+</header>
+
+  <section id="robo">
+    <h2>Robo y emergencia <span class="p bien">8,19</span><em>11 pantallas</em></h2>
+    <div class="rejilla">
+      <figure class="t"><button type="button" data-g="img/060-evento-cm.png" data-n="Evento cm">
+        <img src="mini/060-evento-cm.png" alt="Evento cm" loading="lazy" width="381" height="828">
+      </button><figcaption>Evento cm</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/119-robo.png" data-n="Robo">
+        <img src="mini/119-robo.png" alt="Robo" loading="lazy" width="381" height="828">
+      </button><figcaption>Robo</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/120-robo-aviso-salio.png" data-n="Robo aviso salio">
+        <img src="mini/120-robo-aviso-salio.png" alt="Robo aviso salio" loading="lazy" width="381" height="828">
+      </button><figcaption>Robo aviso salio</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/121-robo-cancelar.png" data-n="Robo cancelar">
+        <img src="mini/121-robo-cancelar.png" alt="Robo cancelar" loading="lazy" width="381" height="828">
+      </button><figcaption>Robo cancelar</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/122-robo-como-aviso.png" data-n="Robo como aviso">
+        <img src="mini/122-robo-como-aviso.png" alt="Robo como aviso" loading="lazy" width="381" height="828">
+      </button><figcaption>Robo como aviso</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/123-robo-el-dia-despues.png" data-n="Robo el dia despues">
+        <img src="mini/123-robo-el-dia-despues.png" alt="Robo el dia despues" loading="lazy" width="381" height="828">
+      </button><figcaption>Robo el dia despues</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/124-robo-en-mora.png" data-n="Robo en mora">
+        <img src="mini/124-robo-en-mora.png" alt="Robo en mora" loading="lazy" width="381" height="828">
+      </button><figcaption>Robo en mora</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/125-robo-espera.png" data-n="Robo espera">
+        <img src="mini/125-robo-espera.png" alt="Robo espera" loading="lazy" width="381" height="828">
+      </button><figcaption>Robo espera</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/126-robo-llamando.png" data-n="Robo llamando">
+        <img src="mini/126-robo-llamando.png" alt="Robo llamando" loading="lazy" width="381" height="828">
+      </button><figcaption>Robo llamando</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/127-robo-no-sos-el-titular.png" data-n="Robo no sos el titular">
+        <img src="mini/127-robo-no-sos-el-titular.png" alt="Robo no sos el titular" loading="lazy" width="381" height="828">
+      </button><figcaption>Robo no sos el titular</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/128-robo-sin-red.png" data-n="Robo sin red">
+        <img src="mini/128-robo-sin-red.png" alt="Robo sin red" loading="lazy" width="381" height="828">
+      </button><figcaption>Robo sin red</figcaption></figure>
+    </div>
+  </section>
+  <section id="mapa">
+    <h2>Mapa vivo <span class="p bien">8,13</span><em>15 pantallas</em></h2>
+    <div class="rejilla">
+      <figure class="t"><button type="button" data-g="img/008-main_map.png" data-n="Map">
+        <img src="mini/008-main_map.png" alt="Map" loading="lazy" width="381" height="828">
+      </button><figcaption>Map</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/009-main_map_ayuda.png" data-n="Map › ayuda">
+        <img src="mini/009-main_map_ayuda.png" alt="Map › ayuda" loading="lazy" width="381" height="828">
+      </button><figcaption>Map › ayuda</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/020-appointment-scheduled.png" data-n="Appointment scheduled">
+        <img src="mini/020-appointment-scheduled.png" alt="Appointment scheduled" loading="lazy" width="381" height="828">
+      </button><figcaption>Appointment scheduled</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/028-ayuda-buscar.png" data-n="Ayuda buscar">
+        <img src="mini/028-ayuda-buscar.png" alt="Ayuda buscar" loading="lazy" width="381" height="828">
+      </button><figcaption>Ayuda buscar</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/038-buscar.png" data-n="Buscar">
+        <img src="mini/038-buscar.png" alt="Buscar" loading="lazy" width="381" height="828">
+      </button><figcaption>Buscar</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/062-explorar.png" data-n="Explorar">
+        <img src="mini/062-explorar.png" alt="Explorar" loading="lazy" width="381" height="828">
+      </button><figcaption>Explorar</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/072-flota.png" data-n="Flota">
+        <img src="mini/072-flota.png" alt="Flota" loading="lazy" width="381" height="828">
+      </button><figcaption>Flota</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/079-mapa.png" data-n="Mapa">
+        <img src="mini/079-mapa.png" alt="Mapa" loading="lazy" width="381" height="828">
+      </button><figcaption>Mapa</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/086-nombre-del-vehiculo.png" data-n="Nombre del vehiculo">
+        <img src="mini/086-nombre-del-vehiculo.png" alt="Nombre del vehiculo" loading="lazy" width="381" height="828">
+      </button><figcaption>Nombre del vehiculo</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/109-poi.png" data-n="Poi">
+        <img src="mini/109-poi.png" alt="Poi" loading="lazy" width="381" height="828">
+      </button><figcaption>Poi</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/118-review-appointment.png" data-n="Review appointment">
+        <img src="mini/118-review-appointment.png" alt="Review appointment" loading="lazy" width="381" height="828">
+      </button><figcaption>Review appointment</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/129-schedule-appointment.png" data-n="Schedule appointment">
+        <img src="mini/129-schedule-appointment.png" alt="Schedule appointment" loading="lazy" width="381" height="828">
+      </button><figcaption>Schedule appointment</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/130-search-location.png" data-n="Search location">
+        <img src="mini/130-search-location.png" alt="Search location" loading="lazy" width="381" height="828">
+      </button><figcaption>Search location</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/144-vehicle-details.png" data-n="Vehicle details">
+        <img src="mini/144-vehicle-details.png" alt="Vehicle details" loading="lazy" width="381" height="828">
+      </button><figcaption>Vehicle details</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/145-vehiculos.png" data-n="Vehiculos">
+        <img src="mini/145-vehiculos.png" alt="Vehiculos" loading="lazy" width="381" height="828">
+      </button><figcaption>Vehiculos</figcaption></figure>
+    </div>
+  </section>
+  <section id="plata">
+    <h2>Plan y pago <span class="p medio">7,75</span><em>34 pantallas</em></h2>
+    <div class="rejilla">
+      <figure class="t"><button type="button" data-g="img/015-add-card.png" data-n="Add card">
+        <img src="mini/015-add-card.png" alt="Add card" loading="lazy" width="381" height="828">
+      </button><figcaption>Add card</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/036-bajar-varios.png" data-n="Bajar varios">
+        <img src="mini/036-bajar-varios.png" alt="Bajar varios" loading="lazy" width="381" height="828">
+      </button><figcaption>Bajar varios</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/052-cuanto-debo.png" data-n="Cuanto debo">
+        <img src="mini/052-cuanto-debo.png" alt="Cuanto debo" loading="lazy" width="381" height="828">
+      </button><figcaption>Cuanto debo</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/053-debito-automatico.png" data-n="Debito automatico">
+        <img src="mini/053-debito-automatico.png" alt="Debito automatico" loading="lazy" width="381" height="828">
+      </button><figcaption>Debito automatico</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/058-escanear-factura.png" data-n="Escanear factura">
+        <img src="mini/058-escanear-factura.png" alt="Escanear factura" loading="lazy" width="381" height="828">
+      </button><figcaption>Escanear factura</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/059-estado-de-cuenta.png" data-n="Estado de cuenta">
+        <img src="mini/059-estado-de-cuenta.png" alt="Estado de cuenta" loading="lazy" width="381" height="828">
+      </button><figcaption>Estado de cuenta</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/064-factura.png" data-n="Factura">
+        <img src="mini/064-factura.png" alt="Factura" loading="lazy" width="381" height="828">
+      </button><figcaption>Factura</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/074-historial-de-pagos.png" data-n="Historial de pagos">
+        <img src="mini/074-historial-de-pagos.png" alt="Historial de pagos" loading="lazy" width="381" height="828">
+      </button><figcaption>Historial de pagos</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/080-metodos-de-pago.png" data-n="Metodos de pago">
+        <img src="mini/080-metodos-de-pago.png" alt="Metodos de pago" loading="lazy" width="381" height="828">
+      </button><figcaption>Metodos de pago</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/081-mi-plata.png" data-n="Mi plata">
+        <img src="mini/081-mi-plata.png" alt="Mi plata" loading="lazy" width="381" height="828">
+      </button><figcaption>Mi plata</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/084-mora.png" data-n="Mora">
+        <img src="mini/084-mora.png" alt="Mora" loading="lazy" width="381" height="828">
+      </button><figcaption>Mora</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/085-my-subscription.png" data-n="My subscription">
+        <img src="mini/085-my-subscription.png" alt="My subscription" loading="lazy" width="381" height="828">
+      </button><figcaption>My subscription</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/089-paga-tus-servicios.png" data-n="Paga tus servicios">
+        <img src="mini/089-paga-tus-servicios.png" alt="Paga tus servicios" loading="lazy" width="381" height="828">
+      </button><figcaption>Paga tus servicios</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/090-pagar-mi-cuota.png" data-n="Pagar mi cuota">
+        <img src="mini/090-pagar-mi-cuota.png" alt="Pagar mi cuota" loading="lazy" width="381" height="828">
+      </button><figcaption>Pagar mi cuota</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/091-pagar-un-servicio.png" data-n="Pagar un servicio">
+        <img src="mini/091-pagar-un-servicio.png" alt="Pagar un servicio" loading="lazy" width="381" height="828">
+      </button><figcaption>Pagar un servicio</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/092-pagos.png" data-n="Pagos">
+        <img src="mini/092-pagos.png" alt="Pagos" loading="lazy" width="381" height="828">
+      </button><figcaption>Pagos</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/094-payment.png" data-n="Payment">
+        <img src="mini/094-payment.png" alt="Payment" loading="lazy" width="381" height="828">
+      </button><figcaption>Payment</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/095-payment-method.png" data-n="Payment method">
+        <img src="mini/095-payment-method.png" alt="Payment method" loading="lazy" width="381" height="828">
+      </button><figcaption>Payment method</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/096-payment-methods.png" data-n="Payment methods">
+        <img src="mini/096-payment-methods.png" alt="Payment methods" loading="lazy" width="381" height="828">
+      </button><figcaption>Payment methods</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/099-planes.png" data-n="Planes">
+        <img src="mini/099-planes.png" alt="Planes" loading="lazy" width="381" height="828">
+      </button><figcaption>Planes</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/100-planes-asistencia.png" data-n="Planes asistencia">
+        <img src="mini/100-planes-asistencia.png" alt="Planes asistencia" loading="lazy" width="381" height="828">
+      </button><figcaption>Planes asistencia</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/101-planes-bajar.png" data-n="Planes bajar">
+        <img src="mini/101-planes-bajar.png" alt="Planes bajar" loading="lazy" width="381" height="828">
+      </button><figcaption>Planes bajar</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/102-planes-contexto-mi-plata.png" data-n="Planes contexto mi plata">
+        <img src="mini/102-planes-contexto-mi-plata.png" alt="Planes contexto mi plata" loading="lazy" width="381" height="828">
+      </button><figcaption>Planes contexto mi plata</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/103-planes-contexto-resuelta.png" data-n="Planes contexto resuelta">
+        <img src="mini/103-planes-contexto-resuelta.png" alt="Planes contexto resuelta" loading="lazy" width="381" height="828">
+      </button><figcaption>Planes contexto resuelta</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/104-planes-contexto-vehiculo.png" data-n="Planes contexto vehiculo">
+        <img src="mini/104-planes-contexto-vehiculo.png" alt="Planes contexto vehiculo" loading="lazy" width="381" height="828">
+      </button><figcaption>Planes contexto vehiculo</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/105-planes-inicio.png" data-n="Planes inicio">
+        <img src="mini/105-planes-inicio.png" alt="Planes inicio" loading="lazy" width="381" height="828">
+      </button><figcaption>Planes inicio</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/106-planes-mejorar.png" data-n="Planes mejorar">
+        <img src="mini/106-planes-mejorar.png" alt="Planes mejorar" loading="lazy" width="381" height="828">
+      </button><figcaption>Planes mejorar</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/107-planes-pedido-enviado.png" data-n="Planes pedido enviado">
+        <img src="mini/107-planes-pedido-enviado.png" alt="Planes pedido enviado" loading="lazy" width="381" height="828">
+      </button><figcaption>Planes pedido enviado</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/108-planes-pedir.png" data-n="Planes pedir">
+        <img src="mini/108-planes-pedir.png" alt="Planes pedir" loading="lazy" width="381" height="828">
+      </button><figcaption>Planes pedir</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/114-recibo.png" data-n="Recibo">
+        <img src="mini/114-recibo.png" alt="Recibo" loading="lazy" width="381" height="828">
+      </button><figcaption>Recibo</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/132-seguros.png" data-n="Seguros">
+        <img src="mini/132-seguros.png" alt="Seguros" loading="lazy" width="381" height="828">
+      </button><figcaption>Seguros</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/133-seguros-y-medios.png" data-n="Seguros y medios">
+        <img src="mini/133-seguros-y-medios.png" alt="Seguros y medios" loading="lazy" width="381" height="828">
+      </button><figcaption>Seguros y medios</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/136-subscription.png" data-n="Subscription">
+        <img src="mini/136-subscription.png" alt="Subscription" loading="lazy" width="381" height="828">
+      </button><figcaption>Subscription</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/141-tus-documentos.png" data-n="Tus documentos">
+        <img src="mini/141-tus-documentos.png" alt="Tus documentos" loading="lazy" width="381" height="828">
+      </button><figcaption>Tus documentos</figcaption></figure>
+    </div>
+  </section>
+  <section id="asistencia">
+    <h2>Asistencia <span class="p medio">7,69</span><em>23 pantallas</em></h2>
+    <div class="rejilla">
+      <figure class="t"><button type="button" data-g="img/003-main_auxilio_ayuda.png" data-n="Auxilio › ayuda">
+        <img src="mini/003-main_auxilio_ayuda.png" alt="Auxilio › ayuda" loading="lazy" width="381" height="828">
+      </button><figcaption>Auxilio › ayuda</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/005-main_cuenta_ayuda.png" data-n="Cuenta › ayuda">
+        <img src="mini/005-main_cuenta_ayuda.png" alt="Cuenta › ayuda" loading="lazy" width="381" height="828">
+      </button><figcaption>Cuenta › ayuda</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/006-main_guia.png" data-n="Guia">
+        <img src="mini/006-main_guia.png" alt="Guia" loading="lazy" width="381" height="828">
+      </button><figcaption>Guia</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/007-main_guide.png" data-n="Guide">
+        <img src="mini/007-main_guide.png" alt="Guide" loading="lazy" width="381" height="828">
+      </button><figcaption>Guide</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/022-asistencia.png" data-n="Asistencia">
+        <img src="mini/022-asistencia.png" alt="Asistencia" loading="lazy" width="381" height="828">
+      </button><figcaption>Asistencia</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/023-asistencia-inicio.png" data-n="Asistencia inicio">
+        <img src="mini/023-asistencia-inicio.png" alt="Asistencia inicio" loading="lazy" width="381" height="828">
+      </button><figcaption>Asistencia inicio</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/024-asistencia-pedido.png" data-n="Asistencia pedido">
+        <img src="mini/024-asistencia-pedido.png" alt="Asistencia pedido" loading="lazy" width="381" height="828">
+      </button><figcaption>Asistencia pedido</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/025-asistencia-sin-red.png" data-n="Asistencia sin red">
+        <img src="mini/025-asistencia-sin-red.png" alt="Asistencia sin red" loading="lazy" width="381" height="828">
+      </button><figcaption>Asistencia sin red</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/029-ayuda-cuenta.png" data-n="Ayuda cuenta">
+        <img src="mini/029-ayuda-cuenta.png" alt="Ayuda cuenta" loading="lazy" width="381" height="828">
+      </button><figcaption>Ayuda cuenta</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/030-ayuda-guia.png" data-n="Ayuda guia">
+        <img src="mini/030-ayuda-guia.png" alt="Ayuda guia" loading="lazy" width="381" height="828">
+      </button><figcaption>Ayuda guia</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/031-ayuda-primera-vez.png" data-n="Ayuda primera vez">
+        <img src="mini/031-ayuda-primera-vez.png" alt="Ayuda primera vez" loading="lazy" width="381" height="828">
+      </button><figcaption>Ayuda primera vez</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/032-ayuda-respuesta.png" data-n="Ayuda respuesta">
+        <img src="mini/032-ayuda-respuesta.png" alt="Ayuda respuesta" loading="lazy" width="381" height="828">
+      </button><figcaption>Ayuda respuesta</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/033-ayuda-tema.png" data-n="Ayuda tema">
+        <img src="mini/033-ayuda-tema.png" alt="Ayuda tema" loading="lazy" width="381" height="828">
+      </button><figcaption>Ayuda tema</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/034-ayuda-video.png" data-n="Ayuda video">
+        <img src="mini/034-ayuda-video.png" alt="Ayuda video" loading="lazy" width="381" height="828">
+      </button><figcaption>Ayuda video</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/035-ayuda-videos.png" data-n="Ayuda videos">
+        <img src="mini/035-ayuda-videos.png" alt="Ayuda videos" loading="lazy" width="381" height="828">
+      </button><figcaption>Ayuda videos</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/042-cierre.png" data-n="Cierre">
+        <img src="mini/042-cierre.png" alt="Cierre" loading="lazy" width="381" height="828">
+      </button><figcaption>Cierre</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/048-como-quedo.png" data-n="Como quedo">
+        <img src="mini/048-como-quedo.png" alt="Como quedo" loading="lazy" width="381" height="828">
+      </button><figcaption>Como quedo</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/078-llegada.png" data-n="Llegada">
+        <img src="mini/078-llegada.png" alt="Llegada" loading="lazy" width="381" height="828">
+      </button><figcaption>Llegada</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/083-mis-pedidos.png" data-n="Mis pedidos">
+        <img src="mini/083-mis-pedidos.png" alt="Mis pedidos" loading="lazy" width="381" height="828">
+      </button><figcaption>Mis pedidos</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/097-pedido.png" data-n="Pedido">
+        <img src="mini/097-pedido.png" alt="Pedido" loading="lazy" width="381" height="828">
+      </button><figcaption>Pedido</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/131-search-location-technician.png" data-n="Search location technician">
+        <img src="mini/131-search-location-technician.png" alt="Search location technician" loading="lazy" width="381" height="828">
+      </button><figcaption>Search location technician</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/137-technician-review.png" data-n="Technician review">
+        <img src="mini/137-technician-review.png" alt="Technician review" loading="lazy" width="381" height="828">
+      </button><figcaption>Technician review</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/138-technician-tracking.png" data-n="Technician tracking">
+        <img src="mini/138-technician-tracking.png" alt="Technician tracking" loading="lazy" width="381" height="828">
+      </button><figcaption>Technician tracking</figcaption></figure>
+    </div>
+  </section>
+  <section id="tienda">
+    <h2>Tienda <span class="p medio">7,63</span><em>7 pantallas</em></h2>
+    <div class="rejilla">
+      <figure class="t"><button type="button" data-g="img/010-main_marketo_aviso.png" data-n="Marketo › aviso">
+        <img src="mini/010-main_marketo_aviso.png" alt="Marketo › aviso" loading="lazy" width="381" height="828">
+      </button><figcaption>Marketo › aviso</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/040-carrito.png" data-n="Carrito">
+        <img src="mini/040-carrito.png" alt="Carrito" loading="lazy" width="381" height="828">
+      </button><figcaption>Carrito</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/041-checkout.png" data-n="Checkout">
+        <img src="mini/041-checkout.png" alt="Checkout" loading="lazy" width="381" height="828">
+      </button><figcaption>Checkout</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/069-favoritos.png" data-n="Favoritos">
+        <img src="mini/069-favoritos.png" alt="Favoritos" loading="lazy" width="381" height="828">
+      </button><figcaption>Favoritos</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/088-orders.png" data-n="Orders">
+        <img src="mini/088-orders.png" alt="Orders" loading="lazy" width="381" height="828">
+      </button><figcaption>Orders</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/111-producto.png" data-n="Producto">
+        <img src="mini/111-producto.png" alt="Producto" loading="lazy" width="381" height="828">
+      </button><figcaption>Producto</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/139-tienda.png" data-n="Tienda">
+        <img src="mini/139-tienda.png" alt="Tienda" loading="lazy" width="381" height="828">
+      </button><figcaption>Tienda</figcaption></figure>
+    </div>
+  </section>
+  <section id="historial">
+    <h2>Historial <span class="p flojo">6,98</span><em>6 pantallas</em></h2>
+    <div class="rejilla">
+      <figure class="t"><button type="button" data-g="img/013-main_tools.png" data-n="Tools">
+        <img src="mini/013-main_tools.png" alt="Tools" loading="lazy" width="381" height="828">
+      </button><figcaption>Tools</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/061-events.png" data-n="Events">
+        <img src="mini/061-events.png" alt="Events" loading="lazy" width="381" height="828">
+      </button><figcaption>Events</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/075-history.png" data-n="History">
+        <img src="mini/075-history.png" alt="History" loading="lazy" width="381" height="828">
+      </button><figcaption>History</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/076-history-overview.png" data-n="History overview">
+        <img src="mini/076-history-overview.png" alt="History overview" loading="lazy" width="381" height="828">
+      </button><figcaption>History overview</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/093-paso.png" data-n="Paso">
+        <img src="mini/093-paso.png" alt="Paso" loading="lazy" width="381" height="828">
+      </button><figcaption>Paso</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/140-tools.png" data-n="Tools">
+        <img src="mini/140-tools.png" alt="Tools" loading="lazy" width="381" height="828">
+      </button><figcaption>Tools</figcaption></figure>
+    </div>
+  </section>
+  <section id="club">
+    <h2>Club <span class="p flojo">6,94</span><em>4 pantallas</em></h2>
+    <div class="rejilla">
+      <figure class="t"><button type="button" data-g="img/043-club.png" data-n="Club">
+        <img src="mini/043-club.png" alt="Club" loading="lazy" width="381" height="828">
+      </button><figcaption>Club</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/044-club-canje.png" data-n="Club canje">
+        <img src="mini/044-club-canje.png" alt="Club canje" loading="lazy" width="381" height="828">
+      </button><figcaption>Club canje</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/045-club-convenio.png" data-n="Club convenio">
+        <img src="mini/045-club-convenio.png" alt="Club convenio" loading="lazy" width="381" height="828">
+      </button><figcaption>Club convenio</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/046-club-convenios.png" data-n="Club convenios">
+        <img src="mini/046-club-convenios.png" alt="Club convenios" loading="lazy" width="381" height="828">
+      </button><figcaption>Club convenios</figcaption></figure>
+    </div>
+  </section>
+  <section id="clasif">
+    <h2>Clasificados <span class="p flojo">6,63</span><em>4 pantallas</em></h2>
+    <div class="rejilla">
+      <figure class="t"><button type="button" data-g="img/070-ficha.png" data-n="Ficha">
+        <img src="mini/070-ficha.png" alt="Ficha" loading="lazy" width="381" height="828">
+      </button><figcaption>Ficha</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/113-publicar-aviso.png" data-n="Publicar aviso">
+        <img src="mini/113-publicar-aviso.png" alt="Publicar aviso" loading="lazy" width="381" height="828">
+      </button><figcaption>Publicar aviso</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/143-usados.png" data-n="Usados">
+        <img src="mini/143-usados.png" alt="Usados" loading="lazy" width="381" height="828">
+      </button><figcaption>Usados</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/146-vendedor.png" data-n="Vendedor">
+        <img src="mini/146-vendedor.png" alt="Vendedor" loading="lazy" width="381" height="828">
+      </button><figcaption>Vendedor</figcaption></figure>
+    </div>
+  </section>
+  <section id="entrada">
+    <h2>Entrar a la app <span class="p flojo">6,31</span><em>19 pantallas</em></h2>
+    <div class="rejilla">
+      <figure class="t"><button type="button" data-g="img/00-bienvenida.png" data-n="Bienvenida">
+        <img src="mini/00-bienvenida.png" alt="Bienvenida" loading="lazy" width="381" height="828">
+      </button><figcaption>Bienvenida</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/01-inicio-con-sesion.png" data-n="Inicio con sesion">
+        <img src="mini/01-inicio-con-sesion.png" alt="Inicio con sesion" loading="lazy" width="381" height="828">
+      </button><figcaption>Inicio con sesion</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/017-al-abrir.png" data-n="Al abrir">
+        <img src="mini/017-al-abrir.png" alt="Al abrir" loading="lazy" width="381" height="828">
+      </button><figcaption>Al abrir</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/021-arranque.png" data-n="Arranque">
+        <img src="mini/021-arranque.png" alt="Arranque" loading="lazy" width="381" height="828">
+      </button><figcaption>Arranque</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/026-auth-success.png" data-n="Auth success">
+        <img src="mini/026-auth-success.png" alt="Auth success" loading="lazy" width="381" height="828">
+      </button><figcaption>Auth success</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/037-bienvenida.png" data-n="Bienvenida">
+        <img src="mini/037-bienvenida.png" alt="Bienvenida" loading="lazy" width="381" height="828">
+      </button><figcaption>Bienvenida</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/039-cambiar-contrasena.png" data-n="Cambiar contrasena">
+        <img src="mini/039-cambiar-contrasena.png" alt="Cambiar contrasena" loading="lazy" width="381" height="828">
+      </button><figcaption>Cambiar contrasena</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/047-como-entras.png" data-n="Como entras">
+        <img src="mini/047-como-entras.png" alt="Como entras" loading="lazy" width="381" height="828">
+      </button><figcaption>Como entras</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/049-crear-cuenta-codigo.png" data-n="Crear cuenta codigo">
+        <img src="mini/049-crear-cuenta-codigo.png" alt="Crear cuenta codigo" loading="lazy" width="381" height="828">
+      </button><figcaption>Crear cuenta codigo</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/050-crear-cuenta-correo.png" data-n="Crear cuenta correo">
+        <img src="mini/050-crear-cuenta-correo.png" alt="Crear cuenta correo" loading="lazy" width="381" height="828">
+      </button><figcaption>Crear cuenta correo</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/051-crear-cuenta-datos.png" data-n="Crear cuenta datos">
+        <img src="mini/051-crear-cuenta-datos.png" alt="Crear cuenta datos" loading="lazy" width="381" height="828">
+      </button><figcaption>Crear cuenta datos</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/057-entrar.png" data-n="Entrar">
+        <img src="mini/057-entrar.png" alt="Entrar" loading="lazy" width="381" height="828">
+      </button><figcaption>Entrar</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/063-face-id.png" data-n="Face id">
+        <img src="mini/063-face-id.png" alt="Face id" loading="lazy" width="381" height="828">
+      </button><figcaption>Face id</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/068-familia_permisos.png" data-n="Familia › permisos">
+        <img src="mini/068-familia_permisos.png" alt="Familia › permisos" loading="lazy" width="381" height="828">
+      </button><figcaption>Familia › permisos</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/071-fingerprint.png" data-n="Fingerprint">
+        <img src="mini/071-fingerprint.png" alt="Fingerprint" loading="lazy" width="381" height="828">
+      </button><figcaption>Fingerprint</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/087-olvide.png" data-n="Olvide">
+        <img src="mini/087-olvide.png" alt="Olvide" loading="lazy" width="381" height="828">
+      </button><figcaption>Olvide</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/098-permiso.png" data-n="Permiso">
+        <img src="mini/098-permiso.png" alt="Permiso" loading="lazy" width="381" height="828">
+      </button><figcaption>Permiso</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/135-sin-sesion.png" data-n="Sin sesion">
+        <img src="mini/135-sin-sesion.png" alt="Sin sesion" loading="lazy" width="381" height="828">
+      </button><figcaption>Sin sesion</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/147-volviendo.png" data-n="Volviendo">
+        <img src="mini/147-volviendo.png" alt="Volviendo" loading="lazy" width="381" height="828">
+      </button><figcaption>Volviendo</figcaption></figure>
+    </div>
+  </section>
+  <section id="cuenta">
+    <h2>Cuenta y familia <span class="p flojo">6,19</span><em>24 pantallas</em></h2>
+    <div class="rejilla">
+      <figure class="t"><button type="button" data-g="img/004-main_cuenta_aviso.png" data-n="Cuenta › aviso">
+        <img src="mini/004-main_cuenta_aviso.png" alt="Cuenta › aviso" loading="lazy" width="381" height="828">
+      </button><figcaption>Cuenta › aviso</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/011-main_profile.png" data-n="Profile">
+        <img src="mini/011-main_profile.png" alt="Profile" loading="lazy" width="381" height="828">
+      </button><figcaption>Profile</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/012-main_push-alerts.png" data-n="Push alerts">
+        <img src="mini/012-main_push-alerts.png" alt="Push alerts" loading="lazy" width="381" height="828">
+      </button><figcaption>Push alerts</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/014-not-found.png" data-n="Ruta que no existe">
+        <img src="mini/014-not-found.png" alt="Ruta que no existe" loading="lazy" width="381" height="828">
+      </button><figcaption>Ruta que no existe</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/016-ajustes.png" data-n="Ajustes">
+        <img src="mini/016-ajustes.png" alt="Ajustes" loading="lazy" width="381" height="828">
+      </button><figcaption>Ajustes</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/018-alo.png" data-n="Alo">
+        <img src="mini/018-alo.png" alt="Alo" loading="lazy" width="381" height="828">
+      </button><figcaption>Alo</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/019-apariencia.png" data-n="Apariencia">
+        <img src="mini/019-apariencia.png" alt="Apariencia" loading="lazy" width="381" height="828">
+      </button><figcaption>Apariencia</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/027-avisos.png" data-n="Avisos">
+        <img src="mini/027-avisos.png" alt="Avisos" loading="lazy" width="381" height="828">
+      </button><figcaption>Avisos</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/054-delete-account.png" data-n="Delete account">
+        <img src="mini/054-delete-account.png" alt="Delete account" loading="lazy" width="381" height="828">
+      </button><figcaption>Delete account</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/055-editar.png" data-n="Editar">
+        <img src="mini/055-editar.png" alt="Editar" loading="lazy" width="381" height="828">
+      </button><figcaption>Editar</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/056-eliminar.png" data-n="Eliminar">
+        <img src="mini/056-eliminar.png" alt="Eliminar" loading="lazy" width="381" height="828">
+      </button><figcaption>Eliminar</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/065-familia.png" data-n="Familia">
+        <img src="mini/065-familia.png" alt="Familia" loading="lazy" width="381" height="828">
+      </button><figcaption>Familia</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/066-familia_invitar.png" data-n="Familia › invitar">
+        <img src="mini/066-familia_invitar.png" alt="Familia › invitar" loading="lazy" width="381" height="828">
+      </button><figcaption>Familia › invitar</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/067-familia_miembro.png" data-n="Familia › miembro">
+        <img src="mini/067-familia_miembro.png" alt="Familia › miembro" loading="lazy" width="381" height="828">
+      </button><figcaption>Familia › miembro</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/073-foto.png" data-n="Foto">
+        <img src="mini/073-foto.png" alt="Foto" loading="lazy" width="381" height="828">
+      </button><figcaption>Foto</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/077-idioma.png" data-n="Idioma">
+        <img src="mini/077-idioma.png" alt="Idioma" loading="lazy" width="381" height="828">
+      </button><figcaption>Idioma</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/082-mis-avisos.png" data-n="Mis avisos">
+        <img src="mini/082-mis-avisos.png" alt="Mis avisos" loading="lazy" width="381" height="828">
+      </button><figcaption>Mis avisos</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/110-privacidad.png" data-n="Privacidad">
+        <img src="mini/110-privacidad.png" alt="Privacidad" loading="lazy" width="381" height="828">
+      </button><figcaption>Privacidad</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/112-profile.png" data-n="Profile">
+        <img src="mini/112-profile.png" alt="Profile" loading="lazy" width="381" height="828">
+      </button><figcaption>Profile</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/115-recortar.png" data-n="Recortar">
+        <img src="mini/115-recortar.png" alt="Recortar" loading="lazy" width="381" height="828">
+      </button><figcaption>Recortar</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/116-references.png" data-n="References">
+        <img src="mini/116-references.png" alt="References" loading="lazy" width="381" height="828">
+      </button><figcaption>References</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/117-referidos.png" data-n="Referidos">
+        <img src="mini/117-referidos.png" alt="Referidos" loading="lazy" width="381" height="828">
+      </button><figcaption>Referidos</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/134-servicios.png" data-n="Servicios">
+        <img src="mini/134-servicios.png" alt="Servicios" loading="lazy" width="381" height="828">
+      </button><figcaption>Servicios</figcaption></figure>
+      <figure class="t"><button type="button" data-g="img/142-unidades.png" data-n="Unidades">
+        <img src="mini/142-unidades.png" alt="Unidades" loading="lazy" width="381" height="828">
+      </button><figcaption>Unidades</figcaption></figure>
+    </div>
+  </section>
+
+<footer>
+  <p>Fotos tomadas entre las <b>17:13</b> y las <b>17:33</b> del 20-sep-2026 (hora de Asunción),
+  en el simulador de iPhone, con el servidor de prueba. 147 archivos, 146 distintos entre sí.</p>
+  <p>Página sin buscadores (<code>noindex</code>). No lleva ningún dato de ningún cliente real.</p>
+</footer>
+</div>
+
+<dialog id="lupa">
+  <button type="button" aria-label="Cerrar">&times;</button>
+  <img alt=""><p></p>
+</dialog>
+<script>
+(function(){
+  var d=document.getElementById('lupa'), im=d.querySelector('img'), tx=d.querySelector('p');
+  document.addEventListener('click',function(e){
+    var b=e.target.closest('.t button');
+    if(b){ im.src=b.dataset.g; im.alt=b.dataset.n; tx.textContent=b.dataset.n;
+           if(d.showModal) d.showModal(); return; }
+    if(e.target.closest('#lupa button') || e.target===d) d.close();
+  });
+  d.addEventListener('close',function(){ im.removeAttribute('src'); });
+})();
+</script>
+</body>
+</html>
