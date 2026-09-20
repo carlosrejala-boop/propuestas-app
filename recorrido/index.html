@@ -98,30 +98,41 @@ footer code{background:var(--sup2);color:var(--texto2);padding:1px 6px;border-ra
 <body>
 <div class="env">
 <header>
-  <p class="ojo">Alarmas Py · medido el 20 de septiembre de 2026</p>
+  <p class="ojo">Alarmas Py &middot; fotografiado el 20 de septiembre de 2026, 19:12&ndash;19:23</p>
   <h1>El recorrido completo de la app, pantalla por pantalla</h1>
   <p class="bajada">147 pantallas fotografiadas de punta a punta en el simulador, como las ve
-  un cliente. Están agrupadas por los diez momentos de uso con los que se midió el puntaje,
-  para que cada foto se pueda leer contra su nota.</p>
+  un cliente, con <b>todos los arreglos del d&iacute;a adentro</b>. Est&aacute;n agrupadas por los diez
+  momentos de uso con los que se midi&oacute; el puntaje, para que cada foto se pueda leer contra
+  su nota.</p>
 
   <div class="marcador">
     <div class="dato"><b>147</b><span>pantallas fotografiadas</span></div>
-    <div class="dato"><b class="medio">7,24</b><span>puntaje medido sobre 10</span></div>
-    <div class="dato"><b>80</b><span>celdas: 10 momentos × 8 variables</span></div>
-    <div class="dato"><b>21</b><span>agentes: 10 midieron, 10 refutaron, 1 auditó</span></div>
+    <div class="dato"><b>146</b><span>capturas distintas entre s&iacute;</span></div>
+    <div class="dato"><b class="medio">7,24</b><span>puntaje medido el 19-sep sobre 10</span></div>
+    <div class="dato"><b>4</b><span>defectos que encontr&oacute; ESTE recorrido</span></div>
   </div>
 
   <div class="aviso">
     <h3>Lo que este recorrido NO prueba, dicho antes que lo bueno</h3>
-    <p><b>El 7,24 no salió de estas fotos.</b> Los diez frentes y los diez refutadores midieron
-    código y láminas, y los veinte cerraron en «parcial». Ninguno abrió el simulador. Así que
-    el puntaje es un <b>piso</b>, no una foto de lo que se ve acá.</p>
-    <p><b>Dos fotos son idénticas</b> — «Carrito» y «Checkout» — porque el recorrido camina con
-    el carrito vacío y no se puede pagar un carrito vacío. La app hace lo correcto;
-    <b>la consecuencia es que el pago de la Tienda nunca se fotografió</b>.</p>
-    <p><b>Salieron del árbol de trabajo, no de una versión publicada:</b> commit
-    <code>8043e0e1</code> más lo que cuatro frentes tenían sin cerrar a esa hora. Es la app de
-    hoy a las 17:13, no la que está en las tiendas.</p>
+    <p><b>El 7,24 no sali&oacute; de estas fotos</b>, y tiene fecha propia: lo midieron el 19 y el
+    20 de septiembre diez frentes y diez refutadores, sobre c&oacute;digo y l&aacute;minas, y los veinte
+    cerraron en &laquo;parcial&raquo;. <b>Ninguno abri&oacute; el simulador.</b> Estas fotos son de hoy
+    y son m&aacute;s nuevas que ese n&uacute;mero: el puntaje es un <b>piso</b>, no una foto de lo que se ve
+    ac&aacute;.</p>
+    <p><b>Dos fotos son id&eacute;nticas p&iacute;xel por p&iacute;xel</b> &mdash; &laquo;Usados&raquo; y &laquo;Vendedor&raquo; &mdash;
+    y esta vez la app tiene raz&oacute;n: la ficha de un vendedor sin vendedor redirige a Clasificados
+    a prop&oacute;sito (<code>vendedor.tsx:95</code>). <b>La consecuencia es que la ficha del vendedor
+    no se fotografi&oacute;.</b> Medido: 146 capturas distintas de 147 archivos, un solo par repetido.</p>
+    <p><b>Este recorrido encontr&oacute; cuatro defectos que ning&uacute;n candado hab&iacute;a visto</b>, y tres
+    salieron arreglados el mismo d&iacute;a: el aviso del Centro de Monitoreo dibujaba su t&iacute;tulo y su
+    flecha de volver <b>dos veces</b>; la vuelta ten&iacute;a <b>dos formas</b> distintas en 10 piezas
+    (flecha en la entrada, disco en el resto), contra la regla que exige una sola; y
+    &laquo;Por d&oacute;nde anduvo&raquo; dibujaba <b>s&oacute;lo el mapa</b>, sin t&iacute;tulo ni salida, dejando al
+    cliente encerrado. El cuarto queda anotado: la pantalla de referidos mete el cartel
+    &laquo;A CONFIRMAR POR ALARMAS PY&raquo; <b>adentro de la frase</b> y la vuelve ilegible.</p>
+    <p><b>Salieron del &aacute;rbol de trabajo, no de una versi&oacute;n publicada:</b> commit
+    <code>c21ddc46</code> m&aacute;s los arreglos de hoy sin cerrar. Es la app de hoy a las 19:23,
+    no la que est&aacute; en las tiendas.</p>
   </div>
 
   <nav class="indice">
