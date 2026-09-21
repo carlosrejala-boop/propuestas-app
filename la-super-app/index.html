@@ -1,0 +1,2100 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Alarmas Py · la super app</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;800&family=Sora:wght@600;800&display=swap">
+<style>
+:root{
+  --suelo:#FBF9F7; --sup:#FFFFFF; --sup2:#F1EDE9; --linea:#E3DCD5;
+  --tinta:#1A1714; --tinta2:#6B635B; --marca:#C0392B; --marca-tenue:#FBE9E7;
+  --bien:#1E7A4B; --medio:#B26B00; --mal:#B3261E;
+  --sombra:0 1px 2px rgba(26,23,20,.06),0 8px 24px rgba(26,23,20,.06);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --suelo:#15130F; --sup:#1F1C18; --sup2:#2A2620; --linea:#3A342C;
+  --tinta:#F4EFE9; --tinta2:#A79D92; --marca:#E86A5A; --marca-tenue:#3A1E1A;
+  --bien:#5BD39A; --medio:#E5A85C; --mal:#FF8A80;
+  --sombra:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+}}
+:root[data-theme="dark"]{
+  --suelo:#15130F; --sup:#1F1C18; --sup2:#2A2620; --linea:#3A342C;
+  --tinta:#F4EFE9; --tinta2:#A79D92; --marca:#E86A5A; --marca-tenue:#3A1E1A;
+  --bien:#5BD39A; --medio:#E5A85C; --mal:#FF8A80;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--suelo);color:var(--tinta);
+  font:400 16px/1.6 Figtree,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  padding-block:0;}
+.env{max-width:1120px;margin:0 auto;padding:0 16px}
+h1,h2,h3{font-family:Sora,Figtree,sans-serif;text-wrap:balance;margin:0}
+h1{font-size:clamp(28px,5vw,46px);font-weight:800;letter-spacing:-.02em}
+h2{font-size:clamp(22px,3.4vw,32px);font-weight:800;letter-spacing:-.01em}
+h3{font-size:19px;font-weight:600}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82em;
+  background:var(--sup2);padding:1px 5px;border-radius:4px;color:var(--tinta2)}
+
+header.tapa{padding:56px 0 32px;border-bottom:1px solid var(--linea);margin-bottom:32px}
+header.tapa p.sub{color:var(--tinta2);font-size:18px;max-width:62ch;margin:14px 0 0}
+.cifras{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.cifra{background:var(--sup);border:1px solid var(--linea);border-radius:12px;
+  padding:12px 16px;box-shadow:var(--sombra);min-width:132px}
+.cifra b{display:block;font-family:Sora;font-size:26px;font-weight:800;line-height:1.1}
+.cifra span{color:var(--tinta2);font-size:13px}
+
+nav.indice ol{list-style:none;padding:0;margin:0;display:grid;gap:6px;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+nav.indice a{display:block;padding:10px 12px;border-radius:9px;text-decoration:none;
+  color:var(--tinta);background:var(--sup);border:1px solid var(--linea)}
+nav.indice a:hover{border-color:var(--marca)}
+nav.indice b{color:var(--marca);margin-right:8px;font-family:Sora}
+
+section{padding-top:44px;scroll-margin-top:16px}
+header.seccion{border-left:3px solid var(--marca);padding-left:16px;margin-bottom:22px}
+header.seccion .num{color:var(--marca);font-size:12px;letter-spacing:.09em;
+  text-transform:uppercase;font-weight:600;margin:0 0 6px}
+header.seccion .bajada{color:var(--tinta2);margin:6px 0 0}
+header.seccion .porque{margin:12px 0 0;max-width:72ch}
+.puntaje{margin:12px 0 0;font-size:14px;background:var(--marca-tenue);
+  border-radius:9px;padding:9px 12px;display:inline-block}
+
+.pantalla{display:grid;grid-template-columns:300px 1fr;gap:26px;align-items:start;
+  background:var(--sup);border:1px solid var(--linea);border-radius:16px;
+  padding:20px;margin-bottom:18px;box-shadow:var(--sombra)}
+@media (max-width:760px){.pantalla{grid-template-columns:1fr}}
+.lienzo{position:relative;line-height:0;border-radius:12px;overflow:hidden;
+  border:1px solid var(--linea);background:var(--sup2)}
+.lienzo img{width:100%;height:auto;display:block}
+.marca{position:absolute;transform:translate(-50%,-50%);min-width:21px;height:21px;
+  padding:0 5px;border-radius:11px;background:var(--marca);color:#fff;
+  font:600 12px/21px Figtree,sans-serif;text-align:center;
+  box-shadow:0 0 0 2px rgba(255,255,255,.9)}
+.marca.apagada{background:var(--tinta2)}
+.texto p.ruta{color:var(--tinta2);font-size:13px;margin:8px 0 12px}
+ol.controles{list-style:none;padding:0;margin:0;display:grid;gap:4px;
+  grid-template-columns:repeat(auto-fill,minmax(250px,1fr));font-size:14px}
+ol.controles li{padding:5px 8px;background:var(--sup2);border-radius:7px}
+ol.controles b{display:inline-block;min-width:20px;color:var(--marca);font-weight:600}
+ol.controles em{color:var(--tinta2);font-style:normal;font-size:12px}
+
+table{width:100%;border-collapse:collapse;font-size:14px;
+  font-variant-numeric:tabular-nums}
+th,td{padding:9px 8px;border-bottom:1px solid var(--linea);text-align:center}
+th[scope=row]{text-align:left;font-weight:600;white-space:nowrap}
+thead th{font-size:12px;color:var(--tinta2);text-transform:uppercase;
+  letter-spacing:.05em;font-weight:600}
+td.bien{color:var(--bien);font-weight:600}
+td.medio{color:var(--medio);font-weight:600}
+td.mal{color:var(--mal);font-weight:700}
+td.nomedi{color:var(--tinta2);font-size:11px}
+td.media{font-weight:800;font-family:Sora}
+td.techo{color:var(--tinta2)}
+.tabla-env{overflow-x:auto;border:1px solid var(--linea);border-radius:14px;
+  background:var(--sup);padding:6px 14px;box-shadow:var(--sombra)}
+.nota{color:var(--tinta2);font-size:14px;max-width:76ch;margin:16px 0 0}
+footer{margin:64px 0 40px;padding-top:24px;border-top:1px solid var(--linea);
+  color:var(--tinta2);font-size:14px}
+</style></head>
+<body><div class="env">
+
+<header class="tapa">
+  <h1>Alarmas Py · la super app</h1>
+  <p class="sub">Todo lo que hace la app, pantalla por pantalla y botón por botón,
+  y cuánto vale cada momento de uso contra las mejores apps del mundo.</p>
+  <div class="cifras">
+    <div class="cifra"><b>15</b><span>secciones</span></div>
+    <div class="cifra"><b>148</b><span>pantallas</span></div>
+    <div class="cifra"><b>877</b><span>controles numerados</span></div>
+    <div class="cifra"><b>150</b><span>rutas recorridas</span></div>
+    <div class="cifra"><b>6.01</b><span>puntaje hoy, sobre 10</span></div>
+    <div class="cifra"><b>8.51</b><span>techo con sólo lo nuestro</span></div>
+  </div>
+</header>
+
+<nav class="indice"><ol><li><a href="#s1"><b>1</b> Entrar</a></li><li><a href="#s2"><b>2</b> El Inicio</a></li><li><a href="#s3"><b>3</b> Me están robando</a></li><li><a href="#s4"><b>4</b> Mi vehículo</a></li><li><a href="#s5"><b>5</b> Por dónde anduvo</a></li><li><a href="#s6"><b>6</b> Necesito asistencia</a></li><li><a href="#s7"><b>7</b> La plata</a></li><li><a href="#s8"><b>8</b> Cuando la cuota está vencida</a></li><li><a href="#s9"><b>9</b> Pagá tus servicios</a></li><li><a href="#s10"><b>10</b> La Tienda</a></li><li><a href="#s11"><b>11</b> Clasificados</a></li><li><a href="#s12"><b>12</b> El Club de Beneficios</a></li><li><a href="#s13"><b>13</b> Ampliá tu protección</a></li><li><a href="#s14"><b>14</b> AlóChat</a></li><li><a href="#s15"><b>15</b> Mi cuenta</a></li></ol></nav>
+
+<section id="como-leer">
+  <header class="seccion">
+    <p class="num">Antes de empezar</p>
+    <h2>Cómo se lee este documento</h2>
+    <p class="porque">Cada pantalla se muestra tal como la ve el cliente, y encima
+    lleva un número por cada cosa que se puede tocar. Esos números <b>no los
+    escribió nadie</b>: salen del propio teléfono, que informa la posición exacta
+    de cada control para los lectores de pantalla. Si un botón no está en la
+    lista, es porque no está en la pantalla.</p>
+    <p class="nota">Un número gris significa que ese control está apagado en ese
+    momento. «Menos de 44 pt» quiere decir que el área de toque es más chica que
+    el mínimo que recomienda Apple. Lo que este libro <b>no</b> afirma es que
+    cada botón haga lo que su nombre dice: eso lo mide otro instrumento, que los
+    toca uno por uno.</p>
+  </header>
+</section>
+
+
+      <section id="s1">
+        <header class="seccion">
+          <p class="num">Sección 1 de 15</p>
+          <h2>Entrar</h2>
+          <p class="bajada">Cómo un cliente llega adentro de la app por primera vez.</p>
+          <p class="porque">Es la primera puerta y la que decide todo lo demás: de los 50.000 clientes que pagan todos los meses, el que no cruza esta pantalla no ve ninguna de las otras trece secciones.</p>
+          <p class="puntaje"><b>5,33/10</b> hoy · <b>9,36</b> el techo con sólo código nuestro · medido contra CVS Health · Walmart · Vipps · Bolt · Polestar</p>
+        </header>
+        
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/bienvenida.png" alt="bienvenida" loading="lazy">
+            <span class="marca" style="left:86.40%;top:9.61%">1</span><span class="marca" style="left:50.00%;top:62.55%">2</span><span class="marca" style="left:50.00%;top:72.31%">3</span><span class="marca" style="left:50.00%;top:79.41%">4</span><span class="marca" style="left:40.34%;top:85.81%">5</span><span class="marca" style="left:58.79%;top:85.81%">6</span><span class="marca" style="left:50.00%;top:92.22%">7</span>
+          </div>
+          <div class="texto">
+            <h3>bienvenida</h3>
+            
+            <p class="ruta"><code>bienvenida</code> · <b>7</b> controles</p>
+            <ol class="controles"><li><b>1</b> Ayuda <code>bienvenida-ayuda</code></li><li><b>2</b> Explorar servicios <code>bienvenida-explorar</code></li><li><b>3</b> Entrar a mi cuenta <code>boton-entrar-a-mi-cuenta</code></li><li><b>4</b> Crear cuenta <code>boton-crear-cuenta</code></li><li><b>5</b> Términos</li><li><b>6</b> Privacidad</li><li><b>7</b> ¿No sabés con qué correo te registramos? Llamanos</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/entrar.png" alt="entrar" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span><span class="marca" style="left:81.88%;top:25.55%">2</span><span class="marca" style="left:45.52%;top:42.94%">3</span><span class="marca" style="left:78.28%;top:50.50%">4</span><span class="marca" style="left:50.00%;top:58.96%">5</span><span class="marca" style="left:50.00%;top:72.16%">6</span><span class="marca" style="left:50.00%;top:79.02%">7</span><span class="marca" style="left:50.00%;top:85.89%">8</span><span class="marca" style="left:52.69%;top:94.13%">9</span>
+          </div>
+          <div class="texto">
+            <h3>entrar</h3>
+            
+            <p class="ruta"><code>entrar</code> · <b>9</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>volver</code></li><li><b>2</b> Cambiar <code>cambiar-de-cuenta</code></li><li><b>3</b> Contraseña <code>campo-contrasena-entrada</code></li><li><b>4</b> Olvidé mi contraseña <code>olvide-mi-contrasena</code></li><li><b>5</b> Entrar a mi cuenta <code>boton-entrar</code></li><li><b>6</b> Entrar con Apple <code>entrar-con-apple</code></li><li><b>7</b> Entrar con Google <code>entrar-con-google</code></li><li><b>8</b> Entrar con Facebook <code>entrar-con-facebook</code></li><li><b>9</b> Crear mi cuenta <code>crear-mi-cuenta</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/entrar-chapa.png" alt="entrar-chapa" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span><span class="marca" style="left:50.00%;top:44.28%">2</span><span class="marca" style="left:50.00%;top:56.71%">3</span><span class="marca" style="left:50.00%;top:62.20%">4</span><span class="marca apagada" style="left:50.00%;top:91.53%">5</span>
+          </div>
+          <div class="texto">
+            <h3>entrar-chapa</h3>
+            
+            <p class="ruta"><code>entrar-chapa</code> · <b>5</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>volver</code></li><li><b>2</b> Chapa o número de cédula <code>campo-chapa-o-cedula-entrada</code></li><li><b>3</b> Entrar con mi correo y contraseña <code>puerta-salida-correo</code></li><li><b>4</b> Llamar al 021 728 9120 <code>puerta-salida-llamar</code></li><li><b>5</b> Mandame el código <em>· apagado</em> <code>boton-pedir-el-codigo</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/crear-cuenta-correo.png" alt="crear-cuenta-correo" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span><span class="marca" style="left:50.00%;top:32.30%">2</span><span class="marca" style="left:48.88%;top:44.74%">3</span><span class="marca" style="left:50.00%;top:91.53%">4</span>
+          </div>
+          <div class="texto">
+            <h3>crear-cuenta-correo</h3>
+            
+            <p class="ruta"><code>crear-cuenta-correo</code> · <b>4</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>volver</code></li><li><b>2</b> Correo electrónico <code>campo-correo-entrada</code></li><li><b>3</b> Iniciar sesión <code>ir-a-entrar</code></li><li><b>4</b> Mandame el código <code>boton-mandame-el-codigo</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/crear-cuenta-datos.png" alt="crear-cuenta-datos" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span><span class="marca" style="left:50.00%;top:38.63%">2</span><span class="marca" style="left:50.00%;top:49.31%">3</span><span class="marca" style="left:50.00%;top:59.99%">4</span><span class="marca" style="left:50.00%;top:69.45%">5</span><span class="marca" style="left:50.00%;top:81.35%">6</span><span class="marca" style="left:50.00%;top:90.81%">7</span><span class="marca apagada" style="left:50.00%;top:87.11%">8</span>
+          </div>
+          <div class="texto">
+            <h3>crear-cuenta-datos</h3>
+            
+            <p class="ruta"><code>crear-cuenta-datos</code> · <b>8</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>volver</code></li><li><b>2</b> Nombre <code>campo-nombre-entrada</code></li><li><b>3</b> Apellido <code>campo-apellido-entrada</code></li><li><b>4</b> Número de teléfono <em>· menos de 44 pt</em> <code>campo-telefono-entrada</code></li><li><b>5</b> Tipo de documento <code>campo-tipo-de-documento</code></li><li><b>6</b> Número de documento <code>campo-numero-de-documento-entrada</code></li><li><b>7</b> Estado civil <code>campo-estado-civil</code></li><li><b>8</b> Crear mi cuenta <em>· apagado</em> <code>boton-crear-mi-cuenta</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/crear-cuenta-codigo.png" alt="crear-cuenta-codigo" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span><span class="marca" style="left:86.11%;top:28.26%">2</span><span class="marca" style="left:50.00%;top:49.69%">3</span><span class="marca apagada" style="left:50.00%;top:59.95%">4</span><span class="marca apagada" style="left:50.00%;top:88.63%">5</span>
+          </div>
+          <div class="texto">
+            <h3>crear-cuenta-codigo</h3>
+            
+            <p class="ruta"><code>crear-cuenta-codigo</code> · <b>5</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>volver</code></li><li><b>2</b> Cambiar <code>cambiar-el-correo</code></li><li><b>3</b> Abrir el correo <code>boton-abrir-el-correo</code></li><li><b>4</b> Reenviar el código <em>· apagado</em> <code>reenviar-el-codigo</code></li><li><b>5</b> Verificar el código <em>· apagado</em> <code>boton-verificar</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/codigo-whatsapp.png" alt="codigo-whatsapp" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span><span class="marca" style="left:50.00%;top:57.06%">2</span><span class="marca" style="left:50.00%;top:62.55%">3</span><span class="marca apagada" style="left:50.00%;top:91.53%">4</span>
+          </div>
+          <div class="texto">
+            <h3>codigo-whatsapp</h3>
+            
+            <p class="ruta"><code>codigo-whatsapp</code> · <b>4</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>volver</code></li><li><b>2</b> Llamar al 021 728 9120 <code>codigo-salida-llamar</code></li><li><b>3</b> Entrar con mi correo y contraseña <code>codigo-salida-correo</code></li><li><b>4</b> Entrar <em>· apagado</em> <code>boton-entrar-con-el-codigo</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/cambiar-contrasena.png" alt="cambiar-contrasena" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span><span class="marca" style="left:45.52%;top:36.84%">2</span><span class="marca" style="left:45.52%;top:57.28%">3</span><span class="marca" style="left:50.00%;top:91.53%">4</span>
+          </div>
+          <div class="texto">
+            <h3>cambiar-contrasena</h3>
+            
+            <p class="ruta"><code>cambiar-contrasena</code> · <b>4</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>volver</code></li><li><b>2</b> Nueva contraseña <code>campo-nueva-entrada</code></li><li><b>3</b> Confirmar contraseña <code>campo-confirmar-entrada</code></li><li><b>4</b> Guardar mi contraseña nueva <code>boton-guardar-contrasena</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/olvide.png" alt="olvide" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span><span class="marca" style="left:50.00%;top:36.84%">2</span><span class="marca" style="left:50.00%;top:49.28%">3</span><span class="marca" style="left:50.00%;top:91.53%">4</span>
+          </div>
+          <div class="texto">
+            <h3>olvide</h3>
+            
+            <p class="ruta"><code>olvide</code> · <b>4</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>volver</code></li><li><b>2</b> Correo electrónico <code>campo-correo-entrada</code></li><li><b>3</b> ¿No sabés con qué correo te registramos? Llamanos</li><li><b>4</b> Enviarme el código <code>boton-enviar-codigo</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/sin-sesion.png" alt="sin-sesion" loading="lazy">
+            <span class="marca" style="left:86.40%;top:9.61%">1</span><span class="marca" style="left:50.00%;top:62.55%">2</span><span class="marca" style="left:50.00%;top:72.31%">3</span><span class="marca" style="left:50.00%;top:79.41%">4</span><span class="marca" style="left:40.34%;top:85.81%">5</span><span class="marca" style="left:58.79%;top:85.81%">6</span><span class="marca" style="left:50.00%;top:92.22%">7</span>
+          </div>
+          <div class="texto">
+            <h3>sin-sesion</h3>
+            
+            <p class="ruta"><code>sin-sesion</code> · <b>7</b> controles</p>
+            <ol class="controles"><li><b>1</b> Ayuda <code>bienvenida-ayuda</code></li><li><b>2</b> Explorar servicios <code>bienvenida-explorar</code></li><li><b>3</b> Entrar a mi cuenta <code>boton-entrar-a-mi-cuenta</code></li><li><b>4</b> Crear cuenta <code>boton-crear-cuenta</code></li><li><b>5</b> Términos</li><li><b>6</b> Privacidad</li><li><b>7</b> ¿No sabés con qué correo te registramos? Llamanos</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/llegada.png" alt="llegada" loading="lazy">
+            <span class="marca" style="left:50.00%;top:29.02%">1</span>
+          </div>
+          <div class="texto">
+            <h3>llegada</h3>
+            
+            <p class="ruta"><code>llegada</code> · <b>1</b> controles</p>
+            <ol class="controles"><li><b>1</b> Inicio</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/permiso.png" alt="permiso" loading="lazy">
+            <span class="marca" style="left:50.00%;top:83.75%">1</span><span class="marca" style="left:50.00%;top:91.53%">2</span>
+          </div>
+          <div class="texto">
+            <h3>permiso</h3>
+            
+            <p class="ruta"><code>permiso</code> · <b>2</b> controles</p>
+            <ol class="controles"><li><b>1</b> Usar mi ubicación <code>boton-permitir</code></li><li><b>2</b> Ahora no <code>boton-ahora-no</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/al-abrir.png" alt="al-abrir" loading="lazy">
+            <span class="marca" style="left:50.00%;top:40.92%">1</span><span class="marca" style="left:50.00%;top:48.70%">2</span>
+          </div>
+          <div class="texto">
+            <h3>al-abrir</h3>
+            
+            <p class="ruta"><code>al-abrir</code> · <b>2</b> controles</p>
+            <ol class="controles"><li><b>1</b> Probar de nuevo <code>boton-reintentar</code></li><li><b>2</b> Entrar con mi correo <code>boton-entrar-con-correo</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/arranque.png" alt="arranque" loading="lazy">
+            <span class="marca" style="left:86.40%;top:9.61%">1</span><span class="marca" style="left:50.00%;top:62.55%">2</span><span class="marca" style="left:50.00%;top:72.31%">3</span><span class="marca" style="left:50.00%;top:79.41%">4</span><span class="marca" style="left:40.34%;top:85.81%">5</span><span class="marca" style="left:58.79%;top:85.81%">6</span><span class="marca" style="left:50.00%;top:92.22%">7</span>
+          </div>
+          <div class="texto">
+            <h3>arranque</h3>
+            
+            <p class="ruta"><code>arranque</code> · <b>7</b> controles</p>
+            <ol class="controles"><li><b>1</b> Ayuda <code>bienvenida-ayuda</code></li><li><b>2</b> Explorar servicios <code>bienvenida-explorar</code></li><li><b>3</b> Entrar a mi cuenta <code>boton-entrar-a-mi-cuenta</code></li><li><b>4</b> Crear cuenta <code>boton-crear-cuenta</code></li><li><b>5</b> Términos</li><li><b>6</b> Privacidad</li><li><b>7</b> ¿No sabés con qué correo te registramos? Llamanos</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/volviendo.png" alt="volviendo" loading="lazy">
+            
+          </div>
+          <div class="texto">
+            <h3>volviendo</h3>
+            
+            <p class="ruta"><code>volviendo</code> · <b>0</b> controles</p>
+            <ol class="controles"></ol>
+          </div>
+        </article>
+      </section>
+      <section id="s2">
+        <header class="seccion">
+          <p class="num">Sección 2 de 15</p>
+          <h2>El Inicio</h2>
+          <p class="bajada">La pantalla que el cliente ve todos los días.</p>
+          <p class="porque">Acá conviven las cuatro cosas que la empresa necesita en el mismo lugar: dónde está el vehículo, el botón de emergencia, el aviso de la cuota y la puerta a todo lo que se puede comprar.</p>
+          <p class="puntaje"><b>6,94/10</b> hoy · <b>8,93</b> el techo con sólo código nuestro · medido contra Life360 · Fi · Mercedes-Benz · Shell</p>
+        </header>
+        
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/main_map.png" alt="El Inicio" loading="lazy">
+            <span class="marca" style="left:78.15%;top:12.01%">1</span><span class="marca" style="left:32.75%;top:17.73%">2</span><span class="marca" style="left:79.15%;top:17.73%">3</span><span class="marca" style="left:37.31%;top:24.60%">4</span><span class="marca" style="left:70.65%;top:24.60%">5</span><span class="marca" style="left:50.00%;top:90.73%">6</span><span class="marca" style="left:10.78%;top:92.91%">7</span><span class="marca" style="left:30.39%;top:92.91%">8</span><span class="marca" style="left:50.00%;top:92.91%">9</span><span class="marca" style="left:69.61%;top:92.91%">10</span><span class="marca" style="left:89.22%;top:92.91%">11</span><span class="marca" style="left:90.55%;top:95.77%">12</span>
+          </div>
+          <div class="texto">
+            <h3>El Inicio</h3>
+            <p>La misma pantalla, con la hoja abierta: servicios, el Club, la Tienda, los Clasificados y «Ampliá tu protección».</p>
+            <p class="ruta"><code>main_map</code> · <b>12</b> controles</p>
+            <ol class="controles"><li><b>1</b> Pagar Gs. 209.050 <code>franja-cuota-pagar</code></li><li><b>2</b> 602-ABSB · Sin señal · hace 12 h <code>chip-de-estado</code></li><li><b>3</b> ¿Por qué pasa? <code>chip-por-que-pasa</code></li><li><b>4</b> Centrar en mi vehículo</li><li><b>5</b> Me están robando. Llamar al 911 ahora <code>emergencia-compacta</code></li><li><b>6</b> Subir o bajar la hoja <code>asa-de-la-hoja</code></li><li><b>7</b> Inicio, pestaña 1 de 5</li><li><b>8</b> AlóChat, pestaña 2 de 5</li><li><b>9</b> Servicios, pestaña 3 de 5</li><li><b>10</b> Vehículos, pestaña 4 de 5</li><li><b>11</b> Cuenta, pestaña 5 de 5</li><li><b>12</b> Avisos · 1 sin leer</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/servicios.png" alt="servicios" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span><span class="marca" style="left:50.00%;top:21.45%">2</span><span class="marca" style="left:26.49%;top:39.59%">3</span><span class="marca" style="left:73.51%;top:39.59%">4</span><span class="marca apagada" style="left:26.49%;top:55.30%">5</span><span class="marca" style="left:73.51%;top:55.30%">6</span><span class="marca" style="left:26.49%;top:71.01%">7</span><span class="marca" style="left:73.51%;top:71.01%">8</span><span class="marca" style="left:10.78%;top:92.91%">9</span><span class="marca" style="left:30.39%;top:92.91%">10</span><span class="marca" style="left:50.00%;top:92.91%">11</span><span class="marca" style="left:69.61%;top:92.91%">12</span><span class="marca" style="left:89.22%;top:92.91%">13</span>
+          </div>
+          <div class="texto">
+            <h3>servicios</h3>
+            
+            <p class="ruta"><code>servicios</code> · <b>13</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Ahorraste este año con tu Club. Gs. 486.000 <code>tarjeta-del-ahorro</code></li><li><b>3</b> Tienda. La tienda de Alarmas <code>baldosa-tie</code></li><li><b>4</b> Clasificados. Comprá y vendé cerca tuyo <code>baldosa-cla</code></li><li><b>5</b> Seguros. Todavía no está listo <em>· apagado</em> <code>baldosa-seg</code></li><li><b>6</b> Club de beneficios. Descuentos por ser cliente <code>baldosa-club</code></li><li><b>7</b> Vehículos. Dónde están y cómo andan <code>baldosa-veh</code></li><li><b>8</b> Pagá tus servicios. Luz, agua, internet y más <code>baldosa-pag</code></li><li><b>9</b> Inicio, pestaña 1 de 5</li><li><b>10</b> AlóChat, pestaña 2 de 5</li><li><b>11</b> Servicios, pestaña 3 de 5</li><li><b>12</b> Vehículos, pestaña 4 de 5</li><li><b>13</b> Cuenta, pestaña 5 de 5</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/explorar.png" alt="explorar" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span>
+          </div>
+          <div class="texto">
+            <h3>explorar</h3>
+            
+            <p class="ruta"><code>explorar</code> · <b>1</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>volver</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/paso.png" alt="paso" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span><span class="marca" style="left:50.00%;top:34.52%">2</span><span class="marca" style="left:26.49%;top:43.67%">3</span><span class="marca" style="left:73.51%;top:43.67%">4</span>
+          </div>
+          <div class="texto">
+            <h3>paso</h3>
+            
+            <p class="ruta"><code>paso</code> · <b>4</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>puesta-paso-volver</code></li><li><b>2</b> Ver mi vehículo <code>puesta-paso-accion</code></li><li><b>3</b> Saltar <code>puesta-paso-saltar</code></li><li><b>4</b> Siguiente <code>puesta-paso-siguiente</code></li></ol>
+          </div>
+        </article>
+      </section>
+      <section id="s3">
+        <header class="seccion">
+          <p class="num">Sección 3 de 15</p>
+          <h2>Me están robando</h2>
+          <p class="bajada">El momento por el que esta empresa existe.</p>
+          <p class="porque">Es lo único que una empresa de alarmas puede prometer y ningún banco ni tienda puede: que del otro lado hay alguien, a las tres de la mañana. Se mantiene apretado un segundo entero a propósito, para que un toque en el bolsillo no marque el 911.</p>
+          <p class="puntaje"><b>6,60/10</b> hoy · <b>9,59</b> el techo con sólo código nuestro · medido contra inDrive · Lyft/ADT · Citizen · DoorDash Dasher</p>
+        </header>
+        
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/robo.png" alt="Me están robando" loading="lazy">
+            <span class="marca" style="left:71.43%;top:84.21%">1</span><span class="marca" style="left:50.00%;top:92.45%">2</span>
+          </div>
+          <div class="texto">
+            <h3>Me están robando</h3>
+            <p>Se mantiene apretado un segundo. Con el lector de pantalla encendido, un solo toque alcanza — una persona ciega no puede hacer el gesto de mantener.</p>
+            <p class="ruta"><code>robo</code> · <b>2</b> controles</p>
+            <ol class="controles"><li><b>1</b> Me están robando. Llamar al 911 ahora</li><li><b>2</b> No puedo hablar <code>robo-segundo-camino</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/robo-como-aviso.png" alt="robo-como-aviso" loading="lazy">
+            <span class="marca" style="left:9.45%;top:11.44%">1</span><span class="marca" style="left:50.00%;top:20.02%">2</span><span class="marca" style="left:50.00%;top:30.32%">3</span><span class="marca" style="left:50.00%;top:40.73%">4</span><span class="marca" style="left:71.43%;top:90.01%">5</span>
+          </div>
+          <div class="texto">
+            <h3>robo-como-aviso</h3>
+            
+            <p class="ruta"><code>robo-como-aviso</code> · <b>5</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Puedo hablar</li><li><b>3</b> Puedo escribir, no hablar</li><li><b>4</b> No puedo hacer ni un ruido</li><li><b>5</b> Me están robando. Llamar al 911 ahora</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/robo-llamando.png" alt="robo-llamando" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.53%">1</span><span class="marca" style="left:71.43%;top:92.91%">2</span>
+          </div>
+          <div class="texto">
+            <h3>robo-llamando</h3>
+            
+            <p class="ruta"><code>robo-llamando</code> · <b>2</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Me están robando. Llamar al 911 ahora</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/robo-espera.png" alt="robo-espera" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.53%">1</span><span class="marca" style="left:71.43%;top:75.51%">2</span><span class="marca" style="left:50.00%;top:83.75%">3</span><span class="marca" style="left:50.00%;top:92.45%">4</span>
+          </div>
+          <div class="texto">
+            <h3>robo-espera</h3>
+            
+            <p class="ruta"><code>robo-espera</code> · <b>4</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Me están robando. Llamar al 911 ahora</li><li><b>3</b> Asistencia vial · 021 728 9120</li><li><b>4</b> Me equivoqué</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/robo-aviso-salio.png" alt="robo-aviso-salio" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.53%">1</span><span class="marca" style="left:50.00%;top:31.16%">2</span><span class="marca" style="left:50.00%;top:40.31%">3</span>
+          </div>
+          <div class="texto">
+            <h3>robo-aviso-salio</h3>
+            
+            <p class="ruta"><code>robo-aviso-salio</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Si podés mirar, tocá acá <code>robo-ver-el-estado</code></li><li><b>3</b> Me están robando. Llamar al 911 ahora <code>salida-de-emergencia</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/robo-el-dia-despues.png" alt="robo-el-dia-despues" loading="lazy">
+            <span class="marca" style="left:9.45%;top:11.44%">1</span><span class="marca" style="left:71.43%;top:84.21%">2</span><span class="marca" style="left:50.00%;top:92.45%">3</span>
+          </div>
+          <div class="texto">
+            <h3>robo-el-dia-despues</h3>
+            
+            <p class="ruta"><code>robo-el-dia-despues</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Me están robando. Llamar al 911 ahora</li><li><b>3</b> Asistencia vial · 021 728 9120</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/robo-cancelar.png" alt="robo-cancelar" loading="lazy">
+            <span class="marca" style="left:50.00%;top:58.54%">1</span><span class="marca" style="left:71.43%;top:84.21%">2</span><span class="marca" style="left:50.00%;top:92.45%">3</span>
+          </div>
+          <div class="texto">
+            <h3>robo-cancelar</h3>
+            
+            <p class="ruta"><code>robo-cancelar</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Me están robando. Llamar al 911 ahora</li><li><b>2</b> Me están robando. Llamar al 911 ahora</li><li><b>3</b> Volver</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/robo-sin-red.png" alt="robo-sin-red" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.53%">1</span><span class="marca" style="left:71.43%;top:92.91%">2</span>
+          </div>
+          <div class="texto">
+            <h3>robo-sin-red</h3>
+            
+            <p class="ruta"><code>robo-sin-red</code> · <b>2</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Me están robando. Llamar al 911 ahora</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/robo-no-sos-el-titular.png" alt="robo-no-sos-el-titular" loading="lazy">
+            <span class="marca" style="left:9.45%;top:12.59%">1</span><span class="marca" style="left:71.43%;top:84.21%">2</span><span class="marca" style="left:50.00%;top:92.45%">3</span>
+          </div>
+          <div class="texto">
+            <h3>robo-no-sos-el-titular</h3>
+            
+            <p class="ruta"><code>robo-no-sos-el-titular</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Me están robando. Llamar al 911 ahora</li><li><b>3</b> No puedo hablar <code>robo-segundo-camino</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/robo-en-mora.png" alt="robo-en-mora" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.53%">1</span><span class="marca" style="left:71.43%;top:92.91%">2</span>
+          </div>
+          <div class="texto">
+            <h3>robo-en-mora</h3>
+            
+            <p class="ruta"><code>robo-en-mora</code> · <b>2</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Me están robando. Llamar al 911 ahora</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/respaldo-ante-robo.png" alt="respaldo-ante-robo" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.53%">1</span><span class="marca" style="left:50.00%;top:83.03%">2</span><span class="marca" style="left:71.43%;top:92.91%">3</span>
+          </div>
+          <div class="texto">
+            <h3>respaldo-ante-robo</h3>
+            
+            <p class="ruta"><code>respaldo-ante-robo</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Llamar al 021 728 9120 para preguntar por este respaldo <code>respaldo-preguntar</code></li><li><b>3</b> Me están robando. Llamar al 911 ahora</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/evento-cm.png" alt="evento-cm" loading="lazy">
+            <span class="marca" style="left:15.42%;top:10.07%">1</span><span class="marca" style="left:50.00%;top:91.55%">2</span>
+          </div>
+          <div class="texto">
+            <h3>evento-cm</h3>
+            
+            <p class="ruta"><code>evento-cm</code> · <b>2</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Llamar a Atención al Cliente de Alarmas Py al 021 728 9120, botón</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/main_push-alerts.png" alt="main · push-alerts" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.76%">1</span><span class="marca" style="left:50.00%;top:42.94%">2</span><span class="marca" style="left:50.00%;top:56.10%">3</span><span class="marca" style="left:50.00%;top:78.72%">4</span><span class="marca" style="left:87.81%;top:85.81%">5</span><span class="marca" style="left:63.18%;top:91.99%">6</span><span class="marca" style="left:89.30%;top:92.72%">7</span>
+          </div>
+          <div class="texto">
+            <h3>main · push-alerts</h3>
+            
+            <p class="ruta"><code>main_push-alerts</code> · <b>7</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Probar de nuevo</li><li><b>3</b> Llamar ahora · 021 728 9120</li><li><b>4</b> Crear una alerta</li><li><b>5</b> Llamar al 911 ahora. La policía es la única que puede interceptar un robo en curso <code>llamar-a-la-policia</code></li><li><b>6</b> Me están robando. Llamar a Atención al Cliente, 021 728 9120, ahora <code>emergencia-compacta</code></li><li><b>7</b> Cerrar <em>· menos de 44 pt</em></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/avisos.png" alt="avisos" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span><span class="marca" style="left:50.00%;top:60.91%">2</span>
+          </div>
+          <div class="texto">
+            <h3>avisos</h3>
+            
+            <p class="ruta"><code>avisos</code> · <b>2</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Hablá con Atención al Cliente</li></ol>
+          </div>
+        </article>
+      </section>
+      <section id="s4">
+        <header class="seccion">
+          <p class="num">Sección 4 de 15</p>
+          <h2>Mi vehículo</h2>
+          <p class="bajada">Dónde está, cómo está y qué le pasó.</p>
+          <p class="porque">Es el producto que el cliente paga. Todo lo demás se apoya en que esto funcione y sea creíble.</p>
+          <p class="puntaje"><b>6,94/10</b> hoy · <b>8,93</b> el techo con sólo código nuestro · medido contra Life360 · Fi · Mercedes-Benz · Shell</p>
+        </header>
+        
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/vehiculos.png" alt="vehiculos" loading="lazy">
+            <span class="marca" style="left:90.55%;top:10.76%">1</span><span class="marca" style="left:16.00%;top:31.05%">2</span><span class="marca" style="left:46.52%;top:31.05%">3</span><span class="marca" style="left:75.70%;top:31.05%">4</span><span class="marca" style="left:50.00%;top:42.03%">5</span><span class="marca" style="left:50.00%;top:55.45%">6</span><span class="marca" style="left:50.00%;top:68.88%">7</span><span class="marca" style="left:87.81%;top:77.92%">8</span><span class="marca" style="left:50.00%;top:80.09%">9</span><span class="marca" style="left:63.18%;top:84.10%">10</span><span class="marca" style="left:10.78%;top:92.91%">11</span><span class="marca" style="left:30.39%;top:92.91%">12</span><span class="marca" style="left:50.00%;top:92.91%">13</span><span class="marca" style="left:69.61%;top:92.91%">14</span><span class="marca" style="left:89.22%;top:92.91%">15</span>
+          </div>
+          <div class="texto">
+            <h3>vehiculos</h3>
+            
+            <p class="ruta"><code>vehiculos</code> · <b>15</b> controles</p>
+            <ol class="controles"><li><b>1</b> Agregar vehículo</li><li><b>2</b> Todos · 3</li><li><b>3</b> En movimiento · 0</li><li><b>4</b> Alarma · 0</li><li><b>5</b> Ver 602-ABSB en el mapa, botón · Ver en el mapa</li><li><b>6</b> Ver AAKJ-471 en el mapa, botón · Ver en el mapa</li><li><b>7</b> Ver BXR-889 en el mapa, botón · Ver en el mapa</li><li><b>8</b> Llamar al 911 ahora. La policía es la única que puede interceptar un robo en curso <code>llamar-a-la-policia</code></li><li><b>9</b> Resumen de flota</li><li><b>10</b> Me están robando. Llamar a Atención al Cliente, 021 728 9120, ahora <code>emergencia-compacta</code></li><li><b>11</b> Inicio, pestaña 1 de 5</li><li><b>12</b> AlóChat, pestaña 2 de 5</li><li><b>13</b> Servicios, pestaña 3 de 5</li><li><b>14</b> Vehículos, pestaña 4 de 5</li><li><b>15</b> Cuenta, pestaña 5 de 5</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/mapa.png" alt="mapa" loading="lazy">
+            <span class="marca" style="left:50.00%;top:10.53%">1</span><span class="marca" style="left:9.45%;top:10.53%">2</span><span class="marca" style="left:90.55%;top:10.53%">3</span><span class="marca" style="left:63.68%;top:37.64%">4</span><span class="marca" style="left:77.11%;top:37.64%">5</span><span class="marca" style="left:90.55%;top:37.64%">6</span><span class="marca" style="left:84.95%;top:43.82%">7</span><span class="marca" style="left:68.95%;top:50.00%">8</span><span class="marca" style="left:26.77%;top:52.82%">9</span><span class="marca" style="left:50.00%;top:57.09%">10</span><span class="marca" style="left:50.00%;top:84.46%">11</span><span class="marca" style="left:20.36%;top:71.85%">12</span><span class="marca" style="left:18.66%;top:86.12%">13</span><span class="marca" style="left:50.00%;top:86.12%">14</span><span class="marca" style="left:81.34%;top:86.12%">15</span><span class="marca" style="left:50.00%;top:89.59%">16</span><span class="marca" style="left:10.78%;top:92.91%">17</span><span class="marca" style="left:30.39%;top:92.91%">18</span><span class="marca" style="left:50.00%;top:92.91%">19</span><span class="marca" style="left:69.61%;top:92.91%">20</span><span class="marca" style="left:89.22%;top:92.91%">21</span><span class="marca" style="left:50.00%;top:96.34%">22</span><span class="marca" style="left:92.04%;top:94.16%">23</span>
+          </div>
+          <div class="texto">
+            <h3>mapa</h3>
+            
+            <p class="ruta"><code>mapa</code> · <b>23</b> controles</p>
+            <ol class="controles"><li><b>1</b> Elegir vehículo</li><li><b>2</b> Volver</li><li><b>3</b> Capas del mapa</li><li><b>4</b> Ver mi vehículo <code>volver-a-seguir-al-vehiculo</code></li><li><b>5</b> Ir a mi ubicación <code>centrar-en-mi</code></li><li><b>6</b> Rastro <code>rastro-a-un-toque</code></li><li><b>7</b> Probalo sin llamar <code>probalo-sin-llamar</code></li><li><b>8</b> Me están robando. Llamar al 911 ahora <code>emergencia-compacta</code></li><li><b>9</b> Aviso legal <em>· menos de 44 pt</em></li><li><b>10</b> Subir o bajar la hoja <code>asa-de-la-hoja</code></li><li><b>11</b> Bottom Sheet</li><li><b>12</b> Pedir ayuda <code>sin-dato-pedir-ayuda</code></li><li><b>13</b> Por dónde anduvo</li><li><b>14</b> Pedir ayuda</li><li><b>15</b> Compartir dónde está</li><li><b>16</b> Bottom sheet handle <em>· menos de 44 pt</em></li><li><b>17</b> Inicio, pestaña 1 de 5</li><li><b>18</b> AlóChat, pestaña 2 de 5</li><li><b>19</b> Servicios, pestaña 3 de 5</li><li><b>20</b> Vehículos, pestaña 4 de 5</li><li><b>21</b> Cuenta, pestaña 5 de 5</li><li><b>22</b> Deslizá para apagar el motor <code>deslizador-de-corte</code></li><li><b>23</b> Cerrar <em>· menos de 44 pt</em></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/flota.png" alt="flota" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.76%">1</span><span class="marca" style="left:50.00%;top:48.59%">2</span><span class="marca" style="left:50.00%;top:64.91%">3</span><span class="marca" style="left:87.81%;top:77.92%">4</span><span class="marca" style="left:50.00%;top:81.66%">5</span><span class="marca" style="left:63.18%;top:84.10%">6</span><span class="marca" style="left:10.78%;top:92.91%">7</span><span class="marca" style="left:30.39%;top:92.91%">8</span><span class="marca" style="left:50.00%;top:92.91%">9</span><span class="marca" style="left:69.61%;top:92.91%">10</span><span class="marca" style="left:89.22%;top:92.91%">11</span>
+          </div>
+          <div class="texto">
+            <h3>flota</h3>
+            
+            <p class="ruta"><code>flota</code> · <b>11</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> 602-ABSB. No reporta · hace 12 h. Sin señal. Ver última posición</li><li><b>3</b> BXR-889. No reporta · hace 20 h. Sin señal. Ver última posición</li><li><b>4</b> Llamar al 911 ahora. La policía es la única que puede interceptar un robo en curso <code>llamar-a-la-policia</code></li><li><b>5</b> Llamar ahora · 021 728 9120</li><li><b>6</b> Me están robando. Llamar a Atención al Cliente, 021 728 9120, ahora <code>emergencia-compacta</code></li><li><b>7</b> Inicio, pestaña 1 de 5</li><li><b>8</b> AlóChat, pestaña 2 de 5</li><li><b>9</b> Servicios, pestaña 3 de 5</li><li><b>10</b> Vehículos, pestaña 4 de 5</li><li><b>11</b> Cuenta, pestaña 5 de 5</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/vehicle-details.png" alt="vehicle-details" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.76%">1</span><span class="marca" style="left:50.00%;top:47.48%">2</span><span class="marca" style="left:50.00%;top:78.72%">3</span><span class="marca" style="left:87.81%;top:85.81%">4</span><span class="marca" style="left:63.18%;top:91.99%">5</span>
+          </div>
+          <div class="texto">
+            <h3>vehicle-details</h3>
+            
+            <p class="ruta"><code>vehicle-details</code> · <b>5</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Tipo de vehículo: Elegir el tipo de vehículo</li><li><b>3</b> Guardar los datos del vehículo</li><li><b>4</b> Llamar al 911 ahora. La policía es la única que puede interceptar un robo en curso <code>llamar-a-la-policia</code></li><li><b>5</b> Me están robando. Llamar a Atención al Cliente, 021 728 9120, ahora <code>emergencia-compacta</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/nombre-del-vehiculo.png" alt="nombre-del-vehiculo" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.76%">1</span><span class="marca" style="left:44.53%;top:33.60%">2</span><span class="marca" style="left:88.06%;top:32.84%">3</span><span class="marca" style="left:50.00%;top:61.75%">4</span><span class="marca" style="left:50.00%;top:72.65%">5</span><span class="marca" style="left:50.00%;top:81.12%">6</span><span class="marca" style="left:87.81%;top:85.81%">7</span><span class="marca" style="left:63.18%;top:91.99%">8</span>
+          </div>
+          <div class="texto">
+            <h3>nombre-del-vehiculo</h3>
+            
+            <p class="ruta"><code>nombre-del-vehiculo</code> · <b>8</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Nombre del vehículo <code>ve-nombre-campo</code></li><li><b>3</b> Borrar el nombre <code>ve-nombre-borrar</code></li><li><b>4</b> 602-ABSB. Sin señal · hace 12 h</li><li><b>5</b> Volver a la chapa 602-ABSB</li><li><b>6</b> Volver a la chapa 602-ABSB</li><li><b>7</b> Llamar al 911 ahora. La policía es la única que puede interceptar un robo en curso <code>llamar-a-la-policia</code></li><li><b>8</b> Me están robando. Llamar a Atención al Cliente, 021 728 9120, ahora <code>emergencia-compacta</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/events.png" alt="events" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.76%">1</span><span class="marca" style="left:87.81%;top:77.92%">2</span><span class="marca" style="left:63.18%;top:84.10%">3</span><span class="marca" style="left:10.78%;top:92.91%">4</span><span class="marca" style="left:30.39%;top:92.91%">5</span><span class="marca" style="left:50.00%;top:92.91%">6</span><span class="marca" style="left:69.61%;top:92.91%">7</span><span class="marca" style="left:89.22%;top:92.91%">8</span>
+          </div>
+          <div class="texto">
+            <h3>events</h3>
+            
+            <p class="ruta"><code>events</code> · <b>8</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Llamar al 911 ahora. La policía es la única que puede interceptar un robo en curso <code>llamar-a-la-policia</code></li><li><b>3</b> Me están robando. Llamar a Atención al Cliente, 021 728 9120, ahora <code>emergencia-compacta</code></li><li><b>4</b> Inicio, pestaña 1 de 5</li><li><b>5</b> AlóChat, pestaña 2 de 5</li><li><b>6</b> Servicios, pestaña 3 de 5</li><li><b>7</b> Vehículos, pestaña 4 de 5</li><li><b>8</b> Cuenta, pestaña 5 de 5</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/ficha.png" alt="ficha" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span><span class="marca" style="left:12.94%;top:18.54%">2</span><span class="marca" style="left:50.00%;top:93.48%">3</span>
+          </div>
+          <div class="texto">
+            <h3>ficha</h3>
+            
+            <p class="ruta"><code>ficha</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Foto de perfil. Tocá dos veces para cambiarla.</li><li><b>3</b> Editar mis datos</li></ol>
+          </div>
+        </article>
+      </section>
+      <section id="s5">
+        <header class="seccion">
+          <p class="num">Sección 5 de 15</p>
+          <h2>Por dónde anduvo</h2>
+          <p class="bajada">El recorrido, día por día, con su reproducción.</p>
+          <p class="porque">Es la función que más se usa después del mapa, y la que contesta las preguntas que trae un cliente enojado: dónde estuvo, a qué hora, cuánto tiempo parado.</p>
+          <p class="puntaje"><b>6,94/10</b> hoy · <b>8,93</b> el techo con sólo código nuestro · medido contra Life360 · Fi · Mercedes-Benz · Shell</p>
+        </header>
+        
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/history.png" alt="history" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.76%">1</span><span class="marca" style="left:15.88%;top:21.97%">2</span><span class="marca" style="left:41.42%;top:21.97%">3</span><span class="marca" style="left:65.96%;top:21.97%">4</span><span class="marca" style="left:13.52%;top:33.18%">5</span><span class="marca" style="left:32.71%;top:33.18%">6</span><span class="marca" style="left:56.38%;top:33.18%">7</span><span class="marca" style="left:50.00%;top:41.65%">8</span><span class="marca" style="left:50.00%;top:78.72%">9</span><span class="marca" style="left:87.81%;top:85.81%">10</span><span class="marca" style="left:63.18%;top:91.99%">11</span>
+          </div>
+          <div class="texto">
+            <h3>history</h3>
+            
+            <p class="ruta"><code>history</code> · <b>11</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> 602-ABSB</li><li><b>3</b> AAKJ-471</li><li><b>4</b> BXR-889</li><li><b>5</b> Hoy</li><li><b>6</b> Ayer</li><li><b>7</b> Elegir día</li><li><b>8</b> Elegir horas, Todo el día · 21-09-2026</li><li><b>9</b> Ver el recorrido</li><li><b>10</b> Llamar al 911 ahora. La policía es la única que puede interceptar un robo en curso <code>llamar-a-la-policia</code></li><li><b>11</b> Me están robando. Llamar a Atención al Cliente, 021 728 9120, ahora <code>emergencia-compacta</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/history-overview.png" alt="history-overview" loading="lazy">
+            <span class="marca" style="left:26.77%;top:40.23%">1</span><span class="marca" style="left:9.45%;top:52.86%">2</span><span class="marca" style="left:50.00%;top:83.68%">3</span><span class="marca" style="left:87.81%;top:85.81%">4</span><span class="marca" style="left:63.18%;top:91.99%">5</span>
+          </div>
+          <div class="texto">
+            <h3>history-overview</h3>
+            
+            <p class="ruta"><code>history-overview</code> · <b>5</b> controles</p>
+            <ol class="controles"><li><b>1</b> Aviso legal <em>· menos de 44 pt</em></li><li><b>2</b> Volver</li><li><b>3</b> Elegir vehículo y fechas</li><li><b>4</b> Llamar al 911 ahora. La policía es la única que puede interceptar un robo en curso <code>llamar-a-la-policia</code></li><li><b>5</b> Me están robando. Llamar a Atención al Cliente, 021 728 9120, ahora <code>emergencia-compacta</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/poi.png" alt="poi" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.76%">1</span><span class="marca" style="left:86.32%;top:25.02%">2</span><span class="marca" style="left:50.00%;top:31.43%">3</span><span class="marca" style="left:50.00%;top:36.46%">4</span><span class="marca" style="left:86.32%;top:48.13%">5</span><span class="marca" style="left:50.00%;top:54.54%">6</span><span class="marca" style="left:50.00%;top:59.57%">7</span><span class="marca" style="left:86.32%;top:71.24%">8</span><span class="marca" style="left:50.00%;top:77.65%">9</span><span class="marca" style="left:50.00%;top:78.72%">10</span><span class="marca" style="left:50.00%;top:82.68%">11</span><span class="marca" style="left:87.81%;top:85.81%">12</span><span class="marca" style="left:63.18%;top:91.99%">13</span><span class="marca" style="left:86.32%;top:94.36%">14</span>
+          </div>
+          <div class="texto">
+            <h3>poi</h3>
+            
+            <p class="ruta"><code>poi</code> · <b>14</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Cambiar el lugar: Casa</li><li><b>3</b> Ver en el mapa <em>· menos de 44 pt</em></li><li><b>4</b> Avisarme</li><li><b>5</b> Cambiar el lugar: El trabajo</li><li><b>6</b> Ver en el mapa</li><li><b>7</b> Avisarme</li><li><b>8</b> Cambiar el lugar: El colegio</li><li><b>9</b> Ver en el mapa</li><li><b>10</b> Guardar un lugar</li><li><b>11</b> Avisarme</li><li><b>12</b> Llamar al 911 ahora. La policía es la única que puede interceptar un robo en curso <code>llamar-a-la-policia</code></li><li><b>13</b> Me están robando. Llamar a Atención al Cliente, 021 728 9120, ahora <code>emergencia-compacta</code></li><li><b>14</b> Cambiar el lugar: El taller</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/main_tools.png" alt="main · tools" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.76%">1</span><span class="marca" style="left:50.00%;top:57.70%">2</span><span class="marca" style="left:50.00%;top:78.26%">3</span><span class="marca" style="left:87.81%;top:83.98%">4</span><span class="marca" style="left:63.18%;top:90.16%">5</span>
+          </div>
+          <div class="texto">
+            <h3>main · tools</h3>
+            
+            <p class="ruta"><code>main_tools</code> · <b>5</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Llamar a Atención al Cliente de Alarmas Py al 021 728 9120, botón <em>· menos de 44 pt</em></li><li><b>3</b> Agregar nuevo</li><li><b>4</b> Llamar al 911 ahora. La policía es la única que puede interceptar un robo en curso <code>llamar-a-la-policia</code></li><li><b>5</b> Me están robando. Llamar a Atención al Cliente, 021 728 9120, ahora <code>emergencia-compacta</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/tools.png" alt="tools" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.76%">1</span><span class="marca" style="left:50.00%;top:20.54%">2</span><span class="marca" style="left:50.00%;top:29.35%">3</span><span class="marca" style="left:50.00%;top:38.16%">4</span><span class="marca" style="left:50.00%;top:46.91%">5</span><span class="marca" style="left:87.81%;top:77.92%">6</span><span class="marca" style="left:63.18%;top:84.10%">7</span><span class="marca" style="left:10.78%;top:92.91%">8</span><span class="marca" style="left:30.39%;top:92.91%">9</span><span class="marca" style="left:50.00%;top:92.91%">10</span><span class="marca" style="left:69.61%;top:92.91%">11</span><span class="marca" style="left:89.22%;top:92.91%">12</span>
+          </div>
+          <div class="texto">
+            <h3>tools</h3>
+            
+            <p class="ruta"><code>tools</code> · <b>12</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Mis zonas, 0 zonas</li><li><b>3</b> Lugares guardados</li><li><b>4</b> Historial</li><li><b>5</b> Alertas</li><li><b>6</b> Llamar al 911 ahora. La policía es la única que puede interceptar un robo en curso <code>llamar-a-la-policia</code></li><li><b>7</b> Me están robando. Llamar a Atención al Cliente, 021 728 9120, ahora <code>emergencia-compacta</code></li><li><b>8</b> Inicio, pestaña 1 de 5</li><li><b>9</b> AlóChat, pestaña 2 de 5</li><li><b>10</b> Servicios, pestaña 3 de 5</li><li><b>11</b> Vehículos, pestaña 4 de 5</li><li><b>12</b> Cuenta, pestaña 5 de 5</li></ol>
+          </div>
+        </article>
+      </section>
+      <section id="s6">
+        <header class="seccion">
+          <p class="num">Sección 6 de 15</p>
+          <h2>Necesito asistencia</h2>
+          <p class="bajada">Grúa, mecánico, no arranca, choqué, cerrajería.</p>
+          <p class="porque">Es la segunda urgencia del rubro y hoy se resuelve por teléfono. Traerla a la app convierte una llamada en un pedido con estado, y un pedido con estado es algo que se puede medir y mejorar.</p>
+          <p class="puntaje"><b>5,69/10</b> hoy · <b>8,00</b> el techo con sólo código nuestro · medido contra State Farm · My BMW · Lugg · Careem</p>
+        </header>
+        
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/asistencia-inicio.png" alt="asistencia-inicio" loading="lazy">
+            <span class="marca" style="left:9.45%;top:11.44%">1</span><span class="marca" style="left:50.00%;top:22.50%">2</span><span class="marca" style="left:50.00%;top:31.88%">3</span><span class="marca" style="left:71.43%;top:92.91%">4</span>
+          </div>
+          <div class="texto">
+            <h3>asistencia-inicio</h3>
+            
+            <p class="ruta"><code>asistencia-inicio</code> · <b>4</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Necesito asistencia <code>asistencia-puerta-asistencia</code></li><li><b>3</b> Una pregunta <code>asistencia-puerta-pregunta</code></li><li><b>4</b> Me están robando. Llamar al 911 ahora</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/asistencia.png" alt="asistencia" loading="lazy">
+            <span class="marca" style="left:9.45%;top:12.59%">1</span><span class="marca" style="left:50.00%;top:26.58%">2</span><span class="marca" style="left:50.00%;top:36.42%">3</span><span class="marca" style="left:50.00%;top:46.26%">4</span><span class="marca" style="left:71.43%;top:92.91%">5</span>
+          </div>
+          <div class="texto">
+            <h3>asistencia</h3>
+            
+            <p class="ruta"><code>asistencia</code> · <b>5</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Necesito asistencia <code>asistencia-fila-necesito-asistencia</code></li><li><b>3</b> Choqué <code>asistencia-fila-choque</code></li><li><b>4</b> No arranca <code>asistencia-fila-no-arranca</code></li><li><b>5</b> Me están robando. Llamar al 911 ahora</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/asistencia-pedido.png" alt="asistencia-pedido" loading="lazy">
+            <span class="marca" style="left:9.45%;top:11.44%">1</span><span class="marca" style="left:71.43%;top:81.31%">2</span><span class="marca" style="left:50.00%;top:89.55%">3</span>
+          </div>
+          <div class="texto">
+            <h3>asistencia-pedido</h3>
+            
+            <p class="ruta"><code>asistencia-pedido</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Me están robando. Llamar al 911 ahora</li><li><b>3</b> Llamar al 021 728 9120 <code>asistencia-pedir-ayuda-ahora</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/asistencia-sin-red.png" alt="asistencia-sin-red" loading="lazy">
+            <span class="marca" style="left:9.45%;top:19.83%">1</span><span class="marca" style="left:71.43%;top:72.77%">2</span><span class="marca" style="left:50.00%;top:81.01%">3</span><span class="marca" style="left:50.00%;top:89.70%">4</span>
+          </div>
+          <div class="texto">
+            <h3>asistencia-sin-red</h3>
+            
+            <p class="ruta"><code>asistencia-sin-red</code> · <b>4</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Me están robando. Llamar al 911 ahora</li><li><b>3</b> Asistencia vial · 021 728 9120 <code>asistencia-llamar-sin-red</code></li><li><b>4</b> Probar de nuevo</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/planes-asistencia.png" alt="planes-asistencia" loading="lazy">
+            <span class="marca" style="left:9.45%;top:11.44%">1</span><span class="marca" style="left:18.08%;top:18.54%">2</span><span class="marca" style="left:44.65%;top:18.54%">3</span><span class="marca" style="left:66.96%;top:18.54%">4</span><span class="marca" style="left:50.00%;top:37.64%">5</span><span class="marca" style="left:50.00%;top:46.34%">6</span><span class="marca" style="left:50.00%;top:55.03%">7</span><span class="marca" style="left:50.00%;top:75.21%">8</span><span class="marca" style="left:71.43%;top:84.21%">9</span><span class="marca" style="left:50.00%;top:92.45%">10</span><span class="marca" style="left:50.00%;top:93.75%">11</span>
+          </div>
+          <div class="texto">
+            <h3>planes-asistencia</h3>
+            
+            <p class="ruta"><code>planes-asistencia</code> · <b>11</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> 602-ABSB <code>planes-vehiculo-602-ABSB</code></li><li><b>3</b> AAKJ-471 <code>planes-vehiculo-AAKJ-471</code></li><li><b>4</b> BXR-889 <code>planes-vehiculo-BXR-889</code></li><li><b>5</b> Grúa. Incluido. Pedir <code>planes-incluido-grua</code></li><li><b>6</b> Cerrajería. Incluido. Pedir <code>planes-incluido-cerrajeria</code></li><li><b>7</b> Técnico del GPS. Incluido. Pedir <code>planes-incluido-tecnico</code></li><li><b>8</b> Sumar Auxilio mecánico <code>planes-sumar-mecanico</code></li><li><b>9</b> Me están robando. Llamar al 911 ahora</li><li><b>10</b> Asistencia vial · 021 728 9120 <code>planes-llamar-asistencia</code></li><li><b>11</b> Sumar No arranca <code>planes-sumar-noArranca</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/planes-pedir.png" alt="planes-pedir" loading="lazy">
+            <span class="marca" style="left:9.45%;top:11.44%">1</span><span class="marca" style="left:71.43%;top:84.21%">2</span><span class="marca" style="left:50.00%;top:92.45%">3</span>
+          </div>
+          <div class="texto">
+            <h3>planes-pedir</h3>
+            
+            <p class="ruta"><code>planes-pedir</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Me están robando. Llamar al 911 ahora</li><li><b>3</b> Pedir Grúa <code>planes-pedir-confirmar</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/planes-pedido-enviado.png" alt="planes-pedido-enviado" loading="lazy">
+            <span class="marca" style="left:71.43%;top:75.51%">1</span><span class="marca" style="left:50.00%;top:83.75%">2</span><span class="marca" style="left:50.00%;top:92.45%">3</span>
+          </div>
+          <div class="texto">
+            <h3>planes-pedido-enviado</h3>
+            
+            <p class="ruta"><code>planes-pedido-enviado</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Me están robando. Llamar al 911 ahora</li><li><b>2</b> Asistencia vial · 021 728 9120 <code>planes-llamar-asistencia</code></li><li><b>3</b> Volver al inicio <code>planes-volver-al-inicio</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/schedule-appointment.png" alt="schedule-appointment" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.76%">1</span><span class="marca" style="left:50.00%;top:40.73%">2</span><span class="marca" style="left:87.81%;top:85.81%">3</span><span class="marca" style="left:63.18%;top:91.99%">4</span>
+          </div>
+          <div class="texto">
+            <h3>schedule-appointment</h3>
+            
+            <p class="ruta"><code>schedule-appointment</code> · <b>4</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Ver mis vehículos</li><li><b>3</b> Llamar al 911 ahora. La policía es la única que puede interceptar un robo en curso <code>llamar-a-la-policia</code></li><li><b>4</b> Me están robando. Llamar a Atención al Cliente, 021 728 9120, ahora <code>emergencia-compacta</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/search-location-technician.png" alt="search-location-technician" loading="lazy">
+            <span class="marca" style="left:12.69%;top:11.33%">1</span><span class="marca" style="left:90.55%;top:32.95%">2</span><span class="marca" style="left:50.00%;top:57.67%">3</span><span class="marca" style="left:50.00%;top:65.22%">4</span><span class="marca" style="left:26.77%;top:81.54%">5</span><span class="marca" style="left:87.81%;top:85.81%">6</span><span class="marca" style="left:63.18%;top:91.99%">7</span>
+          </div>
+          <div class="texto">
+            <h3>search-location-technician</h3>
+            
+            <p class="ruta"><code>search-location-technician</code> · <b>7</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Usar dónde estoy ahora</li><li><b>3</b> Agregar una indicación para el técnico</li><li><b>4</b> Usar esta ubicación</li><li><b>5</b> Aviso legal <em>· menos de 44 pt</em></li><li><b>6</b> Llamar al 911 ahora. La policía es la única que puede interceptar un robo en curso <code>llamar-a-la-policia</code></li><li><b>7</b> Me están robando. Llamar a Atención al Cliente, 021 728 9120, ahora <code>emergencia-compacta</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/review-appointment.png" alt="review-appointment" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.76%">1</span><span class="marca" style="left:50.00%;top:37.68%">2</span><span class="marca" style="left:50.00%;top:43.17%">3</span><span class="marca" style="left:50.00%;top:48.67%">4</span><span class="marca" style="left:50.00%;top:54.16%">5</span><span class="marca" style="left:50.00%;top:78.72%">6</span><span class="marca" style="left:87.81%;top:85.81%">7</span><span class="marca" style="left:63.18%;top:91.99%">8</span>
+          </div>
+          <div class="texto">
+            <h3>review-appointment</h3>
+            
+            <p class="ruta"><code>review-appointment</code> · <b>8</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Vehículo: —</li><li><b>3</b> Dirección: —</li><li><b>4</b> Fecha: —</li><li><b>5</b> Hora: Falta elegir</li><li><b>6</b> Agendar la visita</li><li><b>7</b> Llamar al 911 ahora. La policía es la única que puede interceptar un robo en curso <code>llamar-a-la-policia</code></li><li><b>8</b> Me están robando. Llamar a Atención al Cliente, 021 728 9120, ahora <code>emergencia-compacta</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/appointment-scheduled.png" alt="appointment-scheduled" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.76%">1</span><span class="marca" style="left:50.00%;top:78.72%">2</span><span class="marca" style="left:87.81%;top:85.81%">3</span><span class="marca" style="left:63.18%;top:91.99%">4</span>
+          </div>
+          <div class="texto">
+            <h3>appointment-scheduled</h3>
+            
+            <p class="ruta"><code>appointment-scheduled</code> · <b>4</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Ver mis visitas</li><li><b>3</b> Llamar al 911 ahora. La policía es la única que puede interceptar un robo en curso <code>llamar-a-la-policia</code></li><li><b>4</b> Me están robando. Llamar a Atención al Cliente, 021 728 9120, ahora <code>emergencia-compacta</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/technician-tracking.png" alt="technician-tracking" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.76%">1</span><span class="marca" style="left:87.81%;top:85.81%">2</span><span class="marca" style="left:63.18%;top:91.99%">3</span>
+          </div>
+          <div class="texto">
+            <h3>technician-tracking</h3>
+            
+            <p class="ruta"><code>technician-tracking</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Llamar al 911 ahora. La policía es la única que puede interceptar un robo en curso <code>llamar-a-la-policia</code></li><li><b>3</b> Me están robando. Llamar a Atención al Cliente, 021 728 9120, ahora <code>emergencia-compacta</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/technician-review.png" alt="technician-review" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.76%">1</span><span class="marca" style="left:19.11%;top:50.04%">2</span><span class="marca" style="left:49.38%;top:50.04%">3</span><span class="marca" style="left:73.42%;top:50.04%">4</span><span class="marca" style="left:11.65%;top:55.99%">5</span><span class="marca" style="left:50.00%;top:67.24%">6</span><span class="marca" style="left:50.00%;top:76.05%">7</span><span class="marca" style="left:26.24%;top:78.72%">8</span><span class="marca" style="left:73.76%;top:78.72%">9</span><span class="marca" style="left:87.81%;top:85.81%">10</span><span class="marca" style="left:63.18%;top:91.99%">11</span>
+          </div>
+          <div class="texto">
+            <h3>technician-review</h3>
+            
+            <p class="ruta"><code>technician-review</code> · <b>11</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Llegó a tiempo</li><li><b>3</b> Explicó bien</li><li><b>4</b> Prolijo</li><li><b>5</b> Otro</li><li><b>6</b> Agregar comentarios adicionales</li><li><b>7</b> ¿Querés que te llamemos?</li><li><b>8</b> Omitir</li><li><b>9</b> Enviar mi calificación</li><li><b>10</b> Llamar al 911 ahora. La policía es la única que puede interceptar un robo en curso <code>llamar-a-la-policia</code></li><li><b>11</b> Me están robando. Llamar a Atención al Cliente, 021 728 9120, ahora <code>emergencia-compacta</code></li></ol>
+          </div>
+        </article>
+      </section>
+      <section id="s7">
+        <header class="seccion">
+          <p class="num">Sección 7 de 15</p>
+          <h2>La plata</h2>
+          <p class="bajada">La cuota, el pago, las facturas y los medios de pago.</p>
+          <p class="porque">Es la mitad barata de la meta 2026: retener no cuesta canal, ni comisión, ni instalación, ni equipo. El producto que mueve esa palanca es esta app.</p>
+          <p class="puntaje"><b>6,47/10</b> hoy · <b>8,60</b> el techo con sólo código nuestro · medido contra Gojek · Apple Wallet · Grab · CRED · Zip</p>
+        </header>
+        
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/pagar-mi-cuota.png" alt="pagar-mi-cuota" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.53%">1</span><span class="marca" style="left:50.00%;top:63.20%">2</span><span class="marca" style="left:50.00%;top:91.53%">3</span>
+          </div>
+          <div class="texto">
+            <h3>pagar-mi-cuota</h3>
+            
+            <p class="ruta"><code>pagar-mi-cuota</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver, botón <code>volver</code></li><li><b>2</b> Qué cubre · 1-oct-2026 <code>que-cubre</code></li><li><b>3</b> Pagar Gs. 185.000 <code>pagar-ahora</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/como-quedo.png" alt="como-quedo" loading="lazy">
+            <span class="marca" style="left:78.15%;top:12.01%">1</span><span class="marca" style="left:32.75%;top:17.73%">2</span><span class="marca" style="left:79.15%;top:17.73%">3</span><span class="marca" style="left:37.31%;top:24.60%">4</span><span class="marca" style="left:70.65%;top:24.60%">5</span><span class="marca" style="left:50.00%;top:31.69%">6</span><span class="marca" style="left:50.00%;top:63.27%">7</span><span class="marca" style="left:90.55%;top:36.73%">8</span><span class="marca" style="left:24.67%;top:43.52%">9</span><span class="marca" style="left:64.34%;top:43.40%">10</span><span class="marca" style="left:99.05%;top:43.40%">11</span><span class="marca" style="left:26.49%;top:53.09%">12</span><span class="marca" style="left:73.51%;top:53.09%">13</span><span class="marca" style="left:21.64%;top:87.19%">14</span><span class="marca" style="left:50.00%;top:87.19%">15</span><span class="marca" style="left:78.36%;top:87.19%">16</span><span class="marca" style="left:10.78%;top:92.91%">17</span><span class="marca" style="left:30.39%;top:92.91%">18</span><span class="marca" style="left:50.00%;top:92.91%">19</span><span class="marca" style="left:69.61%;top:92.91%">20</span><span class="marca" style="left:89.22%;top:92.91%">21</span>
+          </div>
+          <div class="texto">
+            <h3>como-quedo</h3>
+            
+            <p class="ruta"><code>como-quedo</code> · <b>21</b> controles</p>
+            <ol class="controles"><li><b>1</b> Pagar Gs. 209.050 <code>franja-cuota-pagar</code></li><li><b>2</b> 602-ABSB · Sin señal · hace 12 h <code>chip-de-estado</code></li><li><b>3</b> ¿Por qué pasa? <code>chip-por-que-pasa</code></li><li><b>4</b> Centrar en mi vehículo</li><li><b>5</b> Me están robando. Llamar al 911 ahora <code>emergencia-compacta</code></li><li><b>6</b> Subir o bajar la hoja <code>asa-de-la-hoja</code></li><li><b>7</b> Bottom Sheet</li><li><b>8</b> Avisos · 1 sin leer</li><li><b>9</b> 602-ABSB · Sin señal · hace 12 h <code>ficha-1</code></li><li><b>10</b> AAKJ-471 · Estacionado · hace 12 h <code>ficha-2</code></li><li><b>11</b> BXR-889 · Sin señal · hace 20 h <code>ficha-3</code></li><li><b>12</b> Necesito asistencia</li><li><b>13</b> Una pregunta</li><li><b>14</b> Por dónde anduvo</li><li><b>15</b> Pedir ayuda</li><li><b>16</b> Compartir dónde está</li><li><b>17</b> Inicio, pestaña 1 de 5</li><li><b>18</b> AlóChat, pestaña 2 de 5</li><li><b>19</b> Servicios, pestaña 3 de 5</li><li><b>20</b> Vehículos, pestaña 4 de 5</li><li><b>21</b> Cuenta, pestaña 5 de 5</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/mi-plata.png" alt="mi-plata" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.53%">1</span><span class="marca" style="left:50.00%;top:39.13%">2</span>
+          </div>
+          <div class="texto">
+            <h3>mi-plata</h3>
+            
+            <p class="ruta"><code>mi-plata</code> · <b>2</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>mi-plata-encabezado</code></li><li><b>2</b> Pagar Gs. 209.050 <code>mi-plata-pagar</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/historial-de-pagos.png" alt="historial-de-pagos" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.53%">1</span><span class="marca" style="left:10.90%;top:18.31%">2</span><span class="marca" style="left:29.10%;top:18.31%">3</span><span class="marca" style="left:47.89%;top:18.31%">4</span><span class="marca" style="left:66.00%;top:18.31%">5</span><span class="marca" style="left:82.63%;top:18.31%">6</span><span class="marca" style="left:50.00%;top:34.23%">7</span><span class="marca" style="left:50.00%;top:44.01%">8</span><span class="marca" style="left:50.00%;top:53.85%">9</span><span class="marca" style="left:50.00%;top:63.69%">10</span>
+          </div>
+          <div class="texto">
+            <h3>historial-de-pagos</h3>
+            
+            <p class="ruta"><code>historial-de-pagos</code> · <b>10</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>volver</code></li><li><b>2</b> Todas <code>filtro-todas</code></li><li><b>3</b> ANDE <code>filtro-ANDE</code></li><li><b>4</b> ESSAP <code>filtro-ESSAP</code></li><li><b>5</b> Personal <code>filtro-Personal</code></li><li><b>6</b> Tigo <code>filtro-Tigo</code></li><li><b>7</b> Septiembre. 16-sep-2026 <code>pago-sep</code></li><li><b>8</b> Agosto. 16-ago-2026 <code>pago-ago</code></li><li><b>9</b> Julio. 15-jul-2026 <code>pago-jul</code></li><li><b>10</b> Junio. 16-jun-2026 <code>pago-jun</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/factura.png" alt="factura" loading="lazy">
+            <span class="marca" style="left:9.45%;top:17.62%">1</span><span class="marca" style="left:50.00%;top:47.52%">2</span>
+          </div>
+          <div class="texto">
+            <h3>factura</h3>
+            
+            <p class="ruta"><code>factura</code> · <b>2</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>volver</code></li><li><b>2</b> Volver</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/recibo.png" alt="recibo" loading="lazy">
+            <span class="marca" style="left:9.45%;top:17.62%">1</span>
+          </div>
+          <div class="texto">
+            <h3>recibo</h3>
+            
+            <p class="ruta"><code>recibo</code> · <b>1</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>volver</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/metodos-de-pago.png" alt="metodos-de-pago" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.53%">1</span><span class="marca" style="left:90.55%;top:10.53%">2</span><span class="marca" style="left:50.00%;top:48.78%">3</span>
+          </div>
+          <div class="texto">
+            <h3>metodos-de-pago</h3>
+            
+            <p class="ruta"><code>metodos-de-pago</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>volver</code></li><li><b>2</b> Editar tus tarjetas <code>editar-tarjetas</code></li><li><b>3</b> Agregar una tarjeta. Se registra una vez y queda guardada <code>agregar-una-tarjeta</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/estado-de-cuenta.png" alt="estado-de-cuenta" loading="lazy">
+            <span class="marca" style="left:9.45%;top:17.62%">1</span><span class="marca" style="left:13.18%;top:25.40%">2</span><span class="marca" style="left:31.30%;top:25.40%">3</span><span class="marca" style="left:90.55%;top:87.64%">4</span><span class="marca" style="left:50.00%;top:91.53%">5</span>
+          </div>
+          <div class="texto">
+            <h3>estado-de-cuenta</h3>
+            
+            <p class="ruta"><code>estado-de-cuenta</code> · <b>5</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>volver</code></li><li><b>2</b> 2026 <code>anio-2026</code></li><li><b>3</b> 2025 <code>anio-2025</code></li><li><b>4</b> Bajar el mes en PDF: Agosto 2026 <code>bajar-mes-Agosto 2026</code></li><li><b>5</b> Descargar en PDF <code>descargar-el-estado</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/payment-methods.png" alt="payment-methods" loading="lazy">
+            
+          </div>
+          <div class="texto">
+            <h3>payment-methods</h3>
+            
+            <p class="ruta"><code>payment-methods</code> · <b>0</b> controles</p>
+            <ol class="controles"></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/payment.png" alt="payment" loading="lazy">
+            <span class="marca" style="left:6.47%;top:9.95%">1</span><span class="marca" style="left:50.00%;top:43.52%">2</span>
+          </div>
+          <div class="texto">
+            <h3>payment</h3>
+            
+            <p class="ruta"><code>payment</code> · <b>2</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Agregar una tarjeta</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/payment-method.png" alt="payment-method" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.76%">1</span><span class="marca" style="left:50.00%;top:31.58%">2</span><span class="marca" style="left:50.00%;top:43.27%">3</span><span class="marca" style="left:50.00%;top:78.72%">4</span><span class="marca" style="left:87.81%;top:85.81%">5</span><span class="marca" style="left:63.18%;top:91.99%">6</span>
+          </div>
+          <div class="texto">
+            <h3>payment-method</h3>
+            
+            <p class="ruta"><code>payment-method</code> · <b>6</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Agregar una tarjeta. Se registra una vez y queda guardada</li><li><b>3</b> Boca de cobranza. Pagás en persona. Seguimos con la visita del técnico.</li><li><b>4</b> Omitir</li><li><b>5</b> Llamar al 911 ahora. La policía es la única que puede interceptar un robo en curso <code>llamar-a-la-policia</code></li><li><b>6</b> Me están robando. Llamar a Atención al Cliente, 021 728 9120, ahora <code>emergencia-compacta</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/add-card.png" alt="add-card" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.76%">1</span><span class="marca" style="left:50.00%;top:62.43%">2</span><span class="marca" style="left:50.00%;top:69.53%">3</span>
+          </div>
+          <div class="texto">
+            <h3>add-card</h3>
+            
+            <p class="ruta"><code>add-card</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Probar de nuevo</li><li><b>3</b> Llamar a Atención al Cliente de Alarmas Py al 021 728 9120, botón</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/my-subscription.png" alt="my-subscription" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.76%">1</span><span class="marca" style="left:50.00%;top:73.76%">2</span><span class="marca" style="left:50.00%;top:81.54%">3</span><span class="marca" style="left:50.00%;top:88.63%">4</span><span class="marca" style="left:50.00%;top:91.53%">5</span>
+          </div>
+          <div class="texto">
+            <h3>my-subscription</h3>
+            
+            <p class="ruta"><code>my-subscription</code> · <b>5</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Cambiar plan <code>plan-cambiar</code></li><li><b>3</b> Comparar planes <code>plan-comparar</code></li><li><b>4</b> Desinstalar el equipo <code>plan-sacar-el-equipo</code></li><li><b>5</b> Agregar nuevo equipo</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/debito-automatico.png" alt="debito-automatico" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span>
+          </div>
+          <div class="texto">
+            <h3>debito-automatico</h3>
+            
+            <p class="ruta"><code>debito-automatico</code> · <b>1</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li></ol>
+          </div>
+        </article>
+      </section>
+      <section id="s8">
+        <header class="seccion">
+          <p class="num">Sección 8 de 15</p>
+          <h2>Cuando la cuota está vencida</h2>
+          <p class="bajada">Qué se cierra, qué queda abierto y cómo se vuelve.</p>
+          <p class="porque">Es la decisión de producto más comercial de toda la app: con la cuota vencida se cierran vehículos, historial, mapa en vivo y Club, y quedan abiertos Tienda, Clasificados y Pagá tus servicios, para que el cliente siga comprando mientras se pone al día. La emergencia no se cierra nunca.</p>
+          <p class="puntaje"><b>6,47/10</b> hoy · <b>8,60</b> el techo con sólo código nuestro · medido contra Gojek · Apple Wallet · Grab · CRED · Zip</p>
+        </header>
+        
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/mora.png" alt="mora" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.76%">1</span><span class="marca" style="left:50.00%;top:45.69%">2</span><span class="marca" style="left:50.00%;top:65.71%">3</span><span class="marca" style="left:50.00%;top:72.12%">4</span><span class="marca" style="left:87.81%;top:77.92%">5</span><span class="marca" style="left:63.18%;top:84.10%">6</span><span class="marca" style="left:50.00%;top:91.57%">7</span><span class="marca" style="left:10.78%;top:92.91%">8</span><span class="marca" style="left:30.39%;top:92.91%">9</span><span class="marca" style="left:50.00%;top:92.91%">10</span><span class="marca" style="left:69.61%;top:92.91%">11</span><span class="marca" style="left:89.22%;top:92.91%">12</span><span class="marca" style="left:50.00%;top:97.98%">13</span>
+          </div>
+          <div class="texto">
+            <h3>mora</h3>
+            
+            <p class="ruta"><code>mora</code> · <b>13</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Pagar Gs. 209.050</li><li><b>3</b> Ver la ubicación, en pausa hasta que se registre el pago <code>mora-602-ABSB-ubicacion</code></li><li><b>4</b> Ver los sensores, en pausa hasta que se registre el pago <code>mora-602-ABSB-sensores</code></li><li><b>5</b> Llamar al 911 ahora. La policía es la única que puede interceptar un robo en curso <code>llamar-a-la-policia</code></li><li><b>6</b> Me están robando. Llamar a Atención al Cliente, 021 728 9120, ahora <code>emergencia-compacta</code></li><li><b>7</b> Ver la ubicación, en pausa hasta que se registre el pago <code>mora-AAKJ-471-ubicacion</code></li><li><b>8</b> Inicio, pestaña 1 de 5</li><li><b>9</b> AlóChat, pestaña 2 de 5</li><li><b>10</b> Servicios, pestaña 3 de 5</li><li><b>11</b> Vehículos, pestaña 4 de 5</li><li><b>12</b> Cuenta, pestaña 5 de 5</li><li><b>13</b> Ver los sensores, en pausa hasta que se registre el pago <code>mora-AAKJ-471-sensores</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/cuanto-debo.png" alt="cuanto-debo" loading="lazy">
+            <span class="marca" style="left:78.15%;top:12.01%">1</span><span class="marca" style="left:32.75%;top:17.73%">2</span><span class="marca" style="left:79.15%;top:17.73%">3</span><span class="marca" style="left:37.31%;top:24.60%">4</span><span class="marca" style="left:70.65%;top:24.60%">5</span><span class="marca" style="left:50.00%;top:36.95%">6</span><span class="marca" style="left:50.00%;top:68.07%">7</span><span class="marca" style="left:90.55%;top:40.92%">8</span><span class="marca" style="left:24.67%;top:47.71%">9</span><span class="marca" style="left:64.34%;top:47.59%">10</span><span class="marca" style="left:99.05%;top:46.73%">11</span><span class="marca" style="left:26.49%;top:56.41%">12</span><span class="marca" style="left:73.51%;top:56.41%">13</span><span class="marca" style="left:21.64%;top:89.25%">14</span><span class="marca" style="left:50.00%;top:89.25%">15</span><span class="marca" style="left:78.36%;top:89.25%">16</span><span class="marca" style="left:10.78%;top:92.91%">17</span><span class="marca" style="left:30.39%;top:92.91%">18</span><span class="marca" style="left:50.00%;top:92.91%">19</span><span class="marca" style="left:69.61%;top:92.91%">20</span><span class="marca" style="left:89.22%;top:92.91%">21</span>
+          </div>
+          <div class="texto">
+            <h3>cuanto-debo</h3>
+            
+            <p class="ruta"><code>cuanto-debo</code> · <b>21</b> controles</p>
+            <ol class="controles"><li><b>1</b> Pagar Gs. 209.050 <code>franja-cuota-pagar</code></li><li><b>2</b> 602-ABSB · Sin señal · hace 12 h <code>chip-de-estado</code></li><li><b>3</b> ¿Por qué pasa? <code>chip-por-que-pasa</code></li><li><b>4</b> Centrar en mi vehículo</li><li><b>5</b> Me están robando. Llamar al 911 ahora <code>emergencia-compacta</code></li><li><b>6</b> Subir o bajar la hoja <code>asa-de-la-hoja</code></li><li><b>7</b> Bottom Sheet</li><li><b>8</b> Avisos · 1 sin leer</li><li><b>9</b> 602-ABSB · Sin señal · hace 12 h <code>ficha-1</code></li><li><b>10</b> AAKJ-471 · Estacionado · hace 12 h <code>ficha-2</code></li><li><b>11</b> BXR-889 · Sin señal · hace 20 h <code>ficha-3</code></li><li><b>12</b> Necesito asistencia</li><li><b>13</b> Una pregunta</li><li><b>14</b> Por dónde anduvo</li><li><b>15</b> Pedir ayuda</li><li><b>16</b> Compartir dónde está</li><li><b>17</b> Inicio, pestaña 1 de 5</li><li><b>18</b> AlóChat, pestaña 2 de 5</li><li><b>19</b> Servicios, pestaña 3 de 5</li><li><b>20</b> Vehículos, pestaña 4 de 5</li><li><b>21</b> Cuenta, pestaña 5 de 5</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/bajar-varios.png" alt="bajar-varios" loading="lazy">
+            <span class="marca" style="left:9.45%;top:17.62%">1</span><span class="marca" style="left:11.90%;top:35.16%">2</span><span class="marca" style="left:31.67%;top:35.16%">3</span><span class="marca" style="left:55.60%;top:35.16%">4</span><span class="marca" style="left:13.18%;top:41.57%">5</span><span class="marca" style="left:31.30%;top:41.57%">6</span><span class="marca" style="left:47.18%;top:41.57%">7</span><span class="marca" style="left:50.00%;top:91.53%">8</span>
+          </div>
+          <div class="texto">
+            <h3>bajar-varios</h3>
+            
+            <p class="ruta"><code>bajar-varios</code> · <b>8</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>volver</code></li><li><b>2</b> Un mes <code>periodo-unMes</code></li><li><b>3</b> Un año <code>periodo-unAnio</code></li><li><b>4</b> Desde / Hasta <code>periodo-desdeHasta</code></li><li><b>5</b> 2026 <code>opcion-2026</code></li><li><b>6</b> 2025 <code>opcion-2025</code></li><li><b>7</b> 2024 <code>opcion-2024</code></li><li><b>8</b> Bajar 3 documentos <code>bajar</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/robo-en-mora.png" alt="robo-en-mora" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.53%">1</span><span class="marca" style="left:71.43%;top:92.91%">2</span>
+          </div>
+          <div class="texto">
+            <h3>robo-en-mora</h3>
+            
+            <p class="ruta"><code>robo-en-mora</code> · <b>2</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Me están robando. Llamar al 911 ahora</li></ol>
+          </div>
+        </article>
+      </section>
+      <section id="s9">
+        <header class="seccion">
+          <p class="num">Sección 9 de 15</p>
+          <h2>Pagá tus servicios</h2>
+          <p class="bajada">Luz, agua, internet y más de cien empresas.</p>
+          <p class="porque">Es la razón por la que un cliente abre la app aunque no le pase nada con el auto. Un cliente que entra todos los meses a pagar la luz es un cliente que ve el aviso de su cuota.</p>
+          <p class="puntaje"><b>6,47/10</b> hoy · <b>8,60</b> el techo con sólo código nuestro · medido contra Gojek · Apple Wallet · Grab · CRED · Zip</p>
+        </header>
+        
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/paga-tus-servicios.png" alt="paga-tus-servicios" loading="lazy">
+            <span class="marca" style="left:9.45%;top:17.62%">1</span><span class="marca" style="left:53.48%;top:25.63%">2</span><span class="marca" style="left:82.63%;top:33.64%">3</span><span class="marca" style="left:50.00%;top:45.56%">4</span><span class="marca" style="left:50.00%;top:57.78%">5</span><span class="marca" style="left:50.00%;top:70.06%">6</span><span class="marca" style="left:50.00%;top:79.92%">7</span>
+          </div>
+          <div class="texto">
+            <h3>paga-tus-servicios</h3>
+            
+            <p class="ruta"><code>paga-tus-servicios</code> · <b>7</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>volver</code></li><li><b>2</b> Buscá la empresa o «la luz» <code>buscar-empresa</code></li><li><b>3</b> Ver todas <code>ver-todas-las-cuentas</code></li><li><b>4</b> Luz de casa. ANDE · vence el 22-sep. Gs. 312.400 <code>cuenta-luz</code></li><li><b>5</b> Agua de casa. ESSAP · vence el 25-sep. Gs. 84.900 <code>cuenta-agua</code></li><li><b>6</b> Internet de casa. Personal · vence el 28-sep. Gs. 219.000 <code>cuenta-internet</code></li><li><b>7</b> Celular de mamá. Tigo · el monto lo ponés vos <code>cuenta-celu</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/rubro.png" alt="rubro" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.98%">1</span><span class="marca" style="left:50.00%;top:34.48%">2</span><span class="marca" style="left:50.00%;top:41.34%">3</span>
+          </div>
+          <div class="texto">
+            <h3>rubro</h3>
+            
+            <p class="ruta"><code>rubro</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>eco-volver</code></li><li><b>2</b> Ver todo el catálogo <code>eco-accion</code></li><li><b>3</b> Llamar al 021 728 9120</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/pagar-un-servicio.png" alt="pagar-un-servicio" loading="lazy">
+            <span class="marca" style="left:50.00%;top:49.35%">1</span><span class="marca" style="left:50.00%;top:85.13%">2</span><span class="marca" style="left:50.00%;top:92.22%">3</span>
+          </div>
+          <div class="texto">
+            <h3>pagar-un-servicio</h3>
+            
+            <p class="ruta"><code>pagar-un-servicio</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Tarjeta: VISA ···· 4242. Cambiar <code>cambiar-la-tarjeta</code></li><li><b>2</b> Pagar Gs. 314.400 <code>pagar-el-servicio</code></li><li><b>3</b> Cancelar <code>cancelar-el-pago</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/escanear-factura.png" alt="escanear-factura" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.53%">1</span><span class="marca" style="left:50.00%;top:83.75%">2</span><span class="marca" style="left:50.00%;top:91.53%">3</span>
+          </div>
+          <div class="texto">
+            <h3>escanear-factura</h3>
+            
+            <p class="ruta"><code>escanear-factura</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>volver</code></li><li><b>2</b> Abrir Ajustes <code>abrir-ajustes</code></li><li><b>3</b> Escribir el número <code>escribir-el-numero</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/tus-documentos.png" alt="tus-documentos" loading="lazy">
+            <span class="marca" style="left:90.55%;top:14.07%">1</span><span class="marca" style="left:9.45%;top:17.62%">2</span><span class="marca" style="left:82.55%;top:26.09%">3</span><span class="marca" style="left:39.01%;top:26.09%">4</span><span class="marca" style="left:13.23%;top:34.55%">5</span><span class="marca" style="left:33.17%;top:34.55%">6</span><span class="marca" style="left:52.11%;top:34.55%">7</span><span class="marca" style="left:76.12%;top:34.55%">8</span><span class="marca" style="left:50.00%;top:47.77%">9</span><span class="marca" style="left:50.00%;top:63.44%">10</span><span class="marca" style="left:50.00%;top:79.12%">11</span>
+          </div>
+          <div class="texto">
+            <h3>tus-documentos</h3>
+            
+            <p class="ruta"><code>tus-documentos</code> · <b>11</b> controles</p>
+            <ol class="controles"><li><b>1</b> Bajar varios <code>bajar-varios</code></li><li><b>2</b> Volver <code>volver</code></li><li><b>3</b> Elegir el año, 2026 <code>elegir-anio</code></li><li><b>4</b> Buscar por número <code>buscar-documento</code></li><li><b>5</b> Todos <code>tipo-todos</code></li><li><b>6</b> Facturas <code>tipo-facturas</code></li><li><b>7</b> Recibos <code>tipo-recibos</code></li><li><b>8</b> Notas de crédito <code>tipo-notasDeCredito</code></li><li><b>9</b> Factura N° 9812. Vence el 2026-09-10 <code>documento-9812</code></li><li><b>10</b> Factura N° 9913. Vence el 2026-10-10 <code>documento-9913</code></li><li><b>11</b> Factura N° 9611. Venció el 2026-08-10 <code>documento-9611</code></li></ol>
+          </div>
+        </article>
+      </section>
+      <section id="s10">
+        <header class="seccion">
+          <p class="num">Sección 10 de 15</p>
+          <h2>La Tienda</h2>
+          <p class="bajada">Accesorios y equipos, con carrito y pedidos.</p>
+          <p class="porque">Es la segunda pata sobre los mismos 50.000 clientes: no hay que conseguir un cliente nuevo para vender una cámara o una baliza.</p>
+          <p class="puntaje"><b>6,14/10</b> hoy · <b>8,18</b> el techo con sólo código nuestro · medido contra TheFork · CHOPT · CAVA · Check · CRED · Trip.com</p>
+        </header>
+        
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/tienda.png" alt="tienda" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.98%">1</span><span class="marca" style="left:78.61%;top:10.98%">2</span><span class="marca" style="left:90.55%;top:10.98%">3</span><span class="marca" style="left:53.48%;top:18.99%">4</span><span class="marca" style="left:26.24%;top:73.13%">5</span><span class="marca" style="left:73.76%;top:76.51%">6</span><span class="marca" style="left:10.78%;top:92.91%">7</span><span class="marca" style="left:30.39%;top:92.91%">8</span><span class="marca" style="left:50.00%;top:92.91%">9</span><span class="marca" style="left:69.61%;top:92.91%">10</span><span class="marca" style="left:89.22%;top:92.91%">11</span>
+          </div>
+          <div class="texto">
+            <h3>tienda</h3>
+            
+            <p class="ruta"><code>tienda</code> · <b>11</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>eco-volver</code></li><li><b>2</b> Guardados <code>ir-a-guardados</code></li><li><b>3</b> Carrito <code>ir-al-carrito</code></li><li><b>4</b> Buscar <code>buscador</code></li><li><b>5</b> Cubre volante de cuero</li><li><b>6</b> Cámara de tablero 1080p</li><li><b>7</b> Inicio, pestaña 1 de 5</li><li><b>8</b> AlóChat, pestaña 2 de 5</li><li><b>9</b> Servicios, pestaña 3 de 5</li><li><b>10</b> Vehículos, pestaña 4 de 5</li><li><b>11</b> Cuenta, pestaña 5 de 5</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/buscar.png" alt="buscar" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.98%">1</span><span class="marca" style="left:53.48%;top:18.99%">2</span><span class="marca" style="left:50.00%;top:38.92%">3</span><span class="marca" style="left:50.00%;top:51.07%">4</span><span class="marca" style="left:50.00%;top:66.95%">5</span><span class="marca" style="left:50.00%;top:80.55%">6</span><span class="marca" style="left:50.00%;top:96.43%">7</span>
+          </div>
+          <div class="texto">
+            <h3>buscar</h3>
+            
+            <p class="ruta"><code>buscar</code> · <b>7</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>eco-volver</code></li><li><b>2</b> Buscar <code>buscador</code></li><li><b>3</b> Cámara de tablero 1080p <code>fila-p1</code></li><li><b>4</b> Agregar</li><li><b>5</b> Batería 12V 65Ah <code>fila-p2</code></li><li><b>6</b> Agregar</li><li><b>7</b> Kit de cubiertas 185/65 R15 <code>fila-p3</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/producto.png" alt="producto" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.98%">1</span><span class="marca" style="left:78.61%;top:10.98%">2</span><span class="marca" style="left:90.55%;top:10.98%">3</span><span class="marca" style="left:53.48%;top:18.99%">4</span><span class="marca" style="left:26.24%;top:73.13%">5</span><span class="marca" style="left:73.76%;top:76.51%">6</span><span class="marca" style="left:10.78%;top:92.91%">7</span><span class="marca" style="left:30.39%;top:92.91%">8</span><span class="marca" style="left:50.00%;top:92.91%">9</span><span class="marca" style="left:69.61%;top:92.91%">10</span><span class="marca" style="left:89.22%;top:92.91%">11</span>
+          </div>
+          <div class="texto">
+            <h3>producto</h3>
+            
+            <p class="ruta"><code>producto</code> · <b>11</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>eco-volver</code></li><li><b>2</b> Guardados <code>ir-a-guardados</code></li><li><b>3</b> Carrito <code>ir-al-carrito</code></li><li><b>4</b> Buscar <code>buscador</code></li><li><b>5</b> Cubre volante de cuero</li><li><b>6</b> Cámara de tablero 1080p</li><li><b>7</b> Inicio, pestaña 1 de 5</li><li><b>8</b> AlóChat, pestaña 2 de 5</li><li><b>9</b> Servicios, pestaña 3 de 5</li><li><b>10</b> Vehículos, pestaña 4 de 5</li><li><b>11</b> Cuenta, pestaña 5 de 5</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/carrito.png" alt="carrito" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.98%">1</span><span class="marca" style="left:50.00%;top:33.52%">2</span><span class="marca" style="left:50.00%;top:40.39%">3</span>
+          </div>
+          <div class="texto">
+            <h3>carrito</h3>
+            
+            <p class="ruta"><code>carrito</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>eco-volver</code></li><li><b>2</b> Ver la tienda <code>eco-accion</code></li><li><b>3</b> Llamar al 021 728 9120</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/checkout.png" alt="checkout" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.98%">1</span><span class="marca" style="left:50.00%;top:33.52%">2</span><span class="marca" style="left:50.00%;top:40.39%">3</span>
+          </div>
+          <div class="texto">
+            <h3>checkout</h3>
+            
+            <p class="ruta"><code>checkout</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>eco-volver</code></li><li><b>2</b> Ver la tienda <code>eco-accion</code></li><li><b>3</b> Llamar al 021 728 9120</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/pedido.png" alt="pedido" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.98%">1</span><span class="marca" style="left:50.00%;top:90.54%">2</span><span class="marca" style="left:50.00%;top:91.99%">3</span>
+          </div>
+          <div class="texto">
+            <h3>pedido</h3>
+            
+            <p class="ruta"><code>pedido</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>eco-volver</code></li><li><b>2</b> Llamar al 021 728 9120</li><li><b>3</b> Volver a comprar</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/mis-pedidos.png" alt="mis-pedidos" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.98%">1</span><span class="marca" style="left:17.95%;top:34.02%">2</span><span class="marca" style="left:23.47%;top:40.43%">3</span><span class="marca" style="left:17.95%;top:65.41%">4</span><span class="marca" style="left:23.47%;top:71.82%">5</span><span class="marca" style="left:17.95%;top:96.80%">6</span>
+          </div>
+          <div class="texto">
+            <h3>mis-pedidos</h3>
+            
+            <p class="ruta"><code>mis-pedidos</code> · <b>6</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>eco-volver</code></li><li><b>2</b> Ver el detalle</li><li><b>3</b> Volver a comprar</li><li><b>4</b> Ver el detalle</li><li><b>5</b> Volver a comprar</li><li><b>6</b> Ver el detalle</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/favoritos.png" alt="favoritos" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.98%">1</span><span class="marca" style="left:50.00%;top:31.73%">2</span>
+          </div>
+          <div class="texto">
+            <h3>favoritos</h3>
+            
+            <p class="ruta"><code>favoritos</code> · <b>2</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>eco-volver</code></li><li><b>2</b> Seguir mirando <code>eco-accion</code></li></ol>
+          </div>
+        </article>
+      </section>
+      <section id="s11">
+        <header class="seccion">
+          <p class="num">Sección 11 de 15</p>
+          <h2>Clasificados</h2>
+          <p class="bajada">Comprar y vender vehículos, con el kilometraje verificado.</p>
+          <p class="porque">Es lo único que esta empresa puede hacer y ninguna otra plataforma de usados puede: certificar los kilómetros recorridos desde que instalamos el equipo. Ese sello es la ventaja, no el listado.</p>
+          <p class="puntaje"><b>6,14/10</b> hoy · <b>8,18</b> el techo con sólo código nuestro · medido contra TheFork · CHOPT · CAVA · Check · CRED · Trip.com</p>
+        </header>
+        
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/usados.png" alt="usados" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.98%">1</span><span class="marca" style="left:52.86%;top:18.99%">2</span><span class="marca" style="left:16.87%;top:25.63%">3</span><span class="marca" style="left:45.85%;top:25.63%">4</span><span class="marca" style="left:15.55%;top:33.41%">5</span><span class="marca" style="left:37.52%;top:33.41%">6</span><span class="marca" style="left:56.59%;top:33.41%">7</span><span class="marca" style="left:76.16%;top:33.41%">8</span><span class="marca" style="left:98.67%;top:33.41%">9</span><span class="marca" style="left:88.43%;top:41.19%">10</span><span class="marca" style="left:50.00%;top:57.09%">11</span><span class="marca" style="left:53.86%;top:83.30%">12</span><span class="marca" style="left:50.00%;top:84.10%">13</span><span class="marca" style="left:10.78%;top:92.91%">14</span><span class="marca" style="left:30.39%;top:92.91%">15</span><span class="marca" style="left:50.00%;top:92.91%">16</span><span class="marca" style="left:69.61%;top:92.91%">17</span><span class="marca" style="left:89.22%;top:92.91%">18</span>
+          </div>
+          <div class="texto">
+            <h3>usados</h3>
+            
+            <p class="ruta"><code>usados</code> · <b>18</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>eco-volver</code></li><li><b>2</b> Buscá marca o modelo <code>buscar-avisos</code></li><li><b>3</b> Más nuevos <code>ordenar-mas-nuevos</code></li><li><b>4</b> Menor precio <code>ordenar-menor-precio</code></li><li><b>5</b> Filtrar <code>abrir-filtros</code></li><li><b>6</b> Todos <code>tipo-todos</code></li><li><b>7</b> Autos <code>tipo-auto</code></li><li><b>8</b> Motos <code>tipo-moto</code></li><li><b>9</b> Camiones <code>tipo-camion</code></li><li><b>10</b> Mis avisos <code>ir-a-mis-avisos</code></li><li><b>11</b> Toyota Hilux SRV 4x4</li><li><b>12</b> Entendí <code>explicador-entendi</code></li><li><b>13</b> Publicar mi vehículo <code>publicar-mi-vehiculo</code></li><li><b>14</b> Inicio, pestaña 1 de 5</li><li><b>15</b> AlóChat, pestaña 2 de 5</li><li><b>16</b> Servicios, pestaña 3 de 5</li><li><b>17</b> Vehículos, pestaña 4 de 5</li><li><b>18</b> Cuenta, pestaña 5 de 5</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/main_marketo_aviso.png" alt="main · marketo · aviso" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.98%">1</span><span class="marca" style="left:52.86%;top:18.99%">2</span><span class="marca" style="left:16.87%;top:25.63%">3</span><span class="marca" style="left:45.85%;top:25.63%">4</span><span class="marca" style="left:15.55%;top:33.41%">5</span><span class="marca" style="left:37.52%;top:33.41%">6</span><span class="marca" style="left:56.59%;top:33.41%">7</span><span class="marca" style="left:76.16%;top:33.41%">8</span><span class="marca" style="left:98.67%;top:33.41%">9</span><span class="marca" style="left:88.43%;top:41.19%">10</span><span class="marca" style="left:50.00%;top:57.09%">11</span><span class="marca" style="left:53.86%;top:83.30%">12</span><span class="marca" style="left:50.00%;top:84.10%">13</span><span class="marca" style="left:10.78%;top:92.91%">14</span><span class="marca" style="left:30.39%;top:92.91%">15</span><span class="marca" style="left:50.00%;top:92.91%">16</span><span class="marca" style="left:69.61%;top:92.91%">17</span><span class="marca" style="left:89.22%;top:92.91%">18</span>
+          </div>
+          <div class="texto">
+            <h3>main · marketo · aviso</h3>
+            
+            <p class="ruta"><code>main_marketo_aviso</code> · <b>18</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>eco-volver</code></li><li><b>2</b> Buscá marca o modelo <code>buscar-avisos</code></li><li><b>3</b> Más nuevos <code>ordenar-mas-nuevos</code></li><li><b>4</b> Menor precio <code>ordenar-menor-precio</code></li><li><b>5</b> Filtrar <code>abrir-filtros</code></li><li><b>6</b> Todos <code>tipo-todos</code></li><li><b>7</b> Autos <code>tipo-auto</code></li><li><b>8</b> Motos <code>tipo-moto</code></li><li><b>9</b> Camiones <code>tipo-camion</code></li><li><b>10</b> Mis avisos <code>ir-a-mis-avisos</code></li><li><b>11</b> Toyota Hilux SRV 4x4</li><li><b>12</b> Entendí <code>explicador-entendi</code></li><li><b>13</b> Publicar mi vehículo <code>publicar-mi-vehiculo</code></li><li><b>14</b> Inicio, pestaña 1 de 5</li><li><b>15</b> AlóChat, pestaña 2 de 5</li><li><b>16</b> Servicios, pestaña 3 de 5</li><li><b>17</b> Vehículos, pestaña 4 de 5</li><li><b>18</b> Cuenta, pestaña 5 de 5</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/publicar-aviso.png" alt="publicar-aviso" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.98%">1</span><span class="marca" style="left:12.40%;top:23.57%">2</span><span class="marca" style="left:31.72%;top:23.57%">3</span><span class="marca" style="left:54.23%;top:23.57%">4</span><span class="marca" style="left:80.93%;top:23.57%">5</span><span class="marca" style="left:12.44%;top:29.52%">6</span><span class="marca" style="left:52.86%;top:40.24%">7</span><span class="marca" style="left:13.31%;top:46.41%">8</span><span class="marca" style="left:37.89%;top:46.41%">9</span><span class="marca" style="left:64.76%;top:46.41%">10</span><span class="marca" style="left:14.47%;top:52.36%">11</span><span class="marca" style="left:33.54%;top:52.36%">12</span><span class="marca" style="left:51.33%;top:52.36%">13</span><span class="marca" style="left:70.15%;top:52.36%">14</span><span class="marca" style="left:13.14%;top:58.31%">15</span><span class="marca" style="left:36.15%;top:58.31%">16</span><span class="marca" style="left:57.09%;top:58.31%">17</span><span class="marca" style="left:76.12%;top:58.31%">18</span><span class="marca" style="left:13.10%;top:64.26%">19</span><span class="marca" style="left:34.29%;top:64.26%">20</span><span class="marca" style="left:62.11%;top:64.26%">21</span><span class="marca" style="left:16.63%;top:70.21%">22</span><span class="marca" style="left:50.00%;top:84.88%">23</span><span class="marca" style="left:50.00%;top:91.99%">24</span><span class="marca" style="left:12.06%;top:95.61%">25</span><span class="marca" style="left:30.27%;top:95.61%">26</span><span class="marca" style="left:48.51%;top:95.61%">27</span><span class="marca" style="left:66.83%;top:95.61%">28</span><span class="marca" style="left:85.12%;top:95.61%">29</span>
+          </div>
+          <div class="texto">
+            <h3>publicar-aviso</h3>
+            
+            <p class="ruta"><code>publicar-aviso</code> · <b>29</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>eco-volver</code></li><li><b>2</b> Autos <code>publicar-tipo-auto</code></li><li><b>3</b> Motos <code>publicar-tipo-moto</code></li><li><b>4</b> Camiones <code>publicar-tipo-camion</code></li><li><b>5</b> Camionetas <code>publicar-tipo-camioneta</code></li><li><b>6</b> Otros <code>publicar-tipo-otro</code></li><li><b>7</b> Buscá la marca <code>buscar-marca</code></li><li><b>8</b> Toyota <code>marca-Toyota</code></li><li><b>9</b> Volkswagen <code>marca-Volkswagen</code></li><li><b>10</b> Chevrolet <code>marca-Chevrolet</code></li><li><b>11</b> Hyundai <code>marca-Hyundai</code></li><li><b>12</b> Kia <code>marca-Kia</code></li><li><b>13</b> Nissan <code>marca-Nissan</code></li><li><b>14</b> Ford <code>marca-Ford</code></li><li><b>15</b> Honda <code>marca-Honda</code></li><li><b>16</b> Mitsubishi <code>marca-Mitsubishi</code></li><li><b>17</b> Fiat <code>marca-Fiat</code></li><li><b>18</b> Renault <code>marca-Renault</code></li><li><b>19</b> Suzuki <code>marca-Suzuki</code></li><li><b>20</b> Yamaha <code>marca-Yamaha</code></li><li><b>21</b> Mercedes-Benz <code>marca-Mercedes-Benz</code></li><li><b>22</b> Otra marca <code>otra-marca</code></li><li><b>23</b> Modelo <em>· menos de 44 pt</em> <code>campo-modelo</code></li><li><b>24</b> Publicar mi vehículo <code>publicar</code></li><li><b>25</b> 2027 <code>anio-2027</code></li><li><b>26</b> 2026 <code>anio-2026</code></li><li><b>27</b> 2025 <code>anio-2025</code></li><li><b>28</b> 2024 <code>anio-2024</code></li><li><b>29</b> 2023 <code>anio-2023</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/foto.png" alt="foto" loading="lazy">
+            <span class="marca" style="left:50.00%;top:25.65%">1</span><span class="marca" style="left:9.45%;top:9.61%">2</span><span class="marca" style="left:50.00%;top:66.93%">3</span><span class="marca" style="left:50.00%;top:73.46%">4</span><span class="marca" style="left:50.00%;top:79.98%">5</span><span class="marca" style="left:50.00%;top:89.70%">6</span>
+          </div>
+          <div class="texto">
+            <h3>foto</h3>
+            
+            <p class="ruta"><code>foto</code> · <b>6</b> controles</p>
+            <ol class="controles"><li><b>1</b> Cerrar</li><li><b>2</b> Volver</li><li><b>3</b> Sacar una foto</li><li><b>4</b> Elegir de la galería</li><li><b>5</b> Quitar la foto</li><li><b>6</b> Cancelar</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/recortar.png" alt="recortar" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span><span class="marca" style="left:50.00%;top:38.41%">2</span><span class="marca apagada" style="left:50.00%;top:86.73%">3</span><span class="marca" style="left:50.00%;top:93.36%">4</span>
+          </div>
+          <div class="texto">
+            <h3>recortar</h3>
+            
+            <p class="ruta"><code>recortar</code> · <b>4</b> controles</p>
+            <ol class="controles"><li><b>1</b> Cerrar</li><li><b>2</b> Elegir otra</li><li><b>3</b> Usar esta foto. Arrastrá para moverla. Pellizcá para acercarla. <em>· apagado</em></li><li><b>4</b> Elegir otra</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/mis-avisos.png" alt="mis-avisos" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.98%">1</span><span class="marca" style="left:50.00%;top:48.55%">2</span><span class="marca" style="left:50.00%;top:79.29%">3</span>
+          </div>
+          <div class="texto">
+            <h3>mis-avisos</h3>
+            
+            <p class="ruta"><code>mis-avisos</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>eco-volver</code></li><li><b>2</b> Toyota Hilux SRV 4x4</li><li><b>3</b> Publicar otro <code>publicar-otro</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/vendedor.png" alt="vendedor" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.98%">1</span><span class="marca" style="left:52.86%;top:18.99%">2</span><span class="marca" style="left:16.87%;top:25.63%">3</span><span class="marca" style="left:45.85%;top:25.63%">4</span><span class="marca" style="left:15.55%;top:33.41%">5</span><span class="marca" style="left:37.52%;top:33.41%">6</span><span class="marca" style="left:56.59%;top:33.41%">7</span><span class="marca" style="left:76.16%;top:33.41%">8</span><span class="marca" style="left:98.67%;top:33.41%">9</span><span class="marca" style="left:88.43%;top:41.19%">10</span><span class="marca" style="left:50.00%;top:60.45%">11</span><span class="marca" style="left:50.00%;top:84.10%">12</span><span class="marca" style="left:53.86%;top:86.65%">13</span><span class="marca" style="left:10.78%;top:92.91%">14</span><span class="marca" style="left:30.39%;top:92.91%">15</span><span class="marca" style="left:50.00%;top:92.91%">16</span><span class="marca" style="left:69.61%;top:92.91%">17</span><span class="marca" style="left:89.22%;top:92.91%">18</span>
+          </div>
+          <div class="texto">
+            <h3>vendedor</h3>
+            
+            <p class="ruta"><code>vendedor</code> · <b>18</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>eco-volver</code></li><li><b>2</b> Buscá marca o modelo <code>buscar-avisos</code></li><li><b>3</b> Más nuevos <code>ordenar-mas-nuevos</code></li><li><b>4</b> Menor precio <code>ordenar-menor-precio</code></li><li><b>5</b> Filtrar <code>abrir-filtros</code></li><li><b>6</b> Todos <code>tipo-todos</code></li><li><b>7</b> Autos <code>tipo-auto</code></li><li><b>8</b> Motos <code>tipo-moto</code></li><li><b>9</b> Camiones <code>tipo-camion</code></li><li><b>10</b> Mis avisos <code>ir-a-mis-avisos</code></li><li><b>11</b> Toyota Hilux SRV 4x4</li><li><b>12</b> Publicar mi vehículo <code>publicar-mi-vehiculo</code></li><li><b>13</b> Entendí <code>explicador-entendi</code></li><li><b>14</b> Inicio, pestaña 1 de 5</li><li><b>15</b> AlóChat, pestaña 2 de 5</li><li><b>16</b> Servicios, pestaña 3 de 5</li><li><b>17</b> Vehículos, pestaña 4 de 5</li><li><b>18</b> Cuenta, pestaña 5 de 5</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/referidos.png" alt="referidos" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.98%">1</span><span class="marca" style="left:50.00%;top:85.58%">2</span><span class="marca" style="left:50.00%;top:91.99%">3</span>
+          </div>
+          <div class="texto">
+            <h3>referidos</h3>
+            
+            <p class="ruta"><code>referidos</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>eco-volver</code></li><li><b>2</b> Compartir la invitación</li><li><b>3</b> Copiar el enlace</li></ol>
+          </div>
+        </article>
+      </section>
+      <section id="s12">
+        <header class="seccion">
+          <p class="num">Sección 12 de 15</p>
+          <h2>El Club de Beneficios</h2>
+          <p class="bajada">Puntos, nivel y descuentos en comercios.</p>
+          <p class="porque">Es la razón para no darse de baja que no depende de que el auto ande bien: el cliente que ahorró plata este mes con el Club tiene un motivo propio para seguir pagando.</p>
+          <p class="puntaje"><b>6,14/10</b> hoy · <b>8,18</b> el techo con sólo código nuestro · medido contra TheFork · CHOPT · CAVA · Check · CRED · Trip.com</p>
+        </header>
+        
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/club.png" alt="club" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.98%">1</span><span class="marca" style="left:50.00%;top:48.59%">2</span><span class="marca" style="left:50.00%;top:79.71%">3</span><span class="marca" style="left:10.78%;top:92.91%">4</span><span class="marca" style="left:50.00%;top:97.03%">5</span><span class="marca" style="left:30.39%;top:92.91%">6</span><span class="marca" style="left:50.00%;top:92.91%">7</span><span class="marca" style="left:69.61%;top:92.91%">8</span><span class="marca" style="left:89.22%;top:92.91%">9</span>
+          </div>
+          <div class="texto">
+            <h3>club</h3>
+            
+            <p class="ruta"><code>club</code> · <b>9</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>eco-volver</code></li><li><b>2</b> Ver los convenios <code>club-saldo-salida</code></li><li><b>3</b> Petrobras. Gs. 700 por litro. Combustible <code>club-convenio-c1</code></li><li><b>4</b> Inicio, pestaña 1 de 5</li><li><b>5</b> Gomería Central. 15 %. Taller <code>club-convenio-c2</code></li><li><b>6</b> AlóChat, pestaña 2 de 5</li><li><b>7</b> Servicios, pestaña 3 de 5</li><li><b>8</b> Vehículos, pestaña 4 de 5</li><li><b>9</b> Cuenta, pestaña 5 de 5</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/club-convenios.png" alt="club-convenios" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.98%">1</span><span class="marca" style="left:14.80%;top:18.76%">2</span><span class="marca" style="left:42.62%;top:18.76%">3</span><span class="marca" style="left:73.09%;top:18.76%">4</span><span class="marca" style="left:13.56%;top:24.71%">5</span><span class="marca" style="left:34.99%;top:24.71%">6</span><span class="marca" style="left:69.82%;top:32.49%">7</span><span class="marca" style="left:87.69%;top:32.49%">8</span><span class="marca" style="left:50.00%;top:45.04%">9</span><span class="marca" style="left:50.00%;top:62.36%">10</span><span class="marca" style="left:50.00%;top:79.67%">11</span><span class="marca" style="left:50.00%;top:96.99%">12</span>
+          </div>
+          <div class="texto">
+            <h3>club-convenios</h3>
+            
+            <p class="ruta"><code>club-convenios</code> · <b>12</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>eco-volver</code></li><li><b>2</b> Todos 20 <code>club-chip-todos</code></li><li><b>3</b> Combustible 3 <code>club-chip-combustible</code></li><li><b>4</b> Repuestos 4 <code>club-chip-repuestos</code></li><li><b>5</b> Taller 5 <code>club-chip-taller</code></li><li><b>6</b> Otros 8 <code>club-chip-otro</code></li><li><b>7</b> Lista <code>club-vista-lista</code></li><li><b>8</b> Mapa <code>club-vista-mapa</code></li><li><b>9</b> Petrobras. Gs. 700 por litro. Combustible <code>club-convenio-c1</code></li><li><b>10</b> Gomería Central. 15 %. Taller <code>club-convenio-c2</code></li><li><b>11</b> Lavadero Mburicaó. 2×1. Otros <code>club-convenio-c3</code></li><li><b>12</b> Seguros La Paraguaya. 10 %. Otros <code>club-convenio-c4</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/club-convenio.png" alt="club-convenio" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.98%">1</span><span class="marca" style="left:50.00%;top:31.73%">2</span><span class="marca" style="left:50.00%;top:38.60%">3</span>
+          </div>
+          <div class="texto">
+            <h3>club-convenio</h3>
+            
+            <p class="ruta"><code>club-convenio</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>eco-volver</code></li><li><b>2</b> Ver todos los convenios <code>eco-accion</code></li><li><b>3</b> Escribile a Alarmas Py</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/club-canje.png" alt="club-canje" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.98%">1</span><span class="marca" style="left:50.00%;top:33.52%">2</span>
+          </div>
+          <div class="texto">
+            <h3>club-canje</h3>
+            
+            <p class="ruta"><code>club-canje</code> · <b>2</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>eco-volver</code></li><li><b>2</b> Escribile a Alarmas Py</li></ol>
+          </div>
+        </article>
+      </section>
+      <section id="s13">
+        <header class="seccion">
+          <p class="num">Sección 13 de 15</p>
+          <h2>Ampliá tu protección</h2>
+          <p class="bajada">Mejorar el plan, sumar servicios, cotizar un seguro.</p>
+          <p class="porque">Es el momento donde entra plata NUEVA sobre un cliente que ya tenemos, y hoy es el más flojo de los quince: 4,41 sobre 10. El promedio de la app lo estaba tapando. Acá el cliente ve qué le falta a SU vehículo, con su chapa, y no un catálogo genérico.</p>
+          <p class="puntaje"><b>4,41/10</b> hoy · <b>6,53</b> el techo con sólo código nuestro · medido contra Grab · Life360 · Lyft · Turo · Chime</p>
+        </header>
+        
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/planes-inicio.png" alt="planes-inicio" loading="lazy">
+            <span class="marca" style="left:50.00%;top:18.19%">1</span><span class="marca" style="left:50.00%;top:27.57%">2</span><span class="marca" style="left:71.43%;top:92.91%">3</span>
+          </div>
+          <div class="texto">
+            <h3>planes-inicio</h3>
+            
+            <p class="ruta"><code>planes-inicio</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Necesito asistencia. Grúa, cerrajería, mecánico <code>planes-puerta-asistencia</code></li><li><b>2</b> Una pregunta. Te atiende una persona ahora. <code>planes-puerta-pregunta</code></li><li><b>3</b> Me están robando. Llamar al 911 ahora</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/planes.png" alt="planes" loading="lazy">
+            <span class="marca" style="left:9.45%;top:11.44%">1</span><span class="marca" style="left:18.08%;top:18.54%">2</span><span class="marca" style="left:44.65%;top:18.54%">3</span><span class="marca" style="left:66.96%;top:18.54%">4</span><span class="marca" style="left:50.00%;top:80.17%">5</span><span class="marca" style="left:71.43%;top:92.91%">6</span><span class="marca" style="left:50.00%;top:99.62%">7</span>
+          </div>
+          <div class="texto">
+            <h3>planes</h3>
+            
+            <p class="ruta"><code>planes</code> · <b>7</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> 602-ABSB <code>planes-vehiculo-602-ABSB</code></li><li><b>3</b> AAKJ-471 <code>planes-vehiculo-AAKJ-471</code></li><li><b>4</b> BXR-889 <code>planes-vehiculo-BXR-889</code></li><li><b>5</b> Sumar Auxilio mecánico <code>planes-sumar-mecanico</code></li><li><b>6</b> Me están robando. Llamar al 911 ahora</li><li><b>7</b> Sumar No arranca <code>planes-sumar-noArranca</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/planes-mejorar.png" alt="planes-mejorar" loading="lazy">
+            <span class="marca" style="left:9.45%;top:12.59%">1</span><span class="marca" style="left:71.43%;top:75.51%">2</span><span class="marca" style="left:50.00%;top:83.75%">3</span><span class="marca" style="left:50.00%;top:92.45%">4</span>
+          </div>
+          <div class="texto">
+            <h3>planes-mejorar</h3>
+            
+            <p class="ruta"><code>planes-mejorar</code> · <b>4</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Me están robando. Llamar al 911 ahora</li><li><b>3</b> Confirmar <code>planes-confirmar</code></li><li><b>4</b> Ahora no <code>planes-ahora-no</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/mejorar-plan.png" alt="mejorar-plan" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.76%">1</span>
+          </div>
+          <div class="texto">
+            <h3>mejorar-plan</h3>
+            
+            <p class="ruta"><code>mejorar-plan</code> · <b>1</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/planes-bajar.png" alt="planes-bajar" loading="lazy">
+            <span class="marca" style="left:9.45%;top:12.59%">1</span><span class="marca" style="left:71.43%;top:75.51%">2</span><span class="marca" style="left:50.00%;top:83.75%">3</span><span class="marca" style="left:50.00%;top:92.45%">4</span>
+          </div>
+          <div class="texto">
+            <h3>planes-bajar</h3>
+            
+            <p class="ruta"><code>planes-bajar</code> · <b>4</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Me están robando. Llamar al 911 ahora</li><li><b>3</b> Hablar con alguien <code>planes-bajar-confirmar</code></li><li><b>4</b> Ahora no <code>planes-ahora-no</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/planes-contexto-vehiculo.png" alt="planes-contexto-vehiculo" loading="lazy">
+            <span class="marca" style="left:9.45%;top:11.44%">1</span><span class="marca" style="left:50.00%;top:53.32%">2</span><span class="marca" style="left:50.00%;top:61.56%">3</span><span class="marca" style="left:71.43%;top:92.91%">4</span>
+          </div>
+          <div class="texto">
+            <h3>planes-contexto-vehiculo</h3>
+            
+            <p class="ruta"><code>planes-contexto-vehiculo</code> · <b>4</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Sumarla</li><li><b>3</b> Ahora no <code>planes-ahora-no</code></li><li><b>4</b> Me están robando. Llamar al 911 ahora</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/planes-contexto-mi-plata.png" alt="planes-contexto-mi-plata" loading="lazy">
+            <span class="marca" style="left:9.45%;top:11.44%">1</span><span class="marca" style="left:50.00%;top:45.39%">2</span><span class="marca" style="left:50.00%;top:53.62%">3</span><span class="marca" style="left:71.43%;top:92.91%">4</span>
+          </div>
+          <div class="texto">
+            <h3>planes-contexto-mi-plata</h3>
+            
+            <p class="ruta"><code>planes-contexto-mi-plata</code> · <b>4</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Poner el débito automático</li><li><b>3</b> Ahora no <code>planes-ahora-no</code></li><li><b>4</b> Me están robando. Llamar al 911 ahora</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/planes-contexto-resuelta.png" alt="planes-contexto-resuelta" loading="lazy">
+            <span class="marca" style="left:9.45%;top:21.74%">1</span><span class="marca" style="left:9.45%;top:35.43%">2</span><span class="marca" style="left:21.39%;top:35.43%">3</span><span class="marca" style="left:33.33%;top:35.43%">4</span><span class="marca" style="left:45.27%;top:35.43%">5</span><span class="marca" style="left:57.21%;top:35.43%">6</span><span class="marca" style="left:71.43%;top:84.21%">7</span><span class="marca" style="left:50.00%;top:92.45%">8</span>
+          </div>
+          <div class="texto">
+            <h3>planes-contexto-resuelta</h3>
+            
+            <p class="ruta"><code>planes-contexto-resuelta</code> · <b>8</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> 1 de 5 estrellas <code>planes-estrella-1</code></li><li><b>3</b> 2 de 5 estrellas <code>planes-estrella-2</code></li><li><b>4</b> 3 de 5 estrellas <code>planes-estrella-3</code></li><li><b>5</b> 4 de 5 estrellas <code>planes-estrella-4</code></li><li><b>6</b> 5 de 5 estrellas <code>planes-estrella-5</code></li><li><b>7</b> Me están robando. Llamar al 911 ahora</li><li><b>8</b> Listo <code>planes-resuelta-listo</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/seguros.png" alt="seguros" loading="lazy">
+            <span class="marca" style="left:11.44%;top:10.98%">1</span><span class="marca" style="left:50.00%;top:64.30%">2</span><span class="marca" style="left:50.00%;top:84.21%">3</span><span class="marca" style="left:10.78%;top:92.91%">4</span><span class="marca" style="left:30.39%;top:92.91%">5</span><span class="marca" style="left:50.00%;top:92.91%">6</span><span class="marca" style="left:69.61%;top:92.91%">7</span><span class="marca" style="left:89.22%;top:92.91%">8</span>
+          </div>
+          <div class="texto">
+            <h3>seguros</h3>
+            
+            <p class="ruta"><code>seguros</code> · <b>8</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>volver</code></li><li><b>2</b> Llamanos · 021 728 9120</li><li><b>3</b> Llamar ahora · 021 728 9120</li><li><b>4</b> Inicio, pestaña 1 de 5</li><li><b>5</b> AlóChat, pestaña 2 de 5</li><li><b>6</b> Servicios, pestaña 3 de 5</li><li><b>7</b> Vehículos, pestaña 4 de 5</li><li><b>8</b> Cuenta, pestaña 5 de 5</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/seguros-y-medios.png" alt="seguros-y-medios" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.53%">1</span><span class="marca" style="left:50.00%;top:94.36%">2</span>
+          </div>
+          <div class="texto">
+            <h3>seguros-y-medios</h3>
+            
+            <p class="ruta"><code>seguros-y-medios</code> · <b>2</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>volver</code></li><li><b>2</b> Pedir la cotización por teléfono <code>pedir-cotizacion</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/subscription.png" alt="subscription" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.76%">1</span><span class="marca" style="left:50.00%;top:77.27%">2</span><span class="marca" style="left:87.81%;top:85.81%">3</span><span class="marca" style="left:63.18%;top:91.99%">4</span>
+          </div>
+          <div class="texto">
+            <h3>subscription</h3>
+            
+            <p class="ruta"><code>subscription</code> · <b>4</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Elegir el medio de pago</li><li><b>3</b> Llamar al 911 ahora. La policía es la única que puede interceptar un robo en curso <code>llamar-a-la-policia</code></li><li><b>4</b> Me están robando. Llamar a Atención al Cliente, 021 728 9120, ahora <code>emergencia-compacta</code></li></ol>
+          </div>
+        </article>
+      </section>
+      <section id="s14">
+        <header class="seccion">
+          <p class="num">Sección 14 de 15</p>
+          <h2>AlóChat</h2>
+          <p class="bajada">Una sola puerta para servicio, administración, urgencias y ventas.</p>
+          <p class="porque">Es el canal por donde el Centro de Monitoreo puede hablarle al cliente y el cliente contestar, en el mismo hilo. Un aviso que no llega se convierte en una conversación, y una conversación deja rastro y se puede medir.</p>
+          <p class="puntaje"><b>6,34/10</b> hoy · <b>8,66</b> el techo con sólo código nuestro · medido contra Skype · Bluesky · Co-Star · Nike · Angi · Flo</p>
+        </header>
+        
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/alo.png" alt="alo" loading="lazy">
+            <span class="marca apagada" style="left:29.19%;top:2.52%">1</span><span class="marca apagada" style="left:71.60%;top:2.52%">2</span><span class="marca" style="left:11.44%;top:50.92%">3</span><span class="marca apagada" style="left:18.78%;top:68.27%">4</span><span class="marca" style="left:44.82%;top:68.27%">5</span><span class="marca" style="left:50.00%;top:84.10%">6</span><span class="marca" style="left:10.78%;top:92.91%">7</span><span class="marca" style="left:30.39%;top:92.91%">8</span><span class="marca" style="left:50.00%;top:92.91%">9</span><span class="marca" style="left:69.61%;top:92.91%">10</span><span class="marca" style="left:89.22%;top:92.91%">11</span>
+          </div>
+          <div class="texto">
+            <h3>alo</h3>
+            
+            <p class="ruta"><code>alo</code> · <b>11</b> controles</p>
+            <ol class="controles"><li><b>1</b> Soy yo. Cerramos el aviso <em>· apagado</em></li><li><b>2</b> No soy yo. Te llamamos ahora <em>· apagado</em></li><li><b>3</b> Escuchar la nota de voz <em>· menos de 44 pt</em></li><li><b>4</b> Elegir: ¿Es por el aviso de tu ABC 123? <em>· apagado</em></li><li><b>5</b> Es otra cosa</li><li><b>6</b> Llamar a la guardia, 24 h · 021 728 9120</li><li><b>7</b> Inicio, pestaña 1 de 5</li><li><b>8</b> AlóChat, pestaña 2 de 5</li><li><b>9</b> Servicios, pestaña 3 de 5</li><li><b>10</b> Vehículos, pestaña 4 de 5</li><li><b>11</b> Cuenta, pestaña 5 de 5</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/main_map_ayuda.png" alt="main · map · ayuda" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.76%">1</span><span class="marca" style="left:72.93%;top:20.59%">2</span><span class="marca" style="left:50.00%;top:33.94%">3</span><span class="marca" style="left:50.00%;top:41.72%">4</span><span class="marca" style="left:50.00%;top:49.50%">5</span><span class="marca" style="left:50.00%;top:67.77%">6</span><span class="marca" style="left:50.00%;top:84.32%">7</span><span class="marca" style="left:10.78%;top:92.91%">8</span><span class="marca" style="left:30.39%;top:92.91%">9</span><span class="marca" style="left:50.00%;top:92.91%">10</span><span class="marca" style="left:69.61%;top:92.91%">11</span><span class="marca" style="left:89.22%;top:92.91%">12</span>
+          </div>
+          <div class="texto">
+            <h3>main · map · ayuda</h3>
+            
+            <p class="ruta"><code>main_map_ayuda</code> · <b>12</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Me están robando. Llamar al 911 ahora <code>emergencia-compacta</code></li><li><b>3</b> Necesito asistencia</li><li><b>4</b> Choqué</li><li><b>5</b> No arranca</li><li><b>6</b> Conectar en WhatsApp</li><li><b>7</b> Llamar ahora · 021 728 9120</li><li><b>8</b> Inicio, pestaña 1 de 5</li><li><b>9</b> AlóChat, pestaña 2 de 5</li><li><b>10</b> Servicios, pestaña 3 de 5</li><li><b>11</b> Vehículos, pestaña 4 de 5</li><li><b>12</b> Cuenta, pestaña 5 de 5</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/main_cuenta_ayuda.png" alt="main · cuenta · ayuda" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span><span class="marca" style="left:50.00%;top:19.26%">2</span><span class="marca" style="left:50.00%;top:37.68%">3</span><span class="marca" style="left:50.00%;top:44.55%">4</span><span class="marca" style="left:50.00%;top:55.76%">5</span><span class="marca" style="left:50.00%;top:63.20%">6</span>
+          </div>
+          <div class="texto">
+            <h3>main · cuenta · ayuda</h3>
+            
+            <p class="ruta"><code>main_cuenta_ayuda</code> · <b>6</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Hablá con alguien</li><li><b>3</b> Empezar la guía</li><li><b>4</b> Practicá el botón</li><li><b>5</b> Centro de ayuda. 6 guías · 3 pasos cada una</li><li><b>6</b> Ayuda con tu cuenta. Qué pasa con tus equipos y con tus datos</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/main_auxilio_ayuda.png" alt="main · auxilio · ayuda" loading="lazy">
+            <span class="marca" style="left:9.45%;top:11.44%">1</span><span class="marca" style="left:50.00%;top:34.29%">2</span><span class="marca" style="left:50.00%;top:42.52%">3</span><span class="marca" style="left:50.00%;top:50.76%">4</span><span class="marca" style="left:50.00%;top:59.00%">5</span><span class="marca" style="left:50.00%;top:67.24%">6</span><span class="marca" style="left:50.00%;top:75.48%">7</span><span class="marca" style="left:50.00%;top:83.71%">8</span><span class="marca" style="left:50.00%;top:91.95%">9</span><span class="marca" style="left:71.43%;top:92.91%">10</span>
+          </div>
+          <div class="texto">
+            <h3>main · auxilio · ayuda</h3>
+            
+            <p class="ruta"><code>main_auxilio_ayuda</code> · <b>10</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Olvidé mi contraseña <code>ayuda-top-ayudaTopOlvideContrasena</code></li><li><b>3</b> Pagar y ver cuánto debo <code>ayuda-top-ayudaTopPagarYVerDeuda</code></li><li><b>4</b> GPS sin señal o pedir un técnico <code>ayuda-top-ayudaTopGpsSinSenal</code></li><li><b>5</b> Apagar y devolver el motor <code>ayuda-top-ayudaTopApagarMotor</code></li><li><b>6</b> Ver o bajar mi factura <code>ayuda-top-ayudaTopVerFactura</code></li><li><b>7</b> No me llegan los avisos <code>ayuda-top-ayudaTopNoLleganAvisos</code></li><li><b>8</b> La app en un celular nuevo <code>ayuda-top-ayudaTopCelularNuevo</code></li><li><b>9</b> Cambié o vendí el vehículo <code>ayuda-top-ayudaTopCambieVehiculo</code></li><li><b>10</b> Me están robando. Llamar al 911 ahora</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/ayuda-tema.png" alt="ayuda-tema" loading="lazy">
+            <span class="marca" style="left:9.45%;top:11.44%">1</span><span class="marca" style="left:50.00%;top:22.16%">2</span><span class="marca" style="left:50.00%;top:55.03%">3</span><span class="marca" style="left:50.00%;top:65.10%">4</span><span class="marca" style="left:50.00%;top:73.34%">5</span><span class="marca" style="left:50.00%;top:81.58%">6</span><span class="marca" style="left:71.43%;top:92.91%">7</span>
+          </div>
+          <div class="texto">
+            <h3>ayuda-tema</h3>
+            
+            <p class="ruta"><code>ayuda-tema</code> · <b>7</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Me están robando <code>ayuda-p-ayudaPMeEstanRobando</code></li><li><b>3</b> Ir ahí · Revisar mis avisos <code>ayuda-ir-ahi-seguridad</code></li><li><b>4</b> Si no contesto el aviso <code>ayuda-p-ayudaPSiNoContesto</code></li><li><b>5</b> El aviso sin internet <code>ayuda-p-ayudaPAvisoSinInternet</code></li><li><b>6</b> ¿Quién me atiende? <code>ayuda-p-ayudaPQuienMeAtiende</code></li><li><b>7</b> Me están robando. Llamar al 911 ahora</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/ayuda-buscar.png" alt="ayuda-buscar" loading="lazy">
+            <span class="marca" style="left:9.45%;top:11.44%">1</span><span class="marca" style="left:50.00%;top:44.01%">2</span><span class="marca" style="left:50.00%;top:53.17%">3</span><span class="marca" style="left:71.43%;top:92.91%">4</span>
+          </div>
+          <div class="texto">
+            <h3>ayuda-buscar</h3>
+            
+            <p class="ruta"><code>ayuda-buscar</code> · <b>4</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Me llegó «¿Sos vos?» <code>ayuda-buscando-sos-vos</code></li><li><b>3</b> Si no contesto el aviso <code>ayuda-buscando-si-no-contesto</code></li><li><b>4</b> Me están robando. Llamar al 911 ahora</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/ayuda-video.png" alt="ayuda-video" loading="lazy">
+            <span class="marca" style="left:9.45%;top:12.59%">1</span><span class="marca" style="left:50.00%;top:51.26%">2</span><span class="marca" style="left:50.00%;top:59.50%">3</span><span class="marca" style="left:50.00%;top:67.73%">4</span><span class="marca" style="left:50.00%;top:75.97%">5</span><span class="marca" style="left:71.43%;top:84.21%">6</span><span class="marca" style="left:50.00%;top:92.45%">7</span>
+          </div>
+          <div class="texto">
+            <h3>ayuda-video</h3>
+            
+            <p class="ruta"><code>ayuda-video</code> · <b>7</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Llega el aviso. 0:00 <code>ayuda-capitulo-0:00</code></li><li><b>3</b> Soy yo. 0:12 <code>ayuda-capitulo-0:12</code></li><li><b>4</b> NO soy yo. 0:24 <code>ayuda-capitulo-0:24</code></li><li><b>5</b> Sin señal. 0:36 <code>ayuda-capitulo-0:36</code></li><li><b>6</b> Me están robando. Llamar al 911 ahora</li><li><b>7</b> Hacerlo ahora · Revisar mis avisos <code>ayuda-hacerlo-ahora</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/ayuda-videos.png" alt="ayuda-videos" loading="lazy">
+            <span class="marca" style="left:9.45%;top:11.44%">1</span><span class="marca" style="left:50.00%;top:31.43%">2</span><span class="marca" style="left:50.00%;top:51.79%">3</span><span class="marca" style="left:50.00%;top:72.16%">4</span><span class="marca" style="left:50.00%;top:92.52%">5</span><span class="marca" style="left:71.43%;top:92.91%">6</span>
+          </div>
+          <div class="texto">
+            <h3>ayuda-videos</h3>
+            
+            <p class="ruta"><code>ayuda-videos</code> · <b>6</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Ver el video <code>ayuda-ver-aviso</code></li><li><b>3</b> Ver el video <code>ayuda-ver-motor</code></li><li><b>4</b> Ver el video <code>ayuda-ver-pagar</code></li><li><b>5</b> Ver el video <code>ayuda-ver-factura</code></li><li><b>6</b> Me están robando. Llamar al 911 ahora</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/ayuda-respuesta.png" alt="ayuda-respuesta" loading="lazy">
+            <span class="marca" style="left:9.45%;top:14.80%">1</span><span class="marca" style="left:26.49%;top:59.12%">2</span><span class="marca" style="left:73.51%;top:59.12%">3</span><span class="marca" style="left:50.00%;top:71.24%">4</span><span class="marca" style="left:50.00%;top:79.48%">5</span><span class="marca" style="left:71.43%;top:84.21%">6</span><span class="marca" style="left:50.00%;top:87.72%">7</span><span class="marca" style="left:50.00%;top:92.45%">8</span>
+          </div>
+          <div class="texto">
+            <h3>ayuda-respuesta</h3>
+            
+            <p class="ruta"><code>ayuda-respuesta</code> · <b>8</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <em>· menos de 44 pt</em> <code>auxilio-volver</code></li><li><b>2</b> Sí <code>ayuda-sirvio-si</code></li><li><b>3</b> No <code>ayuda-sirvio-no</code></li><li><b>4</b> Agregar una tarjeta <code>ayuda-relacionada-ayudaPAgregarTarjeta</code></li><li><b>5</b> «No sabemos si se cobró» <code>ayuda-relacionada-ayudaPNoSabemosSiSeCobro</code></li><li><b>6</b> Me están robando. Llamar al 911 ahora</li><li><b>7</b> Bajar mi factura <code>ayuda-relacionada-ayudaPBajarFactura</code></li><li><b>8</b> Ir ahí · Pagar mi cuota <code>ayuda-respuesta-ir-ahi</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/ayuda-cuenta.png" alt="ayuda-cuenta" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span><span class="marca" style="left:50.00%;top:27.50%">2</span><span class="marca" style="left:50.00%;top:38.71%">3</span><span class="marca" style="left:50.00%;top:46.15%">4</span><span class="marca" style="left:50.00%;top:54.08%">5</span>
+          </div>
+          <div class="texto">
+            <h3>ayuda-cuenta</h3>
+            
+            <p class="ruta"><code>ayuda-cuenta</code> · <b>5</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Hablá con Atención al Cliente</li><li><b>3</b> Qué plan tenés y hasta cuándo va. Suscripciones</li><li><b>4</b> Tus datos y privacidad. Qué guardamos y qué podés apagar</li><li><b>5</b> Eliminar mi cuenta de la app. Borra tu acceso y los datos de la app. Tu servicio sigue.</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/ayuda-guia.png" alt="ayuda-guia" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.53%">1</span><span class="marca" style="left:28.61%;top:43.97%">2</span><span class="marca" style="left:71.39%;top:43.97%">3</span><span class="marca" style="left:71.43%;top:92.91%">4</span>
+          </div>
+          <div class="texto">
+            <h3>ayuda-guia</h3>
+            
+            <p class="ruta"><code>ayuda-guia</code> · <b>4</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Saltar <code>ayuda-guia-saltar-aviso-1</code></li><li><b>3</b> Siguiente <code>ayuda-guia-siguiente-aviso-1</code></li><li><b>4</b> Me están robando. Llamar al 911 ahora</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/ayuda-primera-vez.png" alt="ayuda-primera-vez" loading="lazy">
+            <span class="marca" style="left:9.45%;top:12.59%">1</span><span class="marca" style="left:50.00%;top:40.05%">2</span><span class="marca" style="left:50.00%;top:49.20%">3</span><span class="marca" style="left:71.43%;top:92.91%">4</span>
+          </div>
+          <div class="texto">
+            <h3>ayuda-primera-vez</h3>
+            
+            <p class="ruta"><code>ayuda-primera-vez</code> · <b>4</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>auxilio-volver</code></li><li><b>2</b> Empezar la guía <code>ayuda-primera-vez-empezar</code></li><li><b>3</b> Ahora no <code>ayuda-primera-vez-ahora-no</code></li><li><b>4</b> Me están robando. Llamar al 911 ahora</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/main_guia.png" alt="main · guia" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span><span class="marca" style="left:50.00%;top:48.44%">2</span><span class="marca" style="left:50.00%;top:55.07%">3</span>
+          </div>
+          <div class="texto">
+            <h3>main · guia</h3>
+            
+            <p class="ruta"><code>main_guia</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver <code>puesta-volver</code></li><li><b>2</b> Empezar la guía <code>puesta-empezar</code></li><li><b>3</b> Ahora no <code>puesta-ahora-no</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/main_guide.png" alt="main · guide" loading="lazy">
+            <span class="marca" style="left:87.56%;top:84.40%">1</span><span class="marca apagada" style="left:73.63%;top:90.39%">2</span><span class="marca" style="left:87.56%;top:90.39%">3</span>
+          </div>
+          <div class="texto">
+            <h3>main · guide</h3>
+            
+            <p class="ruta"><code>main_guide</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Cerrar</li><li><b>2</b> Anterior <em>· apagado</em></li><li><b>3</b> Siguiente</li></ol>
+          </div>
+        </article>
+      </section>
+      <section id="s15">
+        <header class="seccion">
+          <p class="num">Sección 15 de 15</p>
+          <h2>Mi cuenta</h2>
+          <p class="bajada">Perfil, ajustes, idioma, cómo entrás y cómo te vas.</p>
+          <p class="porque">Es donde el cliente comprueba que la empresa lo trata bien: puede cambiar su plan, elegir cómo entra, y darse de baja sin tener que llamar. Una baja que se puede hacer sola es una baja que no se convierte en un reclamo.</p>
+          <p class="puntaje"><b>6,34/10</b> hoy · <b>8,66</b> el techo con sólo código nuestro · medido contra Skype · Bluesky · Co-Star · Nike · Angi · Flo</p>
+        </header>
+        
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/profile.png" alt="profile" loading="lazy">
+            <span class="marca" style="left:50.00%;top:17.09%">1</span><span class="marca" style="left:50.00%;top:27.84%">2</span><span class="marca" style="left:50.00%;top:42.72%">3</span><span class="marca" style="left:50.00%;top:50.15%">4</span><span class="marca" style="left:50.00%;top:57.59%">5</span><span class="marca" style="left:50.00%;top:65.03%">6</span><span class="marca" style="left:50.00%;top:72.46%">7</span><span class="marca" style="left:50.00%;top:79.90%">8</span><span class="marca" style="left:10.78%;top:92.91%">9</span><span class="marca" style="left:50.00%;top:94.77%">10</span><span class="marca" style="left:30.39%;top:92.91%">11</span><span class="marca" style="left:50.00%;top:92.91%">12</span><span class="marca" style="left:69.61%;top:92.91%">13</span><span class="marca" style="left:89.22%;top:92.91%">14</span>
+          </div>
+          <div class="texto">
+            <h3>profile</h3>
+            
+            <p class="ruta"><code>profile</code> · <b>14</b> controles</p>
+            <ol class="controles"><li><b>1</b> Cómo se usa la app. Volvé a ver la guía y practicá el botón</li><li><b>2</b> Tu ficha</li><li><b>3</b> Métodos de pago. VISA ···· 4242</li><li><b>4</b> Suscripciones</li><li><b>5</b> Débito automático. Tu cuota se paga sola, con la tarjeta que elijas.</li><li><b>6</b> Pedidos</li><li><b>7</b> Tus documentos</li><li><b>8</b> Historial de pagos</li><li><b>9</b> Inicio, pestaña 1 de 5</li><li><b>10</b> Ajustes. Español · Kilómetros</li><li><b>11</b> AlóChat, pestaña 2 de 5</li><li><b>12</b> Servicios, pestaña 3 de 5</li><li><b>13</b> Vehículos, pestaña 4 de 5</li><li><b>14</b> Cuenta, pestaña 5 de 5</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/main_profile.png" alt="main · profile" loading="lazy">
+            <span class="marca" style="left:6.47%;top:9.95%">1</span>
+          </div>
+          <div class="texto">
+            <h3>main · profile</h3>
+            
+            <p class="ruta"><code>main_profile</code> · <b>1</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/editar.png" alt="editar" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span><span class="marca" style="left:50.00%;top:19.83%">2</span><span class="marca" style="left:50.00%;top:30.51%">3</span><span class="marca" style="left:50.00%;top:41.19%">4</span><span class="marca apagada" style="left:50.00%;top:51.87%">5</span><span class="marca" style="left:50.00%;top:67.43%">6</span><span class="marca" style="left:46.52%;top:78.11%">7</span><span class="marca" style="left:46.52%;top:88.79%">8</span><span class="marca" style="left:50.00%;top:93.14%">9</span><span class="marca" style="left:46.52%;top:99.47%">10</span>
+          </div>
+          <div class="texto">
+            <h3>editar</h3>
+            
+            <p class="ruta"><code>editar</code> · <b>10</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Nombre <code>campo-nombre</code></li><li><b>3</b> Apellido <em>· menos de 44 pt</em> <code>campo-apellido</code></li><li><b>4</b> Número de documento <code>campo-documento</code></li><li><b>5</b> Teléfono <em>· apagado</em> <code>campo-telefono</code></li><li><b>6</b> Dirección de correo electrónico <code>campo-email</code></li><li><b>7</b> Estado civil <code>campo-valorEstadoCivil</code></li><li><b>8</b> Fecha de nacimiento <code>campo-fechaNacimiento</code></li><li><b>9</b> Guardar mis datos</li><li><b>10</b> Nacionalidad <code>campo-codigoNacionalidad</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/ajustes.png" alt="ajustes" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span><span class="marca" style="left:50.00%;top:18.65%">2</span><span class="marca" style="left:50.00%;top:26.09%">3</span><span class="marca" style="left:50.00%;top:33.52%">4</span><span class="marca" style="left:50.00%;top:40.96%">5</span>
+          </div>
+          <div class="texto">
+            <h3>ajustes</h3>
+            
+            <p class="ruta"><code>ajustes</code> · <b>5</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Apariencia. Sistema</li><li><b>3</b> Idioma. Español</li><li><b>4</b> Unidades. Kilómetros</li><li><b>5</b> Cómo entrás. Con tu cara</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/idioma.png" alt="idioma" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span>
+          </div>
+          <div class="texto">
+            <h3>idioma</h3>
+            
+            <p class="ruta"><code>idioma</code> · <b>1</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/unidades.png" alt="unidades" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span>
+          </div>
+          <div class="texto">
+            <h3>unidades</h3>
+            
+            <p class="ruta"><code>unidades</code> · <b>1</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/como-entras.png" alt="como-entras" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span>
+          </div>
+          <div class="texto">
+            <h3>como-entras</h3>
+            
+            <p class="ruta"><code>como-entras</code> · <b>1</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/apariencia.png" alt="apariencia" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span>
+          </div>
+          <div class="texto">
+            <h3>apariencia</h3>
+            
+            <p class="ruta"><code>apariencia</code> · <b>1</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/face-id.png" alt="face-id" loading="lazy">
+            <span class="marca" style="left:50.00%;top:80.85%">1</span><span class="marca" style="left:50.00%;top:88.63%">2</span>
+          </div>
+          <div class="texto">
+            <h3>face-id</h3>
+            
+            <p class="ruta"><code>face-id</code> · <b>2</b> controles</p>
+            <ol class="controles"><li><b>1</b> Activar Face ID</li><li><b>2</b> Omitir</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/fingerprint.png" alt="fingerprint" loading="lazy">
+            <span class="marca" style="left:50.00%;top:80.85%">1</span><span class="marca" style="left:50.00%;top:88.63%">2</span>
+          </div>
+          <div class="texto">
+            <h3>fingerprint</h3>
+            
+            <p class="ruta"><code>fingerprint</code> · <b>2</b> controles</p>
+            <ol class="controles"><li><b>1</b> Activar la huella</li><li><b>2</b> Omitir</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/privacidad.png" alt="privacidad" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span><span class="marca" style="left:50.00%;top:77.77%">2</span>
+          </div>
+          <div class="texto">
+            <h3>privacidad</h3>
+            
+            <p class="ruta"><code>privacidad</code> · <b>2</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Abrir ajustes</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/main_cuenta_aviso.png" alt="main · cuenta · aviso" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.56%">1</span><span class="marca" style="left:26.24%;top:84.52%">2</span><span class="marca" style="left:73.76%;top:84.52%">3</span><span class="marca" style="left:50.00%;top:93.36%">4</span>
+          </div>
+          <div class="texto">
+            <h3>main · cuenta · aviso</h3>
+            
+            <p class="ruta"><code>main_cuenta_aviso</code> · <b>4</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Soy yo, cerrar el evento</li><li><b>3</b> NO soy yo, que llamen</li><li><b>4</b> Hablar con una persona · 021 728 9120</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/familia.png" alt="familia" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span><span class="marca" style="left:50.00%;top:56.29%">2</span><span class="marca" style="left:50.00%;top:63.84%">3</span>
+          </div>
+          <div class="texto">
+            <h3>familia</h3>
+            
+            <p class="ruta"><code>familia</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Avisame cuando esté</li><li><b>3</b> Lo que va a poder</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/familia_invitar.png" alt="familia · invitar" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.56%">1</span><span class="marca" style="left:50.00%;top:31.46%">2</span><span class="marca" style="left:50.00%;top:42.14%">3</span><span class="marca" style="left:50.00%;top:64.04%">4</span><span class="marca apagada" style="left:50.00%;top:93.14%">5</span>
+          </div>
+          <div class="texto">
+            <h3>familia · invitar</h3>
+            
+            <p class="ruta"><code>familia_invitar</code> · <b>5</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Cómo se llama</li><li><b>3</b> Su teléfono</li><li><b>4</b> Cambiar qué puede hacer</li><li><b>5</b> Mandar la invitación. Falta completar este campo <em>· apagado</em></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/familia_miembro.png" alt="familia · miembro" loading="lazy">
+            <span class="marca" style="left:9.45%;top:9.61%">1</span>
+          </div>
+          <div class="texto">
+            <h3>familia · miembro</h3>
+            
+            <p class="ruta"><code>familia_miembro</code> · <b>1</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/familia_permisos.png" alt="familia · permisos" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.56%">1</span><span class="marca" style="left:50.00%;top:93.14%">2</span>
+          </div>
+          <div class="texto">
+            <h3>familia · permisos</h3>
+            
+            <p class="ruta"><code>familia_permisos</code> · <b>2</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Mandar la invitación</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/references.png" alt="references" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.76%">1</span><span class="marca" style="left:50.00%;top:42.18%">2</span><span class="marca" style="left:50.00%;top:53.09%">3</span><span class="marca" style="left:50.00%;top:72.69%">4</span><span class="marca" style="left:50.00%;top:78.72%">5</span><span class="marca" style="left:50.00%;top:83.60%">6</span><span class="marca" style="left:87.81%;top:85.81%">7</span><span class="marca" style="left:63.18%;top:91.99%">8</span>
+          </div>
+          <div class="texto">
+            <h3>references</h3>
+            
+            <p class="ruta"><code>references</code> · <b>8</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Nombre completo</li><li><b>3</b> Número de teléfono</li><li><b>4</b> Nombre completo</li><li><b>5</b> Guardar las referencias</li><li><b>6</b> Número de teléfono</li><li><b>7</b> Llamar al 911 ahora. La policía es la única que puede interceptar un robo en curso <code>llamar-a-la-policia</code></li><li><b>8</b> Me están robando. Llamar a Atención al Cliente, 021 728 9120, ahora <code>emergencia-compacta</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/search-location.png" alt="search-location" loading="lazy">
+            <span class="marca" style="left:12.69%;top:11.33%">1</span><span class="marca" style="left:90.55%;top:44.70%">2</span><span class="marca" style="left:50.00%;top:65.22%">3</span><span class="marca" style="left:26.77%;top:81.54%">4</span><span class="marca" style="left:87.81%;top:85.81%">5</span><span class="marca" style="left:63.18%;top:91.99%">6</span>
+          </div>
+          <div class="texto">
+            <h3>search-location</h3>
+            
+            <p class="ruta"><code>search-location</code> · <b>6</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Usar dónde estoy ahora</li><li><b>3</b> Usar esta ubicación</li><li><b>4</b> Aviso legal <em>· menos de 44 pt</em></li><li><b>5</b> Llamar al 911 ahora. La policía es la única que puede interceptar un robo en curso <code>llamar-a-la-policia</code></li><li><b>6</b> Me están robando. Llamar a Atención al Cliente, 021 728 9120, ahora <code>emergencia-compacta</code></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/orders.png" alt="orders" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.76%">1</span><span class="marca" style="left:50.00%;top:53.93%">2</span><span class="marca" style="left:50.00%;top:58.50%">3</span><span class="marca" style="left:50.00%;top:71.09%">4</span><span class="marca" style="left:92.04%;top:63.08%">5</span>
+          </div>
+          <div class="texto">
+            <h3>orders</h3>
+            
+            <p class="ruta"><code>orders</code> · <b>5</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Agregar nuevo equipo</li><li><b>3</b> Bottom sheet handle <em>· menos de 44 pt</em></li><li><b>4</b> Bottom Sheet</li><li><b>5</b> Cerrar <em>· menos de 44 pt</em></li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/delete-account.png" alt="delete-account" loading="lazy">
+            <span class="marca" style="left:6.47%;top:9.95%">1</span><span class="marca" style="left:54.98%;top:35.77%">2</span><span class="marca" style="left:50.00%;top:92.91%">3</span>
+          </div>
+          <div class="texto">
+            <h3>delete-account</h3>
+            
+            <p class="ruta"><code>delete-account</code> · <b>3</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Desinstalar los equipos</li><li><b>3</b> Dar de baja mi cuenta</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/eliminar.png" alt="eliminar" loading="lazy">
+            <span class="marca" style="left:9.45%;top:10.56%">1</span><span class="marca" style="left:50.00%;top:93.36%">2</span>
+          </div>
+          <div class="texto">
+            <h3>eliminar</h3>
+            
+            <p class="ruta"><code>eliminar</code> · <b>2</b> controles</p>
+            <ol class="controles"><li><b>1</b> Volver</li><li><b>2</b> Eliminar mi cuenta de la app</li></ol>
+          </div>
+        </article>
+        <article class="pantalla">
+          <div class="lienzo">
+            <img src="fotos/cierre.png" alt="cierre" loading="lazy">
+            <span class="marca" style="left:78.15%;top:12.01%">1</span><span class="marca" style="left:32.75%;top:17.73%">2</span><span class="marca" style="left:79.15%;top:17.73%">3</span><span class="marca" style="left:37.31%;top:24.60%">4</span><span class="marca" style="left:70.65%;top:24.60%">5</span><span class="marca" style="left:50.00%;top:31.69%">6</span><span class="marca" style="left:50.00%;top:63.27%">7</span><span class="marca" style="left:90.55%;top:36.73%">8</span><span class="marca" style="left:24.67%;top:43.52%">9</span><span class="marca" style="left:64.34%;top:43.40%">10</span><span class="marca" style="left:99.05%;top:43.40%">11</span><span class="marca" style="left:26.49%;top:53.09%">12</span><span class="marca" style="left:73.51%;top:53.09%">13</span><span class="marca" style="left:21.64%;top:87.19%">14</span><span class="marca" style="left:50.00%;top:87.19%">15</span><span class="marca" style="left:78.36%;top:87.19%">16</span><span class="marca" style="left:10.78%;top:92.91%">17</span><span class="marca" style="left:30.39%;top:92.91%">18</span><span class="marca" style="left:50.00%;top:92.91%">19</span><span class="marca" style="left:69.61%;top:92.91%">20</span><span class="marca" style="left:89.22%;top:92.91%">21</span>
+          </div>
+          <div class="texto">
+            <h3>cierre</h3>
+            
+            <p class="ruta"><code>cierre</code> · <b>21</b> controles</p>
+            <ol class="controles"><li><b>1</b> Pagar Gs. 209.050 <code>franja-cuota-pagar</code></li><li><b>2</b> 602-ABSB · Sin señal · hace 12 h <code>chip-de-estado</code></li><li><b>3</b> ¿Por qué pasa? <code>chip-por-que-pasa</code></li><li><b>4</b> Centrar en mi vehículo</li><li><b>5</b> Me están robando. Llamar al 911 ahora <code>emergencia-compacta</code></li><li><b>6</b> Subir o bajar la hoja <code>asa-de-la-hoja</code></li><li><b>7</b> Bottom Sheet</li><li><b>8</b> Avisos · 1 sin leer</li><li><b>9</b> 602-ABSB · Sin señal · hace 12 h <code>ficha-1</code></li><li><b>10</b> AAKJ-471 · Estacionado · hace 12 h <code>ficha-2</code></li><li><b>11</b> BXR-889 · Sin señal · hace 20 h <code>ficha-3</code></li><li><b>12</b> Necesito asistencia</li><li><b>13</b> Una pregunta</li><li><b>14</b> Por dónde anduvo</li><li><b>15</b> Pedir ayuda</li><li><b>16</b> Compartir dónde está</li><li><b>17</b> Inicio, pestaña 1 de 5</li><li><b>18</b> AlóChat, pestaña 2 de 5</li><li><b>19</b> Servicios, pestaña 3 de 5</li><li><b>20</b> Vehículos, pestaña 4 de 5</li><li><b>21</b> Cuenta, pestaña 5 de 5</li></ol>
+          </div>
+        </article>
+      </section>
+
+<section id="cuadro">
+  <header class="seccion">
+    <p class="num">El cuadro</p>
+    <h2>Contra las mejores apps del mundo</h2>
+    <p class="porque">Ocho momentos de uso por ocho variables. Cada casilla se
+    puntúa contando qué mecanismos tenemos de una lista cerrada de mecanismos que
+    se vieron funcionando en una app líder. No hay ponderaciones ni ajustes: si
+    alguien arregla algo, el número se mueve solo.</p>
+  </header>
+  <div class="tabla-env">
+    <table>
+      <thead><tr><th scope="col">momento de uso</th><th>claridad</th><th>velocidad</th><th>confianza</th><th>accesibilidad</th><th>estética</th><th>estados</th><th>honestidad</th><th>conversión</th>
+        <th>media</th><th>techo</th></tr></thead>
+      <tbody><tr><th scope='row'>1 · Entrar</th><td class="medio">5,0</td><td class="medio">6,0</td><td class="mal">3,3</td><td class="medio">5,0</td><td class="medio">6,8</td><td class="medio">5,8</td><td class="mal">4,0</td><td class="medio">6,7</td><td class='media'>5,33</td><td class='techo'>9,36</td></tr><tr><th scope='row'>2 · Mi vehículo</th><td class="medio">5,8</td><td class="bien">8,0</td><td class="medio">5,0</td><td class="medio">6,0</td><td class="bien">9,4</td><td class="bien">8,3</td><td class="medio">6,0</td><td class="bien">7,0</td><td class='media'>6,94</td><td class='techo'>8,93</td></tr><tr><th scope='row'>3 · Emergencia</th><td class="bien">7,5</td><td class="bien">8,0</td><td class="mal">3,3</td><td class="medio">6,0</td><td class="bien">7,3</td><td class="medio">6,7</td><td class="bien">8,0</td><td class="medio">6,0</td><td class='media'>6,60</td><td class='techo'>9,59</td></tr><tr><th scope='row'>4 · Asistencia</th><td class="mal">3,3</td><td class="medio">5,0</td><td class="medio">5,0</td><td class="medio">5,0</td><td class="medio">6,5</td><td class="medio">6,7</td><td class="bien">8,0</td><td class="medio">6,0</td><td class='media'>5,69</td><td class='techo'>8,00</td></tr><tr><th scope='row'>5 · La plata</th><td class="mal">4,2</td><td class="bien">8,0</td><td class="medio">6,7</td><td class="medio">6,0</td><td class="bien">9,7</td><td class="medio">6,7</td><td class="bien">8,0</td><td class="mal">2,5</td><td class='media'>6,47</td><td class='techo'>8,60</td></tr><tr><th scope='row'>6 · Ecosistema</th><td class="medio">5,0</td><td class="bien">8,3</td><td class="mal">3,3</td><td class="bien">7,0</td><td class="medio">6,6</td><td class="medio">6,7</td><td class="bien">8,0</td><td class="mal">4,2</td><td class='media'>6,14</td><td class='techo'>8,18</td></tr><tr><th scope='row'>7 · Upgrades</th><td class="mal">3,3</td><td class="mal">3,0</td><td class="mal">2,5</td><td class="bien">10,0</td><td class="nomedi">no pude medir</td><td class="mal">4,2</td><td class="bien">7,9</td><td class="mal">0,0</td><td class='media'>4,41</td><td class='techo'>6,53</td></tr><tr><th scope='row'>8 · La cuenta</th><td class="medio">6,7</td><td class="bien">8,0</td><td class="mal">3,3</td><td class="medio">6,0</td><td class="bien">7,2</td><td class="bien">7,5</td><td class="medio">6,0</td><td class="medio">6,0</td><td class='media'>6,34</td><td class='techo'>8,66</td></tr></tbody>
+      <tfoot><tr><th scope="row">promedio</th><td>5,10</td><td>6,79</td><td>4,05</td><td>6,38</td><td>7,64</td><td>6,58</td><td>6,99</td><td>4,80</td>
+        <td class="media">6.01</td><td class="techo">8.51</td></tr></tfoot>
+    </table>
+  </div>
+  <p class="nota"><b>Las dos frases que resumen el cuadro, y las dos salen de la
+  aritmética.</b> La variable más floja es <b>confianza (4,05)</b>, y es la única
+  cuyo techo con sólo código nuestro también es bajo: la confianza no se compra
+  escribiendo código, se compra con datos y permisos que hoy no tenemos. Y el
+  promedio estaba tapando la superficie que toca el dinero: los dos momentos
+  donde entra plata nueva —<b>upgrades 4,41</b> y <b>asistencia 5,69</b>— son los
+  dos peores de los ocho.</p>
+  <p class="nota">«Estética» mide <b>conformidad</b>, no belleza: un solo sistema
+  de color y que cada pantalla cite la lámina que dibuja. La comparación del
+  píxel contra la lámina líder dice <b>no pude medir</b>, y no se degrada a un
+  puntaje. Un 6 medido vale más que un 10 inventado.</p>
+</section>
+
+<footer class="env">
+  <p>Alarmas Py · Alarmas S.A. · Paraguay. Documento interno para la dirección.
+  Las pantallas son capturas reales del simulador, tomadas contra un servidor de
+  prueba: ningún dato de esta presentación pertenece a un cliente real.</p>
+</footer>
+</div></body></html>
