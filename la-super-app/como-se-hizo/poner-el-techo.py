@@ -10,10 +10,23 @@ y dice, en la misma línea, si un refutador lo revisó y qué sobrevivió.
    15 SECCIONES con otro. Cambiar sujeto e instrumento a la vez y publicar la
    resta es lo que tumbó el 7,88 de la Tienda.
 """
-import json, re, html
+import json, re, html, os
 
-SCR = '(scratchpad)'
-DOC = 'este documento'
+# 🔑 Las rutas de la Mac NO se publican, pero el script tiene que poder correrse
+#    de nuevo: un «cómo se hizo» que no se puede repetir es una foto, no un
+#    método. Salen del ambiente:
+#        SCRATCHPAD=<carpeta con mediciones.json> DOC=<index.html> \
+#        RAICES_A_TAPAR=<ruta>=<qué decir>:<ruta>=<qué decir> python3 este.py
+#
+# 🔴 POR QUÉ ASÍ, y es un defecto medido el 23-sep-2026 01:2x -03: la copia que
+#    se publicaba de este archivo se limpiaba con esta misma tabla, así que
+#    **los PATRONES se limpiaban a sí mismos** y quedaban en
+#    `(r'', '')` — que matchea la cadena vacía en todas partes— y en pares
+#    idénticos que no reemplazan nada. El saneador publicado estaba MUERTO y su
+#    `assert` no lo podía cazar, porque el assert corre sobre el documento, no
+#    sobre el saneador. Sacando los literales del código, no hay nada que limpiar.
+SCR = os.environ.get('SCRATCHPAD', '(scratchpad)')
+DOC = os.environ.get('DOC', 'este documento')
 med    = json.load(open(f'{SCR}/mediciones.json', encoding='utf-8'))
 try:    refut = json.load(open(f'{SCR}/refutaciones.json', encoding='utf-8'))
 except: refut = {}
@@ -69,10 +82,76 @@ def _sinNombre(r):
     if n == 0: return 'una vara propia, sin lámina (ver abajo)'
     return f'{n} lámina{"s" if n != 1 else ""} de Mobbin, citadas una por una abajo'
 
+# ═══ QUIEN NO SE PUDO MEDIR: NOSOTROS O LA LIDER ═══════════════════════════
+#
+# 🔴 EL DEFECTO QUE ESTO ARREGLA · medido el 23-sep-2026 01:1x -03, y lo trajo
+#    el refutador de la seccion 11 (la unica de las 15 que no tenia uno).
+#
+#    El campo `noPudeMedir` de cada variable describe **el lado LIDER**, no el
+#    nuestro. Sus propios denominadores lo dicen con todas las letras:
+#      s8 accesibilidad: «Total 78/79 = 9,87. EL 2 ES DEL LADO LIDER, NO DEL
+#                         NUESTRO»
+#      s8 estados:       «= 3/4. EL 2 ES DEL LADO LIDER: de una lamina suelta
+#                         de Mobbin no se puede contar cuantos estados dibuja»
+#
+#    Y el generador lo leia al reves, en las DOS columnas a la vez:
+#      · NUESTRA columna imprimia «no pude medir» TAPANDO un numero medido
+#        (9,87, con denominador 78/79). Cuatro celdas.
+#      · La columna de la LIDER imprimia `coma(v.get('lider', 0))` sin mirar
+#        nada, asi que un `lider = 2` —que es el CODIGO DE SALIDA «no pude
+#        medir»— salia impreso «2,0» al lado de puntajes de verdad, como si la
+#        app lider sacara 2 de 10. Cuatro celdas. Es la forma nº 8 de esta casa
+#        (el `exit 2` degradado a veredicto) adentro del documento publico.
+#
+# 🧪 LOS DOS CONTROLES, corridos sobre las 120 variables de las 15 secciones:
+#    · positivo: una variable medida de los dos lados da False en los dos.
+#    · negativo: un denominador que MENCIONA «no pude medir» en el medio de la
+#      frase NO cuenta — por eso se mira que ARRANQUE diciendolo, no que lo
+#      contenga. Sin ese negativo, s8 caeria del lado equivocado y se borrarian
+#      dos numeros que SI estan medidos.
+#    Resultado: NUESTRO lado sin medir = 1 de 120 (s9 velocidad, cuyo
+#    denominador arranca «NO PUDE MEDIR.»). Lado lider sin medir = 4 de 120.
+
+def nuestroSinMedir(v):
+    """¿NUESTRO numero no se pudo medir? Se decide por el denominador, que es
+       donde vive la razon, y exigiendo que ARRANQUE diciendolo."""
+    return str(v.get('denominador', '')).strip().lower().startswith('no pude medir')
+
+def liderSinMedir(v):
+    """¿El numero de la app LIDER no se pudo medir? Un `lider` ausente, o un 2
+       acompanado de un `appLider` que dice que no se pudo."""
+    l = v.get('lider')
+    a = str(v.get('appLider', '')).lower()
+    if l is None:
+        return True
+    return l == 2 and ('no pude' in a or not a or a == 'none')
+
+# 🔴 ESTO ERA UN LITERAL, «14 secciones» y «ninguna salió confirmada», escrito a
+#    mano · lo cazó el refutador de la sección 11 el 23-sep-2026: «el día que un
+#    refutador confirme una, la página va a seguir diciendo 14 y ninguna».
+#    Un número que no se mueve cuando cambia lo que dice medir no mide eso
+#    (forma nº 18 de esta casa). Ahora se CUENTA.
+def _cuantasRefutadas():
+    return str(len(refut))
+
+def _cuantasConfirmadas():
+    c = sum(1 for v in refut.values() if str(v.get('veredicto', '')).upper() == 'CONFIRMADO')
+    if c == 0:
+        return 'ninguna salió confirmada del todo'
+    return f'{c} salió confirmada' if c == 1 else f'{c} salieron confirmadas'
+
 def bloque(sid, r):
     e = html.escape
     ref   = refut.get(sid)
-    hoy   = r.get('hoy', r.get('hoyRederivado'))
+    # 🔴 ACA DECIA `hoy = r.get('hoy', ...)` · 23-sep-2026 01:1x -03. El puntaje
+    #    se LEIA de un campo declarado y no se derivaba nunca de la tabla que el
+    #    lector tiene delante. En s11 eso publico 7,10 mientras su propia tabla
+    #    daba 7,19. Ahora sale de la tabla, siempre, y se dice sobre cuantas.
+    _vs = r.get('variables', []) or []
+    _medidas = [v['hoy'] for v in _vs if not nuestroSinMedir(v)]
+    hoy   = round(sum(_medidas) / len(_medidas), 2) if _medidas else r.get('hoy')
+    _sobre = f'{len(_medidas)} de {len(_vs)}' if _vs else ''
+    _sinMedirNuestro = [v['nombre'] for v in _vs if nuestroSinMedir(v)]
     techo = r.get('techo', r.get('techoRederivado'))
     nota_ref = ''
     if ref:
@@ -97,16 +176,17 @@ def bloque(sid, r):
         sello = '<span class="sello sinrefutar">◻ todavía sin refutar</span>'
         detalle = ('Este número lo midió un equipo y <b>todavía no lo revisó un segundo</b>. '
                    'En esta casa «verde» es del candado y «hecho» es del refutador: se publica '
-                   'diciéndolo, no callándolo. De las 14 secciones que sí pasaron por un '
-                   'refutador, <b>ninguna salió confirmada del todo</b>.')
+                   'diciéndolo, no callándolo. De las ' + _cuantasRefutadas() + ' secciones que sí '
+                   'pasaron por un refutador, <b>' + _cuantasConfirmadas() + '</b>.')
 
     filas = []
     for v in r.get('variables', []):
-        npm = v.get('noPudeMedir')
+        npm = nuestroSinMedir(v)
         clase = 'nomedi' if npm else ('bien' if v['hoy'] >= 7.5 else 'medio' if v['hoy'] >= 5 else 'mal')
         valor = 'no pude medir' if npm else coma(v['hoy'])
+        lid = 'no pude medir' if liderSinMedir(v) else coma(v['lider'])
         filas.append(f"<tr><th scope='row'>{e(v['nombre'])}</th><td class='{clase}'>{valor}</td>"
-                     f"<td class='techo'>{coma(v.get('lider', 0))}</td>"
+                     f"<td class='techo{' nomedi' if liderSinMedir(v) else ''}'>{lid}</td>"
                      f"<td class='denom'>{e(str(v.get('denominador',''))[:160])}"
                      + (f"<br><span class='quienlider'>{e(str(v.get('appLider'))[:200])}</span>"
                         if v.get('appLider') else '')
@@ -139,13 +219,16 @@ def bloque(sid, r):
     n = len(r.get('arreglosNuestros', []))
     return (
       '<!--TECHO:INICIO-->'
-      f'<p class="puntaje"><b>{coma(hoy)}/10</b> esta sección hoy · <b>{coma(techo)}</b> '
+      f'<p class="puntaje"><b>{coma(hoy)}/10</b> esta sección hoy '
+      + (f'<span class="fecha">(media de {_sobre} variables · sin medir de nuestro lado: '
+         f'{e(", ".join(_sinMedirNuestro))})</span> ' if _sinMedirNuestro else '')
+      + f'· <b>{coma(techo)}</b> '
       f'su techo con sólo código nuestro · medido contra '
       f'{e(" · ".join(apps)) if apps else _sinNombre(r)} '
       f'<span class="fecha">· láminas miradas el 22-sep-2026</span> {sello}</p>\n'
       f'        <p class="nota refnota">{detalle}</p>\n'
       f'        <details class="techo-detalle"><summary>Qué falta para llegar a {coma(techo)} '
-      f'— {n} arreglo{"s" if n != 1 else ""}, todos de código nuestro</summary>\n'
+      f'— {n} ítem{"s" if n != 1 else ""} de trabajo, todo de código nuestro</summary>\n'
       f'          <div class="techo-cuerpo">\n'
       f'            <div class="tabla-env"><table><thead><tr><th>variable</th><th>hoy</th>'
       f'<th>las líderes</th><th>sobre qué se contó</th></tr></thead>'
@@ -207,13 +290,10 @@ for n in range(1, 16):
 # como esta organizado el disco. Va ACA y no en un comando aparte porque ya
 # volvio una vez: un arreglo que hay que acordarse de correr no es un arreglo.
 _antes = len(re.findall(r'/Users/cr', doc))
-for _pat, _rep in [
-    (r'el repositorio de este documento/la-super-app/index\.html', 'este documento'),
-    (r'el repositorio de este documento', 'el repositorio de este documento'),
-    (r'el repositorio de la app', 'el repositorio de la app'),
-    (r'los entregables/', 'los entregables/'),
-    (r'', ''), (r'', ''),
-]:
+_PARES = [t.split('=', 1) for t in os.environ.get('RAICES_A_TAPAR', '').split(':') if '=' in t]
+assert _PARES or _antes == 0, (
+    'hay rutas de la Mac en el documento y no me diste RAICES_A_TAPAR')
+for _pat, _rep in [(re.escape(a), b) for a, b in _PARES]:
     doc = re.sub(_pat, _rep, doc)
 _despues = len(re.findall(r'/Users/cr', doc))
 print(f'rutas de la Mac: {_antes} -> {_despues}')
