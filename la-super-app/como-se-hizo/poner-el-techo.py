@@ -97,7 +97,8 @@ def bloque(sid, r):
         sello = '<span class="sello sinrefutar">◻ todavía sin refutar</span>'
         detalle = ('Este número lo midió un equipo y <b>todavía no lo revisó un segundo</b>. '
                    'En esta casa «verde» es del candado y «hecho» es del refutador: se publica '
-                   'diciéndolo, no callándolo. De las secciones ya revisadas, las tres bajaron.')
+                   'diciéndolo, no callándolo. De las 14 secciones que sí pasaron por un '
+                   'refutador, <b>ninguna salió confirmada del todo</b>.')
 
     filas = []
     for v in r.get('variables', []):
