@@ -24,12 +24,50 @@ def coma(x):
     try: return f'{float(x):.2f}'.replace('.', ',')
     except Exception: return '—'
 
+def nombre_de_app(bruto):
+    """El nombre de la app sola.
+
+    🃏 Los frentes escriben en `appLider` la app Y lo que se ve en su lamina
+       —«Swiggy · el buscador dice "Search for Onion"»—, que es dato valioso y
+       va a la tabla. Pero en el renglon «medido contra ...» eso produce una
+       frase de 90 caracteres donde tiene que ir un nombre. Se parte por el
+       primer separador y se descartan los que no nombran a nadie.
+    """
+    a = (bruto or '').strip()
+    if not a: return None
+    for sep in (' · ', ': ', ' — ', ' (', ','):
+        if sep in a: a = a.split(sep)[0].strip()
+    a = re.sub(r'\s+[0-9a-f]{8}$', '', a).strip(' ·—-')
+    if not a: return None
+    bajo = a.lower()
+    # lo que no es una app: una norma, un «no pude medir», una vara propia
+    if (bajo.startswith(('no pude medir', 'no comparable', 'compuesto', 'norma',
+                         'techo de la lista', 'vara', '(vara'))
+        or len(a) > 30 or len(a) < 2): return None
+    return a
+
 def lideres_de(r):
     apps = []
     for v in r.get('variables', []):
-        a = (v.get('appLider') or '').strip()
+        a = nombre_de_app(v.get('appLider'))
         if a and a not in apps: apps.append(a)
-    return (apps or r.get('lideres', []))[:6]
+    for a in r.get('lideres', []):
+        a = nombre_de_app(a)
+        if a and a not in apps: apps.append(a)
+    return apps[:6]
+
+def _sinNombre(r):
+    """Que decir cuando el frente cito la lamina y no el nombre de la app.
+
+    🔑 Lo auditable es la LAMINA, no el nombre: un nombre de app sin lamina no
+       se puede comprobar, y una lamina sin nombre si. Entonces se dice cuantas
+       laminas hay y se las lista abajo, en vez de escribir «las lideres» —que
+       no nombra a nadie— o inventar un nombre.
+    """
+    n = sum(1 for v in r.get('variables', [])
+            if v.get('laminaMobbin') and 'no pude' not in str(v['laminaMobbin']).lower())
+    if n == 0: return 'una vara propia, sin lámina (ver abajo)'
+    return f'{n} lámina{"s" if n != 1 else ""} de Mobbin, citadas una por una abajo'
 
 def bloque(sid, r):
     e = html.escape
@@ -68,7 +106,13 @@ def bloque(sid, r):
         valor = 'no pude medir' if npm else coma(v['hoy'])
         filas.append(f"<tr><th scope='row'>{e(v['nombre'])}</th><td class='{clase}'>{valor}</td>"
                      f"<td class='techo'>{coma(v.get('lider', 0))}</td>"
-                     f"<td class='denom'>{e(str(v.get('denominador',''))[:160])}</td></tr>")
+                     f"<td class='denom'>{e(str(v.get('denominador',''))[:160])}"
+                     + (f"<br><span class='quienlider'>{e(str(v.get('appLider'))[:200])}</span>"
+                        if v.get('appLider') else '')
+                     + (f"<br><span class='lam'>lámina Mobbin <code>{e(str(v.get('laminaMobbin'))[:40])}</code>"
+                        f"{' · mirada ' + e(str(v.get('fechaMirada'))[:12]) if v.get('fechaMirada') else ''}</span>"
+                        if v.get('laminaMobbin') and 'no pude' not in str(v.get('laminaMobbin')).lower() else '')
+                     + "</td></tr>")
     arreglos = ''.join(f'<li>{e(str(a))}</li>' for a in r.get('arreglosNuestros', []))
     otros = []
     if r.get('productoNuevo'):
@@ -93,9 +137,10 @@ def bloque(sid, r):
     apps = lideres_de(r)
     n = len(r.get('arreglosNuestros', []))
     return (
+      '<!--TECHO:INICIO-->'
       f'<p class="puntaje"><b>{coma(hoy)}/10</b> esta sección hoy · <b>{coma(techo)}</b> '
       f'su techo con sólo código nuestro · medido contra '
-      f'{e(" · ".join(apps)) if apps else "las líderes de este momento de uso"} '
+      f'{e(" · ".join(apps)) if apps else _sinNombre(r)} '
       f'<span class="fecha">· láminas miradas el 22-sep-2026</span> {sello}</p>\n'
       f'        <p class="nota refnota">{detalle}</p>\n'
       f'        <details class="techo-detalle"><summary>Qué falta para llegar a {coma(techo)} '
@@ -108,14 +153,43 @@ def bloque(sid, r):
       f'            {"".join(otros)}\n'
       f'            <p class="nota metodo"><b>Cómo salió el número:</b> '
       f'{e(str(r.get("metodo",""))[:900])}</p>\n'
-      f'          </div></details>')
+      f'          </div></details><!--TECHO:FIN-->')
 
 doc = open(DOC, encoding='utf-8').read()
 # se borra el bloque anterior (puntaje + refnota + details) para no apilar
-doc = re.sub(r'<p class="puntaje">.*?</details>', '<!--TECHO-->', doc, flags=re.S)
-doc = re.sub(r'<p class="puntaje">.*?</p>\s*<p class="nota" style="margin-top:8px">.*?</p>',
-             '<!--TECHO-->', doc, flags=re.S)
+# 🔴 EL BORRADO DEL BLOQUE ANTERIOR SE HACIA POR FORMA Y SE ROMPIO SOLO.
+#    `<p class="puntaje">.*?</details>` cortaba en el PRIMER </details>. El dia
+#    que el bloque gano un <details> anidado adentro —el del refutador— el
+#    </details> de afuera quedo huerfano, y cada regeneracion sumo uno mas: la
+#    version publicada a las 22:27 tenia 3 </details> y 3 </div> de sobra, uno
+#    por cada seccion refutada. Ahora el bloque lleva SUS PROPIAS MARCAS y el
+#    borrado es por marca: una marca no cambia cuando cambia lo de adentro.
+doc = re.sub(r'<!--TECHO:INICIO-->.*?<!--TECHO:FIN-->', '<!--TECHO-->', doc, flags=re.S)
+
+def _sacar_forma_vieja(texto):
+    """Saca los bloques `techo-detalle` que se escribieron ANTES de las marcas,
+    contando la anidacion en vez de confiar en el primer cierre."""
+    salida, i = [], 0
+    while True:
+        j = texto.find('<details class="techo-detalle">', i)
+        if j < 0:
+            salida.append(texto[i:]); break
+        salida.append(texto[i:j])
+        k, hondo = j, 0
+        while k < len(texto):
+            ab = texto.find('<details', k); ce = texto.find('</details>', k)
+            if ce < 0: raise SystemExit('un <details> sin cerrar en el documento')
+            if 0 <= ab < ce: hondo += 1; k = ab + 8
+            else:
+                hondo -= 1; k = ce + 10
+                if hondo == 0: break
+        i = k
+    return ''.join(salida)
+
+doc = _sacar_forma_vieja(doc)
 doc = re.sub(r'<p class="puntaje">.*?</p>', '<!--TECHO-->', doc, flags=re.S)
+doc = re.sub(r'<p class="nota refnota">.*?</p>', '', doc, flags=re.S)
+doc = re.sub(r'<p class="nota" style="margin-top:8px">.*?</p>', '', doc, flags=re.S)
 
 puestas, faltan = [], []
 for n in range(1, 16):
@@ -145,6 +219,16 @@ print(f'rutas de la Mac: {_antes} -> {_despues}')
 assert _despues == 0, 'quedaron rutas de la Mac'
 # control positivo del instrumento: tiene que hallar lo que SI reemplazo
 assert 'el repositorio de la app' in doc, 'el reemplazo no dejo rastro: el instrumento no toco nada'
+
+# ── 🔴 EL BALANCE SE COMPRUEBA ACA, NO DESPUES ────────────────────────────
+# El documento publicado a las 22:27 salio con 3 </details> y 3 </div> de mas,
+# y el control que corri por fuera dijo «ninguno» porque era un parser de
+# juguete. Contar aperturas contra cierres no se puede equivocar.
+for _t in ('details', 'div', 'section', 'table', 'ol', 'p', 'header', 'article'):
+    _a = len(re.findall(r'<' + _t + r'[\s>]', doc))
+    _c = len(re.findall(r'</' + _t + r'>', doc))
+    assert _a == _c, f'🔴 {_t}: abre {_a} y cierra {_c} ({_a - _c:+d})'
+print('balance de etiquetas: 8 familias, todas cerradas')
 
 sobran = doc.count('<!--TECHO-->')
 open(DOC, 'w', encoding='utf-8').write(doc)

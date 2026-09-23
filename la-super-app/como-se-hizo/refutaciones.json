@@ -87,7 +87,8 @@
    "🔴 El control positivo publicado «AUXILIO_PLANES da 52 en wt-union» no reproduce por ningun camino: 62 lineas, 67 ocurrencias, 19 como palabra exacta sin sufijo, 38 mirando solo app/. El desglose por variante (19 + 12 + 10 + 9 + 5 + 3 + 3 + 2 + 2 + 2) tampoco llega a 52. El control cumple su funcion —el instrumento lee y el negativo da 0— pero el numero publicado al lado es falso. (Su hermano, servicioPorClave = 17, si da exacto.)",
    "🔴 El control positivo de la description de M9, «subscription.tsx da 3 aciertos de mutacion en el mismo barrido», no reproduce: mutateAsync = 1, 'mutat' = 2, useMutation = 0. La CONCLUSION sobrevive porque la re-medi yo con patron amplio (planes-mejorar = 0, subscription = 1, inventado = 0), pero el 3 no sale de ningun patron.",
    "⚠️ «estos 743 nodos» (en el limite del contraste). Medido con findAll sobre la pagina: 746.",
-   "⚠️ La cita de archivo del barrido de SERVICIOS apunta a components/auxilio/planes.ts, que NO EXISTE. El objeto vive en components/auxilio/planes.tsx. El contenido citado es correcto; el contenedor no."
+   "⚠️ La cita de archivo del barrido de SERVICIOS apunta a components/auxilio/planes.ts, que NO EXISTE. El objeto vive en components/auxilio/planes.tsx. El contenido citado es correcto; el contenedor no.",
+   "🃏 Y ESTE INFORME SE CONTRADIJO A SÍ MISMO, corregido midiendo. Su veredicto dio el techo en 6,55 y su propia demostración llega a 6,64: el 12º arreglo —traer `loQueCubreElPlan()` de otro árbol de trabajo, donde ya existe y está probada— es código nuestro y entra en el cajón (a). Comprobado el 22-sep 22:29: la función aparece en 2 archivos del otro árbol y en 0 de éste, con control positivo (un símbolo que sí existe en los dos da 10 y 8). Cuando el veredicto y la prueba de un mismo informe no coinciden, no gana ninguno: se mide. El techo publicado es 6,64."
   ],
   "atajosHallados": [
    "EL NUMERO COPIADO PRESENTADO COMO RE-DERIVACION: el 5,50 que el frente publica como «re-derivado sobre la lista cerrada» es identico al que s13 ya publica y tiene commiteado desde 0693b66. Es el atajo fichado «un numero que coincide con el publicado porque se lo copio en vez de re-derivarlo», con el agravante de que se presento como si CONTRADIJERA lo publicado.",
@@ -98,7 +99,7 @@
   ],
   "laminasQueNoExisten": [],
   "puntajeQueSobrevive": 5.5,
-  "techoQueSobrevive": 6.55
+  "techoQueSobrevive": 6.64
  },
  "s1": {
   "veredicto": "PARCIAL",
