@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Alarmas Py · producción</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap">
+<style>:root{
+  --fondo:#F5F7FC; --sup:#FFFFFF; --sup2:#E9EEFC; --texto:#0F1B3D; --texto2:#4F5B78; --texto3:#636C85;
+  --linea:#DDE3F2; --primario:#244CCC; --senal:#F58640; --senal-aro:#A54508;
+  --mov:rgb(16,109,51); --mov-tenue:#E3F4E8; --det:#5A6682; --det-tenue:#EEF1F7;
+  --alarma:#901A13; --alarma-tenue:#FDECEA; --amarillo-tinta:#6B5A00; --amarillo-tenue:#FBF3C4;
+  --sombra:0 1px 0 rgba(15,27,61,.04), 0 12px 28px -18px rgba(15,27,61,.28);
+  --f-cifra:'Sora',ui-rounded,system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-texto:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --fondo:#0A1024; --sup:rgb(19,28,56); --sup2:rgb(28,39,80); --texto:#F2F5FF; --texto2:#B4BEDA; --texto3:#8792B4;
+  --linea:#2A3766; --primario:#7FA1FF; --senal:#F58640; --senal-aro:#F58640;
+  --mov:#BDFFC5; --mov-tenue:rgb(18,53,36); --det:#A7B2D1; --det-tenue:rgb(28,39,80);
+  --alarma:#FF8A80; --alarma-tenue:#3A0D16; --amarillo-tinta:#F7E177; --amarillo-tenue:#3A3514;
+  --sombra:0 1px 0 rgba(0,0,0,.25), 0 14px 30px -18px rgba(0,0,0,.7); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --fondo:#0A1024; --sup:rgb(19,28,56); --sup2:rgb(28,39,80); --texto:#F2F5FF; --texto2:#B4BEDA; --texto3:#8792B4;
+  --linea:#2A3766; --primario:#7FA1FF; --senal:#F58640; --senal-aro:#F58640;
+  --mov:#BDFFC5; --mov-tenue:rgb(18,53,36); --det:#A7B2D1; --det-tenue:rgb(28,39,80);
+  --alarma:#FF8A80; --alarma-tenue:#3A0D16; --amarillo-tinta:#F7E177; --amarillo-tenue:#3A3514;
+  --sombra:0 1px 0 rgba(0,0,0,.25), 0 14px 30px -18px rgba(0,0,0,.7); color-scheme:dark}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fondo);color:var(--texto);font:16px/1.55 var(--f-texto);font-variant-numeric:tabular-nums;overflow-x:hidden}
+h1,h2,h3{font-family:var(--f-cifra);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h2{font-size:clamp(1.25rem,2.6vw,1.7rem);font-weight:700;line-height:1.2}
+h3{font-size:1rem;font-weight:700;line-height:1.3}
+p{margin:0;text-wrap:pretty}
+a{color:var(--primario)}
+ul,ol{margin:0;padding:0}
+:focus-visible{outline:3px solid var(--primario);outline-offset:2px;border-radius:4px}
+.etiqueta{font-size:.74rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--texto3)}
+.punto{display:inline-block;width:.6rem;height:.6rem;border-radius:50%;background:var(--senal);margin-right:.5rem;vertical-align:.04em;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--senal) 24%,transparent)}
+.pie{font-size:.86rem;color:var(--texto2);max-width:90ch}
+.pie.arriba{margin-bottom:.8rem}
+.grande{font-size:1.06rem;color:var(--texto2);max-width:62ch}
+.grande b{color:var(--texto)}
+
+/* ── barra de arriba ── */
+.barra-top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  padding:10px clamp(16px,4vw,48px);background:color-mix(in srgb,var(--fondo) 88%,transparent);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--linea)}
+.marca-casa{font-family:var(--f-cifra);font-weight:700}
+.esp{flex:1}
+.btn{font:600 .86rem/1 var(--f-texto);color:var(--texto);background:var(--sup);border:1px solid var(--linea);border-radius:999px;
+  padding:9px 14px;min-height:40px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.btn:hover{background:var(--sup2)}
+.btn[aria-pressed="true"]{background:var(--primario);color:var(--sup);border-color:var(--primario)}
+
+/* ── páginas / láminas ── */
+.pagina{max-width:1180px;margin-inline:auto;padding:clamp(16px,4vw,48px);display:flex;flex-direction:column;gap:clamp(28px,5vw,56px)}
+.lamina{background:var(--sup);border:1px solid var(--linea);border-radius:20px;box-shadow:var(--sombra);
+  padding:clamp(18px,3.4vw,44px);min-width:0;scroll-margin-top:72px}
+.adentro{display:flex;flex-direction:column;gap:clamp(14px,2vw,22px);min-width:0}
+
+/* portada */
+.portada{display:flex;flex-direction:column;gap:18px;padding-block:clamp(8px,4vw,40px)}
+.titulo{font-size:clamp(2rem,6vw,4rem);font-weight:800;line-height:1.04;letter-spacing:-.03em;max-width:16ch}
+.bajada{font-size:clamp(1.05rem,2vw,1.3rem);color:var(--texto2);max-width:48ch}
+.fuentes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:1px;background:var(--linea);
+  border:1px solid var(--linea);border-radius:14px;overflow:hidden;margin:6px 0 0}
+.fuentes>div{background:var(--sup);padding:12px 14px;min-width:0}
+.fuentes dt{font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--texto3)}
+.fuentes dd{margin:.2rem 0 0;font-weight:600}
+.acciones{display:flex;gap:10px;flex-wrap:wrap}
+.boton{font:700 .95rem/1 var(--f-texto);padding:13px 18px;border-radius:12px;border:1px solid var(--linea);background:var(--sup2);color:var(--texto);text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.boton.primario{background:var(--primario);border-color:var(--primario);color:var(--sup)}
+.nota-al-pie{font-size:.86rem;color:var(--texto3)}
+
+/* nota */
+.dos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,3vw,36px);align-items:start}
+.tres-col{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.col{display:flex;flex-direction:column;gap:12px;min-width:0}
+.nota{display:flex;align-items:baseline;gap:.35rem;line-height:1;padding-bottom:.35em;margin-bottom:.25rem}
+.nota .n{font-family:var(--f-cifra);font-weight:800;font-size:clamp(4.4rem,13vw,8rem);letter-spacing:-.04em}
+.nota .d{font-family:var(--f-cifra);font-weight:600;font-size:clamp(1.5rem,4vw,2.4rem);color:var(--texto3)}
+.escala{margin-top:14px;background:var(--sup2);border-radius:14px;padding:16px 16px 12px}
+.escala svg{display:block;width:100%;height:auto;overflow:visible}
+.s-pista{fill:var(--det-tenue)} .s-lleno{fill:var(--primario)} .s-techo{stroke:var(--texto);stroke-width:.6}
+.s-t{font:3px var(--f-texto);fill:var(--texto2)} .s-b{font-weight:700;fill:var(--texto)}
+.escala .pie{margin-top:.6rem}
+.apilada{display:flex;height:22px;border-radius:8px;overflow:hidden;gap:2px}
+.seg.mejor,.sw.mejor{background:var(--mov)} .seg.igual,.sw.igual{background:var(--det)}
+.seg.peor,.sw.peor{background:var(--senal)} .seg.ausente,.sw.ausente{background:var(--alarma)}
+.ley{list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 14px;font-size:.92rem}
+.ley li{display:flex;align-items:center;gap:8px;min-width:0}
+.sw{width:12px;height:12px;border-radius:3px;flex:none}
+.cifras{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--linea);border:1px solid var(--linea);border-radius:14px;overflow:hidden}
+.cifras.tres{grid-template-columns:repeat(3,minmax(0,1fr))}
+.cifras>div{background:var(--sup);padding:14px 16px;display:flex;flex-direction:column;gap:.3rem;min-width:0}
+.cifras b{font-family:var(--f-cifra);font-size:1.5rem;font-weight:700;letter-spacing:-.02em}
+.cifras span{font-size:.88rem;color:var(--texto2)}
+.caja{background:var(--sup2);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:.6rem;min-width:0}
+.caja p{color:var(--texto2)} .caja p b{color:var(--texto)}
+
+/* correcciones */
+.marca{display:inline-block;width:.7rem;height:.7rem;border-radius:50%;margin-right:.45rem;vertical-align:.02em}
+.marca.ok{background:var(--mov)} .marca.curso{background:var(--senal)}
+.corr{list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.corr li{border:1px solid var(--linea);border-radius:12px;padding:10px 14px;background:var(--sup);break-inside:avoid}
+.tema{font-family:var(--f-cifra);font-size:.95rem}
+.ad{margin-top:.25rem;font-size:.95rem}
+.antes{color:var(--texto2);text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--senal) 70%,transparent)}
+.flecha{color:var(--texto3);font-weight:700;margin-inline:.2rem}
+.despues{font-weight:600}
+.estado{margin-top:.35rem;font-size:.84rem;color:var(--amarillo-tinta);background:var(--amarillo-tenue);border-radius:8px;padding:4px 8px;display:inline-block}
+
+/* listas */
+.lista{display:flex;flex-direction:column;gap:6px;padding-left:1.1rem}
+.lista li{color:var(--texto2)}
+.lista li::marker{color:var(--texto3)}
+
+/* tablas */
+.tabla-env{min-width:0}
+.tabla{width:100%;border-collapse:separate;border-spacing:0;font-size:.9rem;border:1px solid var(--linea);border-radius:14px;overflow:hidden}
+.tabla th{font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--texto3);background:var(--sup2);
+  text-align:left;padding:9px 10px;border-bottom:1px solid var(--linea);vertical-align:bottom}
+.tabla td{padding:10px;border-bottom:1px solid var(--linea);vertical-align:top;background:var(--sup)}
+.tabla tr:last-child td{border-bottom:0}
+.tabla tr{break-inside:avoid;page-break-inside:avoid}
+.tabla .num{font-family:var(--f-cifra);font-weight:700;font-size:1.05rem;white-space:nowrap}
+.tabla.compacta{font-size:.88rem}
+.par{display:inline-flex;align-items:center;gap:4px;margin:0 8px 4px 0;white-space:nowrap}
+.chip{display:inline-block;font-size:.72rem;font-weight:700;border-radius:999px;padding:2px 8px;line-height:1.5}
+.chip.mejor{background:var(--mov-tenue);color:var(--mov)}
+.chip.igual{background:var(--det-tenue);color:var(--det)}
+.chip.peor{background:color-mix(in srgb,var(--senal) 18%,var(--sup));color:var(--senal-aro)}
+.chip.ausente{background:var(--alarma-tenue);color:var(--alarma)}
+
+/* encender */
+.tres-lineas{display:flex;flex-direction:column;gap:12px;padding-left:1.4rem;font-size:1.04rem;max-width:80ch}
+.tres-lineas li::marker{font-family:var(--f-cifra);font-weight:800;color:var(--senal-aro)}
+.tres-lineas li{color:var(--texto2)} .tres-lineas b{color:var(--texto)}
+.quienes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,130px),1fr));gap:8px}
+.quienes>div{background:var(--sup2);border-radius:12px;padding:10px 14px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.quienes span{font-family:var(--f-cifra);font-weight:800;font-size:1.4rem}
+.personas{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px;align-items:start}
+.personas.dos-col{grid-template-columns:repeat(2,minmax(0,1fr))}
+.persona{border:1px solid var(--linea);border-radius:14px;padding:14px 16px;background:var(--sup);min-width:0;break-inside:avoid;page-break-inside:avoid}
+.persona header{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.persona h3{font-size:1.15rem}
+.rol{font-size:.82rem;color:var(--texto3)}
+.cuantos{margin-left:auto;font-family:var(--f-cifra);font-weight:800;color:var(--texto3)}
+.persona ol{display:flex;flex-direction:column;gap:6px;padding-left:1.3rem;font-size:.93rem}
+.persona li{color:var(--texto2)} .persona li b{color:var(--texto)}
+.urg{display:inline-block;font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:var(--alarma-tenue);color:var(--alarma);border-radius:6px;padding:1px 6px;margin-right:2px}
+.seguridad{margin-top:8px;font-size:.84rem;color:var(--texto3)}
+
+/* decisiones */
+.decisiones{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 22px;padding-left:1.5rem}
+.decisiones li{break-inside:avoid;page-break-inside:avoid}
+.decisiones li::marker{font-family:var(--f-cifra);font-weight:800;color:var(--texto3)}
+.decisiones b{display:block}
+.decisiones span{color:var(--texto2);font-size:.93rem}
+
+/* pasador (sólo en presentación) */
+.pasador{display:none}
+
+/* ── modo presentación ── */
+body.presentando .pagina{max-width:none;padding:0;gap:0}
+body.presentando .lamina{display:none;border-radius:0;border:0;box-shadow:none;min-height:calc(100vh - 61px - 64px);
+  padding:clamp(18px,4vw,64px) clamp(16px,6vw,96px)}
+body.presentando .lamina.activa{display:block}
+body.presentando .adentro{max-width:1180px;margin-inline:auto}
+body.presentando .pasador{display:flex;position:sticky;bottom:0;z-index:5;gap:10px;align-items:center;justify-content:center;
+  padding:10px 16px;background:color-mix(in srgb,var(--fondo) 92%,transparent);border-top:1px solid var(--linea);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+#contador{font-family:var(--f-cifra);font-weight:700;min-width:5.5rem;text-align:center}
+
+/* ── celular ── */
+@media screen and (max-width:820px){
+  .dos,.tres-col,.personas.dos-col,.decisiones{grid-template-columns:minmax(0,1fr)}
+  .cifras.tres{grid-template-columns:minmax(0,1fr)}
+  .tabla,.tabla tbody,.tabla tr,.tabla td{display:block;width:100%}
+  .tabla{border:0;border-radius:0;overflow:visible}
+  .tabla thead{display:none}
+  .tabla tr{border:1px solid var(--linea);border-radius:12px;margin-bottom:10px;overflow:hidden}
+  .tabla td{border-bottom:1px solid var(--linea);padding:8px 12px}
+  .tabla td::before{content:attr(data-l);display:block;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--texto3);margin-bottom:2px}
+  .tabla tr td:last-child{border-bottom:0}
+}
+@media screen and (max-width:420px){
+  .ley,.cifras{grid-template-columns:minmax(0,1fr)}
+  .barra-top .marca-casa{display:none}
+}
+
+/* ── impresión: una lámina por página A4 apaisada ── */
+@page{size:A4 landscape;margin:10mm 12mm}
+@media print{
+  :root{--fondo:#FFFFFF;--sup:#FFFFFF;--sup2:#EEF2FC;--texto:#0F1B3D;--texto2:#3F4A66;--texto3:#5A6380;--linea:#D3DAEC;
+    --primario:#244CCC;--senal:#F58640;--senal-aro:#A54508;--mov:rgb(16,109,51);--mov-tenue:#E3F4E8;--det:#5A6682;--det-tenue:#EEF1F7;
+    --alarma:#901A13;--alarma-tenue:#FDECEA;--amarillo-tinta:#6B5A00;--amarillo-tenue:#FBF3C4;--sombra:none;color-scheme:light}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{font-size:11pt;background:#FFFFFF}
+  .barra-top,.pasador,.acciones{display:none!important}
+  .pagina{max-width:none;padding:0;gap:0;display:block}
+  .lamina,body.presentando .lamina{display:block!important;border:0;border-radius:0;box-shadow:none;padding:0;min-height:0;
+    break-before:page;page-break-before:always}
+  .lamina:first-child{break-before:auto;page-break-before:auto}
+  .adentro{gap:10px}
+  .dos{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .tres-col{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .personas.dos-col{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .personas{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .decisiones{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .tabla{font-size:8.6pt}
+  .tabla td{padding:5px 7px}
+  .tabla th{padding:5px 7px}
+  .persona ol{font-size:8.8pt;gap:3px}
+  .persona{padding:9px 11px}
+  .titulo{font-size:34pt}
+  .nota .n{font-size:64pt}
+  h2{font-size:16pt}
+  .grande{font-size:10.5pt}
+  .corr li{padding:6px 10px}
+  .ad{font-size:9.5pt}
+  .estado{font-size:8.5pt}
+  .pie{font-size:8.5pt}
+  .caja{padding:10px 12px}
+  .tres-lineas{font-size:10.5pt}
+  .decisiones span{font-size:9pt}
+  .lista li{font-size:9.5pt}
+  .tres-col .caja p{font-size:8.8pt}
+  .puerta td,.puerta th{padding:3px 7px}
+  .puerta{font-size:8.2pt}
+  .lamina .adentro{gap:8px}
+  a{color:inherit;text-decoration:none}
+}
+</style>
+</head><body>
+<nav class="barra-top" aria-label="Controles">
+  <span class="marca-casa">Alarmas Py</span>
+  <span class="esp"></span>
+  <a class="btn" href="presentacion.pdf" download>PDF</a>
+  <button class="btn" type="button" id="b-modo" aria-pressed="false">Presentación</button>
+  <button class="btn" type="button" id="b-tema" aria-label="Cambiar claro u oscuro">Claro / oscuro</button>
+</nav>
+<main class="pagina">
+<section class="lamina" id="lamina-1" aria-label="Portada" data-titulo="Portada"><div class="adentro">
+<div class="portada">
+  <p class="etiqueta"><span class="punto"></span>Alarmas Py · 4.0</p>
+  <h1 class="titulo">Alarmas Py · todo para salir a producción</h1>
+  <p class="bajada">Lo que está, lo que falta y lo que hay que pedir para encender la app completa y salir con clientes reales.</p>
+  <dl class="fuentes">
+    <div><dt>La nota real</dt><dd>generada el 12-oct-2026 a las 10:10 -03</dd></div>
+    <div><dt>El camino al 10/10</dt><dd>plan del 12-oct 10:30 -03, con la cola revisada a las 11:46</dd></div>
+    <div><dt>La lista para encender</dt><dd>medida el 12-oct entre 10:45 y 11:02 -03</dd></div>
+    <div><dt>Las correcciones</dt><dd>estado de cada frente medido el 12-oct a las 11:46 -03</dd></div>
+  </dl>
+  <div class="acciones">
+    <a class="boton primario" href="presentacion.pdf" download>Descargar PDF</a>
+    <a class="boton" href="https://www.figma.com/design/ACJUAuoBMDZtbOop1LtmhK/?node-id=976-2" target="_blank" rel="noopener">Abrir el diseño en Figma</a>
+  </div>
+  <p class="nota-al-pie">El diseño se abre con la cuenta de Figma de Alarmas. Las tareas de seguridad y los nombres técnicos están en el documento interno, no en esta página.</p>
+</div></div></section>
+<section class="lamina" id="lamina-2" aria-label="1 · La nota real hoy" data-titulo="1 · La nota real hoy"><div class="adentro">
+<p class="etiqueta">1 · La nota real hoy</p>
+<div class="dos">
+  <div>
+    <div class="nota"><span class="n">8,05</span><span class="d">/ 10</span></div>
+    <p class="grande">Mide <b>lo que el cliente recibe hoy</b>, no lo que está construido. Una pieza que existe pero cuyo dato no llega se cuenta como lo que el cliente ve: «Todavía no lo sabemos».</p>
+    <div class="escala"><svg viewBox="0 0 100 26" role="img" aria-label="Escala de 0 a 10: auditores 7,86, nota 8,05, medidores 8,32, techo arreglando defectos 9,22">
+<rect x="0" y="9" width="100" height="6" rx="3" class="s-pista"/>
+<rect x="0" y="9" width="80.50" height="6" rx="3" class="s-lleno"/>
+<line x1="92.25" x2="92.25" y1="6" y2="18" class="s-techo"/>
+<text x="0" y="25" class="s-t">0</text><text x="50" y="25" class="s-t" text-anchor="middle">5</text><text x="100" y="25" class="s-t" text-anchor="end">10</text>
+<text x="80.50" y="5" class="s-t s-b" text-anchor="middle">8,05</text>
+<text x="92.25" y="5" class="s-t" text-anchor="middle">9,22</text>
+</svg><p class="pie">La raya es el techo si se arreglan las 14 filas que pierden y las 3 que faltan: 9,22. El resto hasta 10 exige ganarle al líder donde hoy empatamos, y eso es producto nuevo.</p></div>
+  </div>
+  <div class="col">
+    <h3>Las 80 filas que puntúan</h3>
+    <div class="apilada" aria-hidden="true"><span class="seg mejor" style="flex:32" title="mejor: 32"></span><span class="seg igual" style="flex:31" title="igual: 31"></span><span class="seg peor" style="flex:14" title="peor: 14"></span><span class="seg ausente" style="flex:3" title="ausente: 3"></span></div><ul class="ley"><li><span class="sw mejor"></span><b>32</b> le ganan al líder (10 puntos)</li><li><span class="sw igual"></span><b>31</b> empatan (8)</li><li><span class="sw peor"></span><b>14</b> pierden (5)</li><li><span class="sw ausente"></span><b>3</b> no existen todavía (2)</li></ul><p class="pie">80 filas puntúan de 112 (14 pantallas × 8 variables). Las otras 32 no tienen los dos lados medidos y no se estiman.</p>
+    <div class="cifras">
+      <div><b>156</b><span>puntos faltan para el 10/10 (644 de 800)</span></div>
+      <div><b>7,97 → 8,05</b><span>antes y después de las correcciones de hoy</span></div>
+    </div>
+  </div>
+</div>
+<div class="caja">
+  <h3>Por qué no es el 8,55 del 23 de septiembre</h3>
+  <p>El 23-sep se publicó 8,55 con 88 filas; hoy es 8,05 con 80. <b>25 filas cambiaron de veredicto</b>: 2 suben, 15 bajan y 8 dejan de puntuar. <b>Ninguna cambió por código nuevo.</b> Lo que cambió es cómo se mide: el cuadro viejo contó lo construido y describió mal lo que la app hace; este cuenta lo que le llega al cliente. Los dos números no son del mismo universo (88 contra 80 filas).</p>
+</div></div></section>
+<section class="lamina" id="lamina-3" aria-label="2 · Lo corregido" data-titulo="2 · Lo corregido"><div class="adentro">
+<p class="etiqueta">2 · Lo corregido</p>
+<h2>Las promesas que la app hacía y no cumplía</h2>
+<p class="grande">Se sacan antes de salir: una frase que promete lo que nadie hace pierde más confianza que una pantalla vacía. Cada corrección la revisa un refutador que no la escribió.</p>
+<div class="dos">
+  <div><h3><span class="marca ok"></span>Confirmadas por su refutador</h3><ul class="corr"><li><b class="tema">Baja de cuenta</b><p class="ad"><span class="antes">«Se borra del todo en 30 días», pero el servidor borra al instante</span> <span class="flecha" aria-label="pasa a">→</span> <span class="despues">«Se borra al instante. Esto no se puede deshacer.»</span></p></li>
+<li><b class="tema">Mi perfil</b><p class="ad"><span class="antes">4 de 15 filas sólo decían su título</span> <span class="flecha" aria-label="pasa a">→</span> <span class="despues">las 15 dicen su estado real</span></p></li>
+<li><b class="tema">Alta de vehículo</b><p class="ad"><span class="antes">pedía motivo, foto e indicación para el técnico, que nunca le llegaban</span> <span class="flecha" aria-label="pasa a">→</span> <span class="despues">no se piden hasta que la orden del técnico los lleve</span></p></li>
+<li><b class="tema">Aviso del Centro de Monitoreo</b><p class="ad"><span class="antes">«Si no contestás en 0:45, te llamamos» con un reloj del teléfono</span> <span class="flecha" aria-label="pasa a">→</span> <span class="despues">«Avisamos al Centro», sin reloj ni promesa de llamada</span></p></li></ul></div>
+  <div><h3><span class="marca curso"></span>En refutación</h3><ul class="corr"><li><b class="tema">Pedir asistencia</b><p class="ad"><span class="antes">«Esto es lo que ve el Centro» y «Ya está en tu cuota: no te cobramos nada», sin mandar el pedido</span> <span class="flecha" aria-label="pasa a">→</span> <span class="despues">«Todavía no le mandamos el pedido»; la cobertura sólo si el ERP la confirma</span></p><p class="estado">Su refutador dio parcial (11:06); la sexta vuelta corre ahora (11:46).</p></li>
+<li><b class="tema">Planes</b><p class="ad"><span class="antes">«No pagás nada más por…», «Hoy no pagás nada», «Te llaman para confirmar»</span> <span class="flecha" aria-label="pasa a">→</span> <span class="despues">sin promesas de plata que el catálogo no respalda (no trae precio, tope ni copago)</span></p><p class="estado">El autor cerró a las 11:05: 17 de 17 roturas cantan. Falta su refutador.</p></li>
+<li><b class="tema">Llamadas</b><p class="ad"><span class="antes">«Te vamos a llamar», «Ya estamos actuando», «Hay una persona mirando»</span> <span class="flecha" aria-label="pasa a">→</span> <span class="despues">apagadas hasta que el Centro de Monitoreo confirme su procedimiento</span></p><p class="estado">Su refutador dio parcial (11:10): quedaban frases de la misma forma. Segunda vuelta en curso (11:46).</p></li>
+<li><b class="tema">Llavero</b><p class="ad"><span class="antes">si el teléfono no podía leer cómo entrás, decía «Apagado»</span> <span class="flecha" aria-label="pasa a">→</span> <span class="despues">dice «No pudimos leerlo»</span></p><p class="estado">Confirmado por su refutador a las 11:45. Falta unirlo y volver a medir la nota.</p></li></ul></div>
+</div>
+<p class="pie">Efecto medido sobre la nota: 7,97 → 8,05, con 20 filas re-medidas a ciegas por 4 auditores. Las cuatro de la derecha todavía no entran en ese número.</p></div></section>
+<section class="lamina" id="lamina-4" aria-label="3 · El camino al 10/10" data-titulo="3 · El camino al 10/10"><div class="adentro">
+<p class="etiqueta">3 · El camino al 10/10</p>
+<h2>Faltan 156 puntos, pantalla por pantalla</h2>
+<div class="cifras tres">
+  <div><b>+0,06</b><span>sube la nota cada fila que pasa de «pierde» a «gana»</span></div>
+  <div><b>+0,10</b><span>sube cada fila que no existe y pasa a ganar (AlóChat, el aviso del Centro)</span></div>
+  <div><b>+0,03</b><span>sube cada empate que pasa a ganar: son 31, y son producto nuevo</span></div>
+</div>
+<div class="dos">
+  <div class="caja">
+    <h3>Depende de nosotros</h3>
+    <ul class="lista">
+      <li>Partir el alta en pasos y medir la clave (Entrada).</li>
+      <li>Brillo de pantalla al mostrar el código del Club.</li>
+      <li>Pedir ayuda desde la isla dinámica de iOS.</li>
+      <li>Mostrar fecha de pago, pagos parciales y el estado del contrato, que ya llegan del ERP.</li>
+      <li>Guardar en el servidor las correcciones de recorridos y los avisos del Centro (en borrador, sin desplegar).</li>
+      <li>Un mecanismo propio en cada empate.</li>
+    </ul>
+  </div>
+  <div class="caja">
+    <h3>No depende de nosotros</h3>
+    <ul class="lista">
+      <li>AlóChat encendido y el emisor de avisos del Centro de Monitoreo → Víctor.</li>
+      <li>Apple Pay y Google Pay vía Bancard → Víctor y Carlos (es plata).</li>
+      <li>El texto de la política de baja y cobertura → Carlos.</li>
+      <li>Datos de la Tienda y la regla de puntos del Club → Carlos y el ERP.</li>
+      <li>La cola de AlóChat en el CRM → Daniel.</li>
+    </ul>
+  </div>
+</div>
+<p class="pie">Cómo se trabaja: un autor por pantalla, con su territorio; después un refutador independiente, la unión de las ramas, auditores ciegos y la nota regenerada. Tanda 1 en curso: Entrada, Club y Tienda.</p></div></section>
+<section class="lamina" id="lamina-5" aria-label="3 · Pantallas principales" data-titulo="3 · Pantallas principales"><div class="adentro">
+<p class="etiqueta">3 · El camino al 10/10 · pantallas principales</p>
+<h2>Las 8 pantallas principales: faltan 82 puntos</h2>
+<div class="tabla-env"><table class="tabla"><thead><tr><th>Pantalla</th><th>Nota hoy</th><th>Lo que no le gana al líder</th><th>Puntos que faltan</th><th>Qué se hace</th><th>Estado</th><th>Depende de</th></tr></thead><tbody><tr><td data-l="Pantalla"><b>Inicio / mapa en vivo</b></td><td data-l="Nota hoy" class="num">9,67</td><td data-l="Lo que no le gana al líder"><span class="par">confianza <span class="chip igual">igual</span></span></td><td data-l="Faltan" class="num">2</td><td data-l="Qué se hace">Empata en confianza: hace falta un mecanismo propio que le gane al líder.</td><td data-l="Estado">Tanda 2 · en cola</td><td data-l="Depende de">nosotros</td></tr><tr><td data-l="Pantalla"><b>«Me están robando»</b></td><td data-l="Nota hoy" class="num">8,71</td><td data-l="Lo que no le gana al líder"><span class="par">velocidad <span class="chip peor">peor</span></span> <span class="par">estética <span class="chip igual">igual</span></span> <span class="par">conversión <span class="chip igual">igual</span></span></td><td data-l="Faltan" class="num">9</td><td data-l="Qué se hace">Pedir ayuda desde la isla dinámica de iOS: el líder llega con 0 toques y acá hay un gesto de 1 segundo. La pieza existe y nadie la llama.</td><td data-l="Estado">Espera al frente «llamadas»</td><td data-l="Depende de">nosotros · build nativo (Carlos)</td></tr><tr><td data-l="Pantalla"><b>Recorridos</b></td><td data-l="Nota hoy" class="num">8,00</td><td data-l="Lo que no le gana al líder"><span class="par">confianza <span class="chip peor">peor</span></span> <span class="par">estética <span class="chip igual">igual</span></span> <span class="par">honestidad <span class="chip peor">peor</span></span></td><td data-l="Faltan" class="num">12</td><td data-l="Qué se hace">Odómetro en el resumen del recorrido (confirmar que el dato sea un odómetro real) y que la corrección de un tramo llegue al servidor, no sólo al teléfono.</td><td data-l="Estado">Tanda 2 · en cola</td><td data-l="Depende de">nosotros · Víctor · Carlos</td></tr><tr><td data-l="Pantalla"><b>AlóChat</b></td><td data-l="Nota hoy" class="num">7,17</td><td data-l="Lo que no le gana al líder"><span class="par">claridad <span class="chip igual">igual</span></span> <span class="par">confianza <span class="chip peor">peor</span></span> <span class="par">estética <span class="chip igual">igual</span></span> <span class="par">conversión <span class="chip ausente">ausente</span></span></td><td data-l="Faltan" class="num">17</td><td data-l="Qué se hace">Encender AlóChat en producción: desplegar el servidor, cargar su configuración y la migración. La cola, la espera estimada y el nombre de quien atiende los manda el CRM.</td><td data-l="Estado">Espera el despliegue</td><td data-l="Depende de">Víctor · Daniel</td></tr><tr><td data-l="Pantalla"><b>Clasificados</b></td><td data-l="Nota hoy" class="num">9,33</td><td data-l="Lo que no le gana al líder"><span class="par">claridad <span class="chip igual">igual</span></span> <span class="par">conversión <span class="chip igual">igual</span></span></td><td data-l="Faltan" class="num">4</td><td data-l="Qué se hace">Km verificado leyendo la distancia total del GPS, primero en un equipo de prueba; y un mecanismo propio para los dos empates.</td><td data-l="Estado">Tanda 2 · en cola</td><td data-l="Depende de">nosotros</td></tr><tr><td data-l="Pantalla"><b>Tienda</b></td><td data-l="Nota hoy" class="num">8,50</td><td data-l="Lo que no le gana al líder"><span class="par">claridad <span class="chip igual">igual</span></span> <span class="par">confianza <span class="chip peor">peor</span></span> <span class="par">honestidad <span class="chip igual">igual</span></span></td><td data-l="Faltan" class="num">9</td><td data-l="Qué se hace">Plazo de devolución, calificación y vendedor como dato que manda el servidor; aviso a ventas cuando entra un pedido.</td><td data-l="Estado">Tanda 1 · en curso</td><td data-l="Depende de">Carlos · servidor · nosotros</td></tr><tr><td data-l="Pantalla"><b>Pagos</b></td><td data-l="Nota hoy" class="num">7,83</td><td data-l="Lo que no le gana al líder"><span class="par">claridad <span class="chip igual">igual</span></span> <span class="par">confianza <span class="chip igual">igual</span></span> <span class="par">estética <span class="chip igual">igual</span></span> <span class="par">honestidad <span class="chip igual">igual</span></span> <span class="par">conversión <span class="chip peor">peor</span></span></td><td data-l="Faltan" class="num">13</td><td data-l="Qué se hace">Apple Pay y Google Pay vía Bancard y monto a elección; mostrar la fecha de pago y los pagos parciales reales.</td><td data-l="Estado">Tanda 2 · en cola</td><td data-l="Depende de">Víctor · Carlos · nosotros</td></tr><tr><td data-l="Pantalla"><b>Cuenta y plan</b></td><td data-l="Nota hoy" class="num">7,33</td><td data-l="Lo que no le gana al líder"><span class="par">claridad <span class="chip igual">igual</span></span> <span class="par">confianza <span class="chip peor">peor</span></span> <span class="par">estética <span class="chip igual">igual</span></span> <span class="par">honestidad <span class="chip igual">igual</span></span> <span class="par">conversión <span class="chip peor">peor</span></span></td><td data-l="Faltan" class="num">16</td><td data-l="Qué se hace">El texto de la política de baja y cobertura (el espacio está construido y vacío) y plan anual y mensual lado a lado con el ahorro, que pide el período del plan en el catálogo.</td><td data-l="Estado">Espera al frente «planes»</td><td data-l="Depende de">Carlos · Liz · Víctor</td></tr></tbody></table></div>
+<p class="pie">Puntos que faltan: cada empate deja 2 en la mesa, cada fila que pierde 5 y cada una que no existe 8.</p></div></section>
+<section class="lamina" id="lamina-6" aria-label="3 · Pantallas de soporte" data-titulo="3 · Pantallas de soporte"><div class="adentro">
+<p class="etiqueta">3 · El camino al 10/10 · pantallas de soporte</p>
+<h2>Las 6 pantallas de soporte: faltan 74 puntos</h2>
+<div class="tabla-env"><table class="tabla"><thead><tr><th>Pantalla</th><th>Nota hoy</th><th>Lo que no le gana al líder</th><th>Puntos que faltan</th><th>Qué se hace</th><th>Estado</th><th>Depende de</th></tr></thead><tbody><tr><td data-l="Pantalla"><b>Entrada / primer acceso</b></td><td data-l="Nota hoy" class="num">7,67</td><td data-l="Lo que no le gana al líder"><span class="par">claridad <span class="chip peor">peor</span></span> <span class="par">confianza <span class="chip peor">peor</span></span> <span class="par">estética <span class="chip igual">igual</span></span> <span class="par">conversión <span class="chip igual">igual</span></span></td><td data-l="Faltan" class="num">14</td><td data-l="Qué se hace">Partir los 9 campos del alta en pasos de 1 a 3, como dibuja la lámina; medidor de la clave y un segundo canal para reenviar el código.</td><td data-l="Estado">Tanda 1 · en curso</td><td data-l="Depende de">nosotros · Rodrigo · Carlos</td></tr><tr><td data-l="Pantalla"><b>Pedir asistencia</b></td><td data-l="Nota hoy" class="num">7,20</td><td data-l="Lo que no le gana al líder"><span class="par">claridad <span class="chip peor">peor</span></span> <span class="par">confianza <span class="chip igual">igual</span></span> <span class="par">honestidad <span class="chip igual">igual</span></span> <span class="par">conversión <span class="chip peor">peor</span></span></td><td data-l="Faltan" class="num">14</td><td data-l="Qué se hace">Mandar el pedido de verdad, con foto (hoy el botón sólo llama por teléfono), y pasar la grilla de 3 a 5 tipos si el catálogo del ERP los trae.</td><td data-l="Estado">Espera a su refutador</td><td data-l="Depende de">Carlos decide · Víctor</td></tr><tr><td data-l="Pantalla"><b>Club de beneficios</b></td><td data-l="Nota hoy" class="num">7,60</td><td data-l="Lo que no le gana al líder"><span class="par">claridad <span class="chip peor">peor</span></span> <span class="par">confianza <span class="chip peor">peor</span></span> <span class="par">conversión <span class="chip igual">igual</span></span></td><td data-l="Faltan" class="num">12</td><td data-l="Qué se hace">Que el servidor guarde los puntos (falta la regla) y subir el brillo de la pantalla al mostrar el código al cajero.</td><td data-l="Estado">Tanda 1 · en curso</td><td data-l="Depende de">Carlos · nosotros</td></tr><tr><td data-l="Pantalla"><b>Mi perfil y ajustes</b></td><td data-l="Nota hoy" class="num">8,80</td><td data-l="Lo que no le gana al líder"><span class="par">claridad <span class="chip igual">igual</span></span> <span class="par">confianza <span class="chip igual">igual</span></span> <span class="par">conversión <span class="chip igual">igual</span></span></td><td data-l="Faltan" class="num">6</td><td data-l="Qué se hace">Tres empates: hace falta un mecanismo propio que le gane al líder en cada uno.</td><td data-l="Estado">Espera al frente «llavero»</td><td data-l="Depende de">nosotros</td></tr><tr><td data-l="Pantalla"><b>Ficha del aviso del Centro de Monitoreo</b></td><td data-l="Nota hoy" class="num">6,00</td><td data-l="Lo que no le gana al líder"><span class="par">claridad <span class="chip igual">igual</span></span> <span class="par">velocidad <span class="chip ausente">ausente</span></span> <span class="par">honestidad <span class="chip igual">igual</span></span> <span class="par">conversión <span class="chip ausente">ausente</span></span></td><td data-l="Faltan" class="num">20</td><td data-l="Qué se hace">Que el aviso del Centro de Monitoreo llegue de verdad: el motor de eventos del Centro tiene que avisarle al servidor de la app, y la app guardar cada aviso.</td><td data-l="Estado">Espera al frente «llamadas»</td><td data-l="Depende de">Víctor · nosotros</td></tr><tr><td data-l="Pantalla"><b>Alta de vehículo / equipo</b></td><td data-l="Nota hoy" class="num">8,40</td><td data-l="Lo que no le gana al líder"><span class="par">claridad <span class="chip igual">igual</span></span> <span class="par">confianza <span class="chip igual">igual</span></span> <span class="par">honestidad <span class="chip igual">igual</span></span> <span class="par">conversión <span class="chip igual">igual</span></span></td><td data-l="Faltan" class="num">8</td><td data-l="Qué se hace">Mostrar el estado del contrato (ya llega del ERP), devolver motivo y foto cuando la orden del técnico los lleve, y la firma desde el teléfono: construirla o sacar la promesa.</td><td data-l="Estado">Tanda 2 · en cola</td><td data-l="Depende de">Andrea · Carlos · nosotros</td></tr></tbody></table></div>
+<p class="pie">82 + 74 = 156 puntos. El aviso del Centro de Monitoreo es la que más deja: no existe todavía quien lo emita.</p></div></section>
+<section class="lamina" id="lamina-7" aria-label="4 · Para encender todo" data-titulo="4 · Para encender todo"><div class="adentro">
+<p class="etiqueta">4 · Para encender todo</p>
+<h2>Lo que más importa, en tres líneas</h2>
+<ol class="tres-lineas">
+  <li><b>Producción corre el servidor de la app del 28 de agosto.</b> 28 funciones nuevas —AlóChat, Tienda, Usados, Club, Señales y las listas del alta— le dan «no existe» al cliente real. Ya están en el código y en el ambiente de prueba: falta desplegarlas.</li>
+  <li><b>Las 40 conexiones con el ERP ya existen en producción.</b> Lo que falta ahí son datos, campos, un acceso de servicio y decisiones, no conexiones.</li>
+  <li><b>Hay 14 cosas que conectamos nosotros</b>, sin pedirle nada a nadie.</li>
+</ol>
+<div class="quienes">
+  <div><b>Carlos</b><span>13</span></div><div><b>Víctor</b><span>17</span></div><div><b>Daniel</b><span>3</span></div>
+  <div><b>Lucas</b><span>4</span></div><div><b>Andrea</b><span>3</span></div><div><b>Liz Samudio</b><span>3</span></div><div><b>Rodrigo</b><span>1</span></div>
+</div>
+<p class="pie">44 pedidos en total. Los de Carlos incluyen las 7 decisiones de la sección 5; las tareas de seguridad se resumen y están en el documento interno. Medido el 12-oct entre 10:45 y 11:02 -03.</p></div></section>
+<section class="lamina" id="lamina-8" aria-label="4 · Carlos y Víctor" data-titulo="4 · Carlos y Víctor"><div class="adentro">
+<p class="etiqueta">4 · Para encender todo · por persona</p>
+<div class="personas dos-col">
+<article class="persona"><header><h3>Carlos</h3><span class="rol">decisiones y accesos</span><span class="cuantos" title="pedidos en total">13 pedidos</span></header><ol><li>Aprobar e integrar los <b>dos cambios del servidor</b> que están listos. Es el paso previo al despliegue de Víctor.</li><li><b>Iniciar sesión en la herramienta de builds</b> (un comando en la Terminal). Sin eso no sabemos qué código es la 2.0.1 de iOS ni la 1.0.40 de Android, ni a qué servidor apuntan.</li><li>Pasar <b>el número de WhatsApp</b> de Alarmas Py. Hoy la app dice «No lo pudimos traer».</li><li><b>Apple:</b> crear el grupo de apps y la llave de avisos (isla dinámica y avisos en iOS) y disparar los builds nativos (brillo de pantalla, Live Activities).</li><li>Hacer <b>un pago real</b> del monto más chico con tu tarjeta, <b>después</b> de que Víctor confirme el ambiente de Bancard.</li></ol><p class="seguridad">+ 7 decisiones: sección 5.</p><p class="seguridad">+ 1 tarea de seguridad interna: en el documento interno.</p></article>
+<article class="persona"><header><h3>Víctor</h3><span class="rol">servidores y ERP</span><span class="cuantos" title="pedidos en total">17 pedidos</span></header><ol><li><span class="urg">Primero</span> <b>Bancard: confirmar contra qué ambiente se cobra.</b> Es plata real de clientes.</li><li><b>Desplegar el servidor de la app en producción</b>, con sus 1 a 3 migraciones chicas. Se comprueba cuando las funciones nuevas dejan de dar «no existe» y piden sesión.</li><li>Cargar en producción la <b>configuración de AlóChat y de los avisos</b>. Se comprueba con el chequeo de salud del servidor.</li><li>Confirmar que el <b>acceso de servicio de la app al ERP</b> está aplicado.</li><li><b>Una sola sesión de lectura</b> en producción que contesta: de dónde sale si una asistencia está habilitada, qué hace el cambio de plan, qué trae el historial de pagos, los códigos de cobertura de los planes y los de tipo de documento y estado civil.</li><li>Cargar <b>el número de WhatsApp</b> que dé Carlos.</li><li><b>Cruzar el chasis</b> que ve la plataforma GPS con el del ERP. Sin eso la hoja de emergencia no puede pedir grúa ni cortar el motor.</li><li><b>Avisos del Centro de Monitoreo:</b> revisar el borrador y su migración, y que el motor de eventos del Centro le avise al servidor de la app.</li><li><b>Retención:</b> dar a la app acceso al módulo de retención y pasarlo a producción.</li><li><b>Firma:</b> una lectura de los contratos que el ERP ya firma (~39 mil). No hace falta otro proveedor.</li><li><b>GPS de prueba:</b> una cuenta y un equipo sólo para pruebas, para que ninguna prueba toque un vehículo real.</li><li>Que la respuesta <b>«es la batería»</b> del aviso llegue al caso de atención al cliente.</li><li><b>Bancard:</b> preguntar por Apple Pay y Google Pay, y si el pago ocasional acepta monto parcial.</li><li>Cargar la <b>llave de avisos de Apple</b> en producción cuando exista.</li></ol><p class="seguridad">+ 3 tareas de seguridad internas: en el documento interno.</p></article>
+</div></div></section>
+<section class="lamina" id="lamina-9" aria-label="4 · Equipo" data-titulo="4 · Equipo"><div class="adentro">
+<p class="etiqueta">4 · Para encender todo · por persona</p>
+<div class="personas">
+<article class="persona"><header><h3>Daniel</h3><span class="rol">CRM de AlóChat</span><span class="cuantos" title="pedidos en total">3 pedidos</span></header><ol><li>Crear en el <b>CRM de producción</b> el espacio de AlóChat para la app: su canal, su acceso y la conexión de vuelta.</li><li>Que el CRM mande el <b>carril</b> del agente (hoy sale siempre «servicio»).</li><li>Que el CRM muestre la <b>cola por conversación</b>: personas antes y tiempo de espera. El lado de la app ya está en borrador.</li></ol></article>
+<article class="persona"><header><h3>Lucas</h3><span class="rol">avisos, analítica y especificaciones</span><span class="cuantos" title="pedidos en total">4 pedidos</span></header><ol><li>Subir la <b>llave de avisos de Apple</b> a Firebase y pasarle a Víctor la configuración de producción; decir si la del 07-sep sirve para el servidor.</li><li>Darle <b>rol a Carlos</b> en Analytics y en Firebase.</li><li><b>Especificaciones:</b> qué acepta hoy la orden del técnico, el desenlace de la retención, los motivos de desinstalación, y el proveedor y los estados de la firma.</li></ol><p class="seguridad">+ 1 tarea de seguridad interna: en el documento interno.</p></article>
+<article class="persona"><header><h3>Andrea</h3><span class="rol">ERP</span><span class="cuantos" title="pedidos en total">3 pedidos</span></header><ol><li>Las <b>5 funciones de retención</b> en el ERP, pausa incluida.</li><li>Una función para <b>cambiar el débito automático</b>.</li><li><b>Observación y foto</b> en la orden del técnico (hoy el alta las oculta porque no viajan).</li></ol></article>
+<article class="persona"><header><h3>Liz Samudio</h3><span class="rol">facturación</span><span class="cuantos" title="pedidos en total">3 pedidos</span></header><ol><li>La <b>pausa del servicio</b>, con su ajuste en la facturación.</li><li>La <b>periodicidad del plan</b> (anual o mensual): hoy la app escribe «por mes» a mano.</li><li>Los <b>datos fiscales</b> de la factura.</li></ol></article>
+<article class="persona"><header><h3>Rodrigo</h3><span class="rol">marketing</span><span class="cuantos" title="pedidos en total">1 pedidos</span></header><ol><li>Una <b>plantilla de Meta de categoría Autenticación</b>, para mandar el código de entrada por WhatsApp.</li></ol></article>
+</div></div></section>
+<section class="lamina" id="lamina-10" aria-label="4 · Lo nuestro" data-titulo="4 · Lo nuestro"><div class="adentro">
+<p class="etiqueta">4 · Para encender todo · lo que hacemos nosotros</p>
+<div class="dos">
+  <div>
+    <h2>Lo que conectamos nosotros, sin pedir nada</h2>
+    <table class="tabla compacta"><thead><tr><th>Qué</th><th>Pantalla</th></tr></thead><tbody>
+    <tr><td data-l="Qué">Mostrar la fecha de pago y los pagos parciales reales (el ERP ya los tiene y la app nunca los pide)</td><td data-l="Pantalla">Pagos</td></tr><tr><td data-l="Qué">Mostrar el estado del contrato, que ya llega del ERP</td><td data-l="Pantalla">Alta</td></tr><tr><td data-l="Qué">Elegir el formulario de cobro de Bancard según el tipo de build, no fijo</td><td data-l="Pantalla">Pagos</td></tr><tr><td data-l="Qué">El aviso a ventas cuando entra un pedido de la Tienda (falta sólo a quién)</td><td data-l="Pantalla">Tienda</td></tr><tr><td data-l="Qué">«Mis canjes» del Club y el sello de novedades de Tienda, Usados y Club</td><td data-l="Pantalla">Club</td></tr><tr><td data-l="Qué">Entrar con la chapa o la cédula</td><td data-l="Pantalla">Entrada</td></tr><tr><td data-l="Qué">Guardar en el servidor las correcciones de recorridos</td><td data-l="Pantalla">Recorridos</td></tr><tr><td data-l="Qué">Km verificado leyendo la distancia total del GPS, primero en un equipo de prueba</td><td data-l="Pantalla">Clasificados</td></tr><tr><td data-l="Qué">Guardar los avisos del Centro de Monitoreo (hoy viven en memoria)</td><td data-l="Pantalla">Aviso</td></tr><tr><td data-l="Qué">La fila de espera de AlóChat</td><td data-l="Pantalla">AlóChat</td></tr><tr><td data-l="Qué">Brillo de pantalla y Live Activities</td><td data-l="Pantalla">Club · Robo</td></tr><tr><td data-l="Qué">El correo con el código en el idioma del cliente (hoy sale en inglés)</td><td data-l="Pantalla">Entrada</td></tr><tr><td data-l="Qué">Que AlóChat reconozca la respuesta real del servidor mientras no está encendido</td><td data-l="Pantalla">AlóChat</td></tr><tr><td data-l="Qué">Una tarea de seguridad interna (en el documento interno)</td><td data-l="Pantalla">servidor</td></tr>
+    </tbody></table>
+  </div>
+  <div>
+    <h2>Lo que nadie pudo medir todavía</h2>
+    <ul class="lista"><li>A qué servidor apunta la app publicada. Define si el cliente real ve «no existe» o un ambiente de prueba sin datos. Lo destraba el inicio de sesión de Carlos en la herramienta de builds.</li><li>Contra qué ambiente de Bancard cobra producción.</li><li>Si el número de WhatsApp tiene valor, de dónde sale «habilitado» en las asistencias y qué trae el historial de pagos.</li><li>Si llega el correo con el código.</li><li>Cuántos clientes ve cada pantalla. Los ~49.715 activos en 28 días los midió Lucas, no nosotros.</li></ul>
+  </div>
+</div></div></section>
+<section class="lamina" id="lamina-11" aria-label="5 · Decisiones de Carlos" data-titulo="5 · Decisiones de Carlos"><div class="adentro">
+<p class="etiqueta">5 · Decisiones de Carlos</p>
+<h2>11 decisiones que sólo puede tomar Carlos</h2>
+<ol class="decisiones"><li><b>¿El pedido de asistencia se manda de verdad desde la pantalla?</b><span>Hoy sólo llama por teléfono. Mandarlo despacha una grúa. Es una línea de código; la decisión es tuya.</span></li><li><b>¿«Cambiar mi plan» queda vivo?</b><span>El botón manda algo que no coincide con lo que espera el ERP, y nadie sabe qué cambia.</span></li><li><b>La regla de puntos del Club</b><span>Qué da puntos y cuántos. Sin regla no hay puntos, y el Club dice «Todavía no lo sabemos».</span></li><li><b>Tienda y Club</b><span>La política de devolución, la lista real de productos y los convenios firmados del Club.</span></li><li><b>A quién le llega qué</b><span>Quién de ventas recibe un pedido de la Tienda, y quién mira las correcciones de recorridos que mandan los clientes.</span></li><li><b>Las coberturas de los planes</b><span>Firmar qué fila de la lámina es cada código. Víctor lee los códigos; vos firmás el cruce.</span></li><li><b>El texto de la política de baja y cobertura</b><span>El espacio en Cuenta y plan está construido y vacío.</span></li><li><b>La firma del contrato desde el teléfono</b><span>La app la promete y no existe: construirla o sacar la promesa.</span></li><li><b>Pagos</b><span>Pago de monto parcial, y Apple Pay y Google Pay vía Bancard.</span></li><li><b>Entrada</b><span>SMS de respaldo para el código, y entrar con Google, Facebook o Apple.</span></li><li><b>Lo que se promete ante una alarma</b><span>Las frases que describen qué hace el Centro de Monitoreo (permisos, avisos, contactos, alta, robo) se deciden con el Centro antes de dejarlas.</span></li></ol>
+<p class="pie">Las 7 primeras están en su lista de pedidos; las otras 4 salen del plan del 10/10 (texto de la baja, firma, pagos, entrada y las frases ante una alarma).</p></div></section>
+<section class="lamina" id="lamina-12" aria-label="6 · Cómo se mide que quedó" data-titulo="6 · Cómo se mide que quedó"><div class="adentro">
+<p class="etiqueta">6 · Cómo se mide que quedó</p>
+<h2>Nada se da por hecho sin que alguien más lo mida</h2>
+<div class="tres-col">
+  <div class="caja"><h3>Refutador</h3><p>Uno por frente, que no escribió el arreglo. Corre los comandos en una copia aparte, busca primero el atajo y después el resultado. Un frente no existe hasta que él lo confirma. Hoy dio «parcial» dos veces (asistencia y llamadas) y los dos volvieron a trabajo.</p></div>
+  <div class="caja"><h3>Auditor ciego</h3><p>Vuelve a medir filas sin ver el veredicto anterior. Sobre 88 filas coincidió en 63; las otras se desempataron leyendo el código. Medidores 8,32, auditores 7,86, final 8,05.</p></div>
+  <div class="caja"><h3>Nota regenerada</h3><p>La nota se vuelve a sacar con el mismo programa sobre los datos guardados. Dos caminos —sumar por pantalla y sumar por veredicto— tienen que dar lo mismo: 644 de 800.</p></div>
+</div>
+<div class="caja">
+  <h3>La puerta de salida a producción: 2 de 9</h3>
+  <p class="pie arriba">La nota no es la puerta. Un 8 con promesas falsas no sale, y un 9 sin el recorrido hecho tampoco. Estado de la nota publicada (12-oct, 10:10), con la fila de promesas al día.</p>
+  <table class="tabla compacta puerta"><thead><tr><th>Estado</th><th>Condición</th><th>Medido</th></tr></thead><tbody>
+  <tr><td data-l="Estado"><span class="chip mejor">listo</span></td><td data-l="Condición"><b>Compila</b></td><td data-l="Medido">0 errores de tipos en el árbol integrado.</td></tr><tr><td data-l="Estado"><span class="chip peor">falta</span></td><td data-l="Condición"><b>La suite completa pasa</b></td><td data-l="Medido">602 de 606 grupos de pruebas (10.757 pruebas verdes). Las 4 rojas son controles que se cruzan al unir ramas.</td></tr><tr><td data-l="Estado"><span class="chip peor">falta</span></td><td data-l="Condición"><b>Ninguna promesa que la app no pueda cumplir</b></td><td data-l="Medido">4 confirmadas y 4 en refutación (sección 2).</td></tr><tr><td data-l="Estado"><span class="chip mejor">listo</span></td><td data-l="Condición"><b>Las 13 correcciones están subidas</b></td><td data-l="Medido">13 de 13, abiertas como borrador. Falta revisión para entrar.</td></tr><tr><td data-l="Estado"><span class="chip peor">falta</span></td><td data-l="Condición"><b>El rediseño, revisado y con todos los controles en verde</b></td><td data-l="Medido">Primero se integra en un solo árbol.</td></tr><tr><td data-l="Estado"><span class="chip peor">falta</span></td><td data-l="Condición"><b>Build instalable</b></td><td data-l="Medido">La herramienta de builds no tiene sesión iniciada: lo destraba Carlos.</td></tr><tr><td data-l="Estado"><span class="chip peor">falta</span></td><td data-l="Condición"><b>Recorrido completo en un teléfono real</b></td><td data-l="Medido">Del acceso al final, sin sesión previa, escribiendo de verdad.</td></tr><tr><td data-l="Estado"><span class="chip peor">falta</span></td><td data-l="Condición"><b>AlóChat encendido en el servidor</b></td><td data-l="Medido">Hoy es una muestra. Lo hace Víctor.</td></tr><tr><td data-l="Estado"><span class="chip peor">falta</span></td><td data-l="Condición"><b>Salida escalonada</b></td><td data-l="Medido">Prueba interna, 5 %, 20 %, todos.</td></tr>
+  </tbody></table>
+</div>
+<p class="pie">Y cada control se rompe a propósito antes de creerle: si al romperlo no canta, no es un control.</p></div></section>
+</main>
+<nav class="pasador" aria-label="Láminas">
+  <button type="button" class="btn" id="b-ant" aria-label="Lámina anterior">←</button>
+  <span id="contador" aria-live="polite"></span>
+  <button type="button" class="btn" id="b-sig" aria-label="Lámina siguiente">→</button>
+  <button type="button" class="btn" id="b-salir">Lectura</button>
+</nav>
+<script>(function () {
+  var raiz = document.documentElement;
+  var cuerpo = document.body;
+  var laminas = Array.prototype.slice.call(document.querySelectorAll('.lamina'));
+  var bModo = document.getElementById('b-modo');
+  var bTema = document.getElementById('b-tema');
+  var contador = document.getElementById('contador');
+  var actual = 0;
+
+  function guardar(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function leer(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+
+  var tema = leer('ap-tema');
+  if (tema === 'light' || tema === 'dark') raiz.setAttribute('data-theme', tema);
+  bTema.addEventListener('click', function () {
+    var oscuro = raiz.getAttribute('data-theme') === 'dark' ||
+      (!raiz.getAttribute('data-theme') && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    var nuevo = oscuro ? 'light' : 'dark';
+    raiz.setAttribute('data-theme', nuevo);
+    guardar('ap-tema', nuevo);
+  });
+
+  function mostrar(i) {
+    actual = Math.max(0, Math.min(laminas.length - 1, i));
+    laminas.forEach(function (l, j) { l.classList.toggle('activa', j === actual); });
+    contador.textContent = (actual + 1) + ' / ' + laminas.length;
+    if (cuerpo.classList.contains('presentando')) {
+      history.replaceState(null, '', '#lamina-' + (actual + 1));
+      window.scrollTo(0, 0);
+    }
+  }
+  function presentar(si) {
+    cuerpo.classList.toggle('presentando', si);
+    bModo.setAttribute('aria-pressed', si ? 'true' : 'false');
+    bModo.textContent = si ? 'Lectura' : 'Presentación';
+    if (si) mostrar(actual); else history.replaceState(null, '', location.pathname + location.search);
+  }
+  function enVista() {
+    var y = window.innerHeight * 0.3, mejor = 0;
+    laminas.forEach(function (l, j) { if (l.getBoundingClientRect().top <= y) mejor = j; });
+    return mejor;
+  }
+
+  bModo.addEventListener('click', function () {
+    var si = !cuerpo.classList.contains('presentando');
+    if (si) actual = enVista();
+    presentar(si);
+  });
+  document.getElementById('b-salir').addEventListener('click', function () {
+    var i = actual; presentar(false);
+    laminas[i].scrollIntoView();
+  });
+  document.getElementById('b-ant').addEventListener('click', function () { mostrar(actual - 1); });
+  document.getElementById('b-sig').addEventListener('click', function () { mostrar(actual + 1); });
+
+  document.addEventListener('keydown', function (ev) {
+    if (ev.target && /input|textarea|select/i.test(ev.target.tagName)) return;
+    var p = cuerpo.classList.contains('presentando');
+    if (!p) {
+      if ((ev.key === 'p' || ev.key === 'P') && !ev.metaKey && !ev.ctrlKey) { actual = enVista(); presentar(true); }
+      return;
+    }
+    if (ev.key === 'ArrowRight' || ev.key === 'PageDown' || ev.key === ' ') { ev.preventDefault(); mostrar(actual + 1); }
+    else if (ev.key === 'ArrowLeft' || ev.key === 'PageUp') { ev.preventDefault(); mostrar(actual - 1); }
+    else if (ev.key === 'Home') { mostrar(0); }
+    else if (ev.key === 'End') { mostrar(laminas.length - 1); }
+    else if (ev.key === 'Escape') { presentar(false); laminas[actual].scrollIntoView(); }
+  });
+
+  var x0 = null;
+  document.addEventListener('touchstart', function (ev) { x0 = ev.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', function (ev) {
+    if (x0 === null || !cuerpo.classList.contains('presentando')) return;
+    var dx = ev.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 60) mostrar(actual + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+
+  var m = /lamina-(\d+)/.exec(location.hash);
+  var q = /[?&]modo=presentacion/.test(location.search);
+  if (m) actual = parseInt(m[1], 10) - 1;
+  if (m || q) presentar(true); else mostrar(0);
+  window.addEventListener('beforeprint', function () { laminas.forEach(function (l) { l.classList.add('activa'); }); });
+})();
+</script>
+</body></html>
