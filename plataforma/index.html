@@ -343,13 +343,21 @@
 
     <div class="h-fila">
       <div class="h-nombre"><h3>OKR</h3><p>GERENCIAMIENTO POR NÚMERO</p></div>
-      <div class="h-celda"><h4>Hoy</h4><span class="et medido">MEDIDO 26-OCT</span> No existe todavía:
-        0 archivos de OKR en el repo. El precedente que sí vive: los 18 objetivos O1–O18, con
-        <b>5 de 18 en producción y medidos</b> (corte del 23-oct, carta de Víctor). «Terminado» = en
-        producción Y medido.</div>
-      <div class="h-celda"><h4>Para ser genérica</h4><b>Nace genérica desde el día 1</b>: un motor que lee
-        el archivo de OKR de cada empresa; cada KR referencia un instrumento vivo — nunca un número tipeado
-        a mano. «OKR de gerentes y directores» = una <b>vista</b> del mismo archivo, filtrada por dueño.</div>
+      <div class="h-celda"><h4>Hoy</h4><span class="et medido">MEDIDO 26-OCT 17:39</span> <b>Sí existe — la
+        primera versión de esta página decía «no existe» y estaba mal</b> (midió un solo repositorio;
+        corregido en voz alta). El repo <b>Gerente-IA</b> es un circuito de agentes por objetivo con un
+        <b>juez de OKR determinista</b>: bloquea todo KR mal medible por 7 causas (sin denominador · sin
+        línea de base · meta igual a la base · dirección incoherente · KR-que-es-tarea · horizonte sin
+        fecha · arco inválido). Contratos con KRs atados a un catálogo de métricas, «no pude medir»
+        explícito, panel «Misiones», <b>activo hoy</b> (último commit 26-oct 17:00). Encima viven O1–O18
+        (<b>5 de 18 en producción y medidos</b>, corte 23-oct) y el paquete OKR v2 (42 requisitos, en
+        manos de Lucas).</div>
+      <div class="h-celda"><h4>Para ser genérica</h4>Lo que falta <b>no es el motor: es la capa de OKR de
+        EMPRESA</b> — objetivos por área con dueño y ciclo, leyendo instrumentos vivos — que sigue sin
+        construir y espera 3 decisiones (capítulo 07). El candidato natural es montarla sobre Gerente-IA,
+        que <b>ya es motor + ficha</b> (dominios enchufables sin tocar código) y <b>ya es multi-empresa
+        por diseño</b> (empresa por misión, STOP por empresa). «OKR de gerentes y directores» = la vista
+        por dueño sobre ese sistema — nunca un número tipeado a mano.</div>
     </div>
 
     <div class="h-fila">
@@ -407,7 +415,9 @@
       El silencio es el enemigo; el error a la cara es la protección.</p></div>
     <div class="pared"><p class="n">PARED 3</p><h3>Contenedor propio</h3>
       <p>Cada instalación corre en su contenedor con su base. Una empresa caída no tumba a las demás,
-      y una migración se prueba sin tocar al resto.</p></div>
+      y una migración se prueba sin tocar al resto. Es la forma FÍSICA de aislar; la otra es la
+      LÓGICA: varias empresas dentro de una misma instalación, separadas por el tenant de cada fila.
+      La plataforma usa las dos a la vez: contenedor por instalación, tenant por fila adentro.</p></div>
     <div class="pared"><p class="n">PARED 4</p><h3>El veredicto es por (proyecto, empresa)</h3>
       <p>Lo que se comparte se juzga sumando empresas y llega sólo a las que optan por recibirlo.
       Un turno sin empresa no se juzga: se cuenta aparte.</p></div>
@@ -436,12 +446,17 @@
       <tr><td><b>Consola</b></td><td><span class="et declarado">EN PROD</span></td>
         <td>Config por proyecto + override por empresa. Falta el runner que la obedece y el piloto de
         apagado.</td><td>declarado (Víctor, 26-oct)</td></tr>
-      <tr><td><b>Flujograma genérico</b></td><td><span class="et meta">NO EXISTE</span></td>
-        <td>Hoy los 17 archivos llevan el nombre de UN proyecto. El formato (tabla de cajas + medidores)
-        ya es generalizable.</td><td>medido 26-oct 16:34</td></tr>
-      <tr><td><b>OKR</b></td><td><span class="et meta">NO EXISTE</span></td>
-        <td>0 archivos de OKR. Precedente O1–O18: 5 de 18 en producción y medidos (corte 23-oct);
-        2 rojos reales con arreglo en viaje.</td><td>medido + declarado</td></tr>
+      <tr><td><b>Flujograma</b></td><td><span class="et medido">EXISTE · GENÉRICO NO</span></td>
+        <td>La herramienta <b>existe y corre</b>: 17 archivos, ~104 cajas con su medidor, pulso diario y
+        su versión HTML/PDF para el equipo — todo nombrado para UN proyecto (AlóChat). Lo que no existe
+        es el <b>motor genérico</b> parametrizado por empresa; el formato (tabla de cajas + medidores)
+        ya es generalizable.</td><td>medido 26-oct 16:34 y 17:41</td></tr>
+      <tr><td><b>OKR</b></td><td><span class="et medido">MOTOR SÍ · CAPA NO</span></td>
+        <td>El motor con juez <b>existe y corre</b>: Gerente-IA (contratos con KRs, juez de 7 causas,
+        panel «Misiones», commit de hoy 17:00). La <b>capa de empresa</b> (áreas, dueños, ciclo) sigue
+        sin construir. O1–O18: 5 de 18 en producción; 2 rojos con arreglo en viaje. La 1.ª versión de
+        esta página decía «no existe»: midió un solo repo y quedó corregido.</td>
+        <td>medido 26-oct 17:39 + declarado</td></tr>
     </tbody>
   </table></div>
 </section>
@@ -471,7 +486,9 @@
     <p>Las tres preguntas de Víctor del 29-sep. Sin dueños de área no se puede ni escribir el primer
     archivo de OKR.</p>
     <p class="reco"><b>Recomendación:</b> nombrar los dueños hoy y cortar <b>mensual</b> — esta casa ya
-    mide todos los días; un ciclo trimestral desperdicia esa frecuencia.</p></div>
+    mide todos los días; un ciclo trimestral desperdicia esa frecuencia. Y antes de construir un motor
+    nuevo, <b>evaluar montar la capa sobre Gerente-IA</b>, el motor con juez que ya corre (lo miran
+    Lucas y Víctor).</p></div>
 
   <div class="decision"><p class="quien">Deciden los tres</p>
     <h3>4 · ¿Instalaciones separadas para el chat entero?</h3>
@@ -523,9 +540,9 @@
 
 <footer>
   <p><b>Fuentes.</b> Carta de Víctor «multiempresa y OKR» del 26-oct-2026 (sus mediciones figuran como
-  DECLARADO) · mediciones propias del 26-oct 16:34–16:45 -03 sobre el repositorio de infraestructura al
-  día (figuran como MEDIDO) · la decisión «motor único + ficha por empresa» la dictó Carlos el 26-oct
-  16:33 -03.</p>
+  DECLARADO) · mediciones propias del 26-oct 16:34–16:45 y 17:36–17:40 -03 sobre los repositorios al
+  día (figuran como MEDIDO; la segunda tanda incluye el examen a fondo del OKR existente en Gerente-IA,
+  pedido por Carlos) · la decisión «motor único + ficha por empresa» la dictó Carlos el 26-oct 16:33 -03.</p>
   <p>Página privada de trabajo para la reunión Carlos · Víctor · Lucas. No indexada. Los números internos
   son material de trabajo, no comunicación pública.</p>
 </footer>
