@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Una plataforma, todas las empresas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --tinta:#0b0e14; --panel:#121826; --panel2:#0f1420; --borde:#232c40;
+    --texto:#e8ecf4; --apagado:#9aa7bd; --suave:#6b7890;
+    --vivo:#49e0b3;        /* lo que ya está / el motor */
+    --ambar:#ffb454;       /* decisiones / lo que falta */
+    --rojo:#ff6b7a;        /* lo roto o bloqueado */
+    --azul:#6aa7ff;        /* fichas / empresas */
+    --radio:14px;
+    --display:'Sora',sans-serif; --cuerpo:'Figtree',sans-serif; --mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--tinta);color:var(--texto);font-family:var(--cuerpo);font-size:17px;line-height:1.6;
+    background-image:radial-gradient(1200px 600px at 80% -10%, rgba(73,224,179,.07), transparent 60%),
+                     radial-gradient(900px 500px at -10% 30%, rgba(106,167,255,.06), transparent 60%)}
+  .lienzo{max-width:1060px;margin:0 auto;padding:0 16px 96px}
+  a{color:var(--vivo);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* ——— cabecera ——— */
+  header{padding:72px 0 40px}
+  .ceja{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--vivo);margin-bottom:18px}
+  h1{font-family:var(--display);font-weight:800;font-size:clamp(34px,6vw,62px);line-height:1.05;letter-spacing:-.02em;max-width:17ch}
+  h1 .acento{color:var(--vivo)}
+  .bajada{margin-top:22px;font-size:clamp(17px,2.2vw,20px);color:var(--apagado);max-width:62ch}
+  .bajada strong{color:var(--texto)}
+  .leyenda{margin-top:26px;display:flex;gap:10px;flex-wrap:wrap}
+  .chip{font-family:var(--mono);font-size:11.5px;padding:5px 11px;border-radius:999px;border:1px solid var(--borde);color:var(--apagado)}
+  .chip b{font-weight:600}
+  .chip.medido b{color:var(--vivo)} .chip.declarado b{color:var(--azul)} .chip.meta b{color:var(--ambar)}
+
+  /* ——— navegación de capítulos ——— */
+  nav.cap{position:sticky;top:0;z-index:30;background:rgba(11,14,20,.86);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--borde);margin:0 -16px;padding:0 16px}
+  nav.cap ol{display:flex;gap:4px;list-style:none;overflow-x:auto;padding:10px 0;scrollbar-width:none}
+  nav.cap ol::-webkit-scrollbar{display:none}
+  nav.cap a{display:block;white-space:nowrap;font-family:var(--mono);font-size:12px;color:var(--apagado);
+    padding:6px 12px;border-radius:8px;border:1px solid transparent}
+  nav.cap a:hover{color:var(--texto);border-color:var(--borde);text-decoration:none}
+
+  /* ——— secciones ——— */
+  section{margin-top:84px}
+  .num{font-family:var(--mono);font-size:13px;color:var(--vivo);letter-spacing:.12em}
+  h2{font-family:var(--display);font-weight:700;font-size:clamp(25px,3.6vw,36px);letter-spacing:-.015em;margin:8px 0 10px;max-width:24ch}
+  .intro{color:var(--apagado);max-width:68ch;margin-bottom:28px}
+  .intro strong{color:var(--texto)}
+
+  /* ——— tarjetas de definición (motor / ficha / pared) ——— */
+  .trio{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+  .def{background:var(--panel);border:1px solid var(--borde);border-radius:var(--radio);padding:22px 20px;position:relative;overflow:hidden}
+  .def::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--c,var(--vivo))}
+  .def h3{font-family:var(--display);font-size:19px;margin-bottom:8px}
+  .def h3 span{font-family:var(--mono);font-size:12px;color:var(--c,var(--vivo));display:block;margin-bottom:6px;letter-spacing:.1em}
+  .def p{font-size:15.5px;color:var(--apagado)}
+  .def p b{color:var(--texto)}
+
+  .regla{margin-top:22px;background:linear-gradient(90deg, rgba(73,224,179,.1), transparent 70%);
+    border:1px solid rgba(73,224,179,.35);border-radius:var(--radio);padding:20px 22px;
+    font-family:var(--display);font-size:clamp(17px,2.4vw,21px);font-weight:600;max-width:100%}
+  .regla small{display:block;font-family:var(--mono);font-weight:400;font-size:12px;color:var(--apagado);margin-top:8px}
+
+  /* ——— diagrama motor+fichas ——— */
+  .diagrama{margin:30px 0 6px;background:var(--panel2);border:1px solid var(--borde);border-radius:var(--radio);padding:14px}
+  .diagrama svg{display:block;width:100%;height:auto}
+  .pie-diagrama{font-family:var(--mono);font-size:12px;color:var(--suave);padding:4px 8px 8px}
+
+  /* ——— tablas ——— */
+  .marco-tabla{overflow-x:auto;border:1px solid var(--borde);border-radius:var(--radio);background:var(--panel)}
+  table{width:100%;border-collapse:collapse;font-size:15px;min-width:640px}
+  th{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--suave);
+    text-align:left;padding:14px 16px;border-bottom:1px solid var(--borde)}
+  td{padding:14px 16px;border-bottom:1px solid var(--borde);vertical-align:top;color:var(--apagado)}
+  tr:last-child td{border-bottom:none}
+  td b,td strong{color:var(--texto);font-weight:600}
+  .et{font-family:var(--mono);font-size:10.5px;padding:3px 8px;border-radius:6px;white-space:nowrap}
+  .et.medido{background:rgba(73,224,179,.12);color:var(--vivo)}
+  .et.declarado{background:rgba(106,167,255,.12);color:var(--azul)}
+  .et.meta{background:rgba(255,180,84,.12);color:var(--ambar)}
+  .et.rojo{background:rgba(255,107,122,.12);color:var(--rojo)}
+
+  /* ——— herramientas ——— */
+  .herr{display:grid;gap:14px}
+  .h-fila{display:grid;grid-template-columns:200px 1fr 1fr;gap:0;background:var(--panel);
+    border:1px solid var(--borde);border-radius:var(--radio);overflow:hidden}
+  .h-nombre{padding:20px;border-right:1px solid var(--borde);background:var(--panel2)}
+  .h-nombre h3{font-family:var(--display);font-size:17px;line-height:1.3}
+  .h-nombre p{font-family:var(--mono);font-size:11px;color:var(--suave);margin-top:6px;letter-spacing:.06em}
+  .h-celda{padding:20px;font-size:14.5px;color:var(--apagado)}
+  .h-celda+.h-celda{border-left:1px solid var(--borde)}
+  .h-celda h4{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--suave);margin-bottom:8px}
+  .h-celda b{color:var(--texto)}
+  @media(max-width:860px){
+    .h-fila{grid-template-columns:1fr}
+    .h-nombre{border-right:none;border-bottom:1px solid var(--borde)}
+    .h-celda+.h-celda{border-left:none;border-top:1px solid var(--borde)}
+  }
+
+  /* ——— línea de tiempo (el lunes) ——— */
+  .lunes{position:relative;margin-top:10px;display:grid;gap:0}
+  .paso{display:grid;grid-template-columns:120px 1fr;gap:18px;position:relative;padding:18px 0}
+  .paso::before{content:"";position:absolute;left:135px;top:0;bottom:0;width:1px;background:var(--borde)}
+  .paso:first-child::before{top:26px}
+  .paso:last-child::before{bottom:auto;height:26px}
+  .hora{font-family:var(--mono);font-size:13px;color:var(--vivo);text-align:right;padding-top:2px}
+  .paso .punto{position:absolute;left:131px;top:26px;width:9px;height:9px;border-radius:50%;
+    background:var(--tinta);border:2px solid var(--vivo)}
+  .paso .que{padding-left:26px}
+  .paso .que b{color:var(--texto)}
+  .paso .que p{font-size:14.5px;color:var(--apagado);margin-top:2px}
+  @media(max-width:640px){
+    .paso{grid-template-columns:72px 1fr}
+    .paso::before{left:86px}
+    .paso .punto{left:82px}
+    .paso .que{padding-left:22px}
+  }
+
+  /* ——— paredes ——— */
+  .paredes{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+  .pared{background:var(--panel);border:1px solid var(--borde);border-radius:var(--radio);padding:20px}
+  .pared .n{font-family:var(--mono);font-size:12px;color:var(--rojo);letter-spacing:.1em}
+  .pared h3{font-family:var(--display);font-size:16.5px;margin:8px 0 6px}
+  .pared p{font-size:14px;color:var(--apagado)}
+
+  /* ——— decisiones ——— */
+  .decision{background:var(--panel);border:1px solid var(--borde);border-left:3px solid var(--ambar);
+    border-radius:var(--radio);padding:20px 22px;margin-bottom:14px}
+  .decision .quien{font-family:var(--mono);font-size:11.5px;color:var(--ambar);letter-spacing:.1em;text-transform:uppercase}
+  .decision h3{font-family:var(--display);font-size:18px;margin:8px 0 6px}
+  .decision p{font-size:14.5px;color:var(--apagado)}
+  .decision p b{color:var(--texto)}
+  .decision .reco{margin-top:10px;font-size:14px;padding:10px 14px;border-radius:10px;
+    background:rgba(255,180,84,.08);border:1px solid rgba(255,180,84,.25)}
+  .decision .reco b{color:var(--ambar)}
+
+  /* ——— fases ——— */
+  .fases{display:grid;gap:14px}
+  .fase{display:grid;grid-template-columns:86px 1fr;gap:20px;background:var(--panel);
+    border:1px solid var(--borde);border-radius:var(--radio);padding:24px 22px}
+  .fase .f{font-family:var(--display);font-weight:800;font-size:34px;color:var(--vivo);line-height:1}
+  .fase .f small{display:block;font-family:var(--mono);font-size:10.5px;font-weight:400;color:var(--suave);letter-spacing:.12em;margin-top:6px}
+  .fase h3{font-family:var(--display);font-size:19px;margin-bottom:6px}
+  .fase p{font-size:14.5px;color:var(--apagado)}
+  .fase .porton{margin-top:10px;font-family:var(--mono);font-size:12.5px;color:var(--vivo)}
+  .fase .porton::before{content:"PORTÓN → ";color:var(--suave)}
+  @media(max-width:560px){.fase{grid-template-columns:1fr;gap:8px}}
+
+  footer{margin-top:96px;padding-top:28px;border-top:1px solid var(--borde);
+    font-size:13px;color:var(--suave);max-width:72ch}
+  footer p+p{margin-top:10px}
+  .volver{position:fixed;right:18px;bottom:18px;width:42px;height:42px;border-radius:50%;
+    background:var(--panel);border:1px solid var(--borde);display:grid;place-items:center;
+    font-family:var(--mono);color:var(--vivo);z-index:40}
+  @media print{ body{background:#fff;color:#111} }
+</style></head>
+<body>
+<a class="volver" href="#arriba" aria-label="Volver arriba">↑</a>
+<div class="lienzo" id="arriba">
+
+<header>
+  <p class="ceja">Para la reunión — Carlos · Víctor · Lucas &nbsp;·&nbsp; 26 de octubre de 2026</p>
+  <h1>Una plataforma.<br><span class="acento">Todas las empresas.</span></h1>
+  <p class="bajada"><strong>El motor se construye una vez; cada empresa trae su ficha.</strong>
+  Conversaciones, flujograma, automejora, autoaprendizaje y OKR para Alarmas, Restaurant,
+  Zymplo MEI, ZyChat, ZyMap, Zymplo Business… y las startups que todavía no existen —
+  sin crear un flujograma ni un OKR nuevos por cada proyecto.</p>
+  <div class="leyenda">
+    <span class="chip medido"><b>MEDIDO</b> · comando corrido, con fecha</span>
+    <span class="chip declarado"><b>DECLARADO</b> · lo reporta una persona o documento</span>
+    <span class="chip meta"><b>META</b> · a construir, se cruza por portón</span>
+  </div>
+</header>
+
+<nav class="cap" aria-label="Capítulos"><ol>
+  <li><a href="#s1">01 La idea</a></li>
+  <li><a href="#s2">02 Los 3 niveles</a></li>
+  <li><a href="#s3">03 Las herramientas</a></li>
+  <li><a href="#s4">04 De punta a punta</a></li>
+  <li><a href="#s5">05 Las paredes</a></li>
+  <li><a href="#s6">06 Estado real</a></li>
+  <li><a href="#s7">07 Decisiones</a></li>
+  <li><a href="#s8">08 El norte</a></li>
+</ol></nav>
+
+<section id="s1">
+  <p class="num">01</p>
+  <h2>La idea en una frase</h2>
+  <p class="intro">Hoy cada herramienta nace casada con un proyecto: el flujograma vive atado a un
+  solo bot, y si mañana entra una empresa nueva habría que construirle todo de nuevo. La plataforma
+  separa dos cosas que hoy están pegadas:</p>
+
+  <div class="trio">
+    <div class="def" style="--c:var(--vivo)">
+      <h3><span>SE CONSTRUYE UNA VEZ</span>El motor</h3>
+      <p>El código que dibuja el flujograma, corre el lazo de automejora, lee los OKR y gobierna la
+      consola. <b>Vive en el lado neutral</b> y sirve a todas las empresas por igual. Mejorarlo una
+      vez mejora a todas.</p>
+    </div>
+    <div class="def" style="--c:var(--azul)">
+      <h3><span>UNA POR EMPRESA / PROYECTO</span>La ficha</h3>
+      <p>Lo único que se escribe por cada empresa: su tenant, su contenedor, sus cajas y medidores,
+      sus KRs, su número de WhatsApp, su marca. <b>Datos, no código.</b></p>
+    </div>
+    <div class="def" style="--c:var(--rojo)">
+      <h3><span>NUNCA SE CRUZA</span>La pared</h3>
+      <p>El dato de una empresa jamás llega a otra. Se comparte el <b>mecanismo</b> (detectores,
+      familias, plantillas), nunca el contenido de las conversaciones ni los clientes.</p>
+    </div>
+  </div>
+
+  <div class="regla">Dar de alta una empresa nueva = escribir fichas, no escribir código.
+    <small>Si el alta exige tocar el motor, el motor está mal. Es el criterio de aceptación de toda la plataforma.</small>
+  </div>
+
+  <div class="diagrama" role="img" aria-label="Diagrama: un motor central sirve a varias fichas de empresas, separadas por paredes">
+    <svg viewBox="0 0 960 300" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="fl" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="#49e0b3"/>
+        </marker>
+      </defs>
+      <!-- motor -->
+      <rect x="370" y="20" width="220" height="110" rx="14" fill="rgba(73,224,179,.08)" stroke="#49e0b3" stroke-width="1.5"/>
+      <text x="480" y="52" text-anchor="middle" fill="#49e0b3" font-family="JetBrains Mono" font-size="12" letter-spacing="2">EL MOTOR</text>
+      <text x="480" y="76" text-anchor="middle" fill="#e8ecf4" font-family="Sora" font-size="14" font-weight="700">conversaciones · flujograma · lazo</text>
+      <text x="480" y="96" text-anchor="middle" fill="#e8ecf4" font-family="Sora" font-size="14" font-weight="700">autoaprendizaje · OKR · consola</text>
+      <text x="480" y="117" text-anchor="middle" fill="#9aa7bd" font-family="Figtree" font-size="12">se construye y se mejora UNA vez</text>
+      <!-- flechas -->
+      <line x1="430" y1="130" x2="170" y2="200" stroke="#49e0b3" stroke-width="1.2" marker-end="url(#fl)"/>
+      <line x1="470" y1="130" x2="420" y2="200" stroke="#49e0b3" stroke-width="1.2" marker-end="url(#fl)"/>
+      <line x1="510" y1="130" x2="570" y2="200" stroke="#49e0b3" stroke-width="1.2" marker-end="url(#fl)"/>
+      <line x1="550" y1="130" x2="810" y2="200" stroke="#49e0b3" stroke-width="1.2" marker-end="url(#fl)"/>
+      <!-- fichas -->
+      <g font-family="Figtree">
+        <rect x="60" y="205" width="200" height="70" rx="12" fill="rgba(106,167,255,.07)" stroke="#6aa7ff"/>
+        <text x="160" y="233" text-anchor="middle" fill="#e8ecf4" font-size="14" font-weight="600">Alarmas</text>
+        <text x="160" y="255" text-anchor="middle" fill="#9aa7bd" font-size="11.5">ficha: tenant · cajas · KRs · marca</text>
+
+        <rect x="305" y="205" width="200" height="70" rx="12" fill="rgba(106,167,255,.07)" stroke="#6aa7ff"/>
+        <text x="405" y="233" text-anchor="middle" fill="#e8ecf4" font-size="14" font-weight="600">Restaurant</text>
+        <text x="405" y="255" text-anchor="middle" fill="#9aa7bd" font-size="11.5">ficha propia · 2.º proyecto vivo</text>
+
+        <rect x="550" y="205" width="200" height="70" rx="12" fill="rgba(106,167,255,.07)" stroke="#6aa7ff"/>
+        <text x="650" y="233" text-anchor="middle" fill="#e8ecf4" font-size="14" font-weight="600">Zymplo MEI · ZyChat · ZyMap</text>
+        <text x="650" y="255" text-anchor="middle" fill="#9aa7bd" font-size="11.5">cada una con su ficha</text>
+
+        <rect x="795" y="205" width="130" height="70" rx="12" fill="none" stroke="#ffb454" stroke-dasharray="5 5"/>
+        <text x="860" y="233" text-anchor="middle" fill="#ffb454" font-size="13" font-weight="600">la próxima</text>
+        <text x="860" y="255" text-anchor="middle" fill="#9aa7bd" font-size="11.5">startup que venga</text>
+      </g>
+      <!-- paredes -->
+      <g stroke="#ff6b7a" stroke-width="1" stroke-dasharray="3 6" opacity=".8">
+        <line x1="282" y1="200" x2="282" y2="285"/>
+        <line x1="527" y1="200" x2="527" y2="285"/>
+        <line x1="772" y1="200" x2="772" y2="285"/>
+      </g>
+      <text x="282" y="297" text-anchor="middle" fill="#ff6b7a" font-family="JetBrains Mono" font-size="10">PARED: el dato no cruza</text>
+    </svg>
+    <p class="pie-diagrama">Las flechas bajan mecanismo (el motor sirve a todas) · las paredes impiden que el dato suba de una empresa a otra.</p>
+  </div>
+</section>
+
+<section id="s2">
+  <p class="num">02</p>
+  <h2>Los tres niveles — y cuánto cuesta agregar cada uno</h2>
+  <p class="intro">Una empresa con muchos productos y servicios <strong>no multiplica los motores</strong>:
+  multiplica filas. Cada nivel escala de una forma distinta.</p>
+
+  <div class="marco-tabla"><table>
+    <thead><tr><th>Nivel</th><th>Qué es</th><th>Ejemplos</th><th>Agregar uno cuesta</th></tr></thead>
+    <tbody>
+      <tr><td><b>1 · Empresa</b></td><td>La pared del dato (tenant). Nada cruza.</td>
+        <td>Alarmas · Restaurant · Zymplo</td><td><b>Escribir sus fichas.</b> Cero código.</td></tr>
+      <tr><td><b>2 · Proyecto</b></td><td>Algo que corre con contenedor, repo y base propios.</td>
+        <td>el bot comercial · ZyChat · ZyMap</td><td><b>1 ficha</b> en el registro de proyectos.</td></tr>
+      <tr><td><b>3 · Producto / servicio</b></td><td>Las líneas que la empresa ofrece.</td>
+        <td>vehicular · casa · club · tienda · MEI · MEI básico · Business</td>
+        <td><b>Filas</b> dentro de las fichas que ya existen: más cajas en el MISMO flujograma, más KRs en el MISMO OKR.</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="regla" style="border-color:rgba(106,167,255,.35);background:linear-gradient(90deg, rgba(106,167,255,.1), transparent 70%)">
+    La regla práctica: ¿tiene contenedor propio? → es un PROYECTO. ¿Lo sirve el mismo sistema? → es un PRODUCTO.
+    <small>Y adentro de una empresa los productos COMPARTEN la base de clientes a propósito — eso es el ecosistema.
+    La pared corre sólo ENTRE empresas.</small>
+  </div>
+</section>
+
+<section id="s3">
+  <p class="num">03</p>
+  <h2>Las seis herramientas del sistema</h2>
+  <p class="intro">Cada una con lo que hace, su estado de hoy y lo que le falta para ser genérica.
+  Las etiquetas dicen de dónde sale cada dato.</p>
+
+  <div class="herr">
+    <div class="h-fila">
+      <div class="h-nombre"><h3>Conversaciones</h3><p>EL BOT OMNICANAL 24/7</p></div>
+      <div class="h-celda"><h4>Hoy</h4><span class="et declarado">DECLARADO</span> El bot comercial corre en
+        producción con ~105 mil turnos y Restaurant usa el mismo esquema <b>(carta de Víctor, 26-oct)</b>.
+        Atiende, deriva a humano y deja rastro medible.</div>
+      <div class="h-celda"><h4>Para ser genérica</h4>Que una instalación nueva (otro número, otra marca,
+        otro contenedor) salga de una <b>ficha</b>. La pregunta «¿instalaciones separadas para el chat
+        entero?» sigue <b>sin decidir</b> — capítulo 07.</div>
+    </div>
+
+    <div class="h-fila">
+      <div class="h-nombre"><h3>Flujograma</h3><p>EL NORTE DIBUJADO</p></div>
+      <div class="h-celda"><h4>Hoy</h4><span class="et medido">MEDIDO 26-OCT</span> Existe para UN solo
+        proyecto: 17 archivos y todos llevan su nombre en el archivo. El contenido ya es una <b>tabla de
+        ~104 filas</b> (caja · estado · medidor · dato) donde <b>el estado no se tipea: sale del medidor</b>.</div>
+      <div class="h-celda"><h4>Para ser genérica</h4>Separar motor de contenido: el formato, el verificador
+        y el visor se parametrizan por proyecto; cada empresa aporta su archivo de cajas.
+        <b>Un producto nuevo = más filas, nunca otro flujograma.</b></div>
+    </div>
+
+    <div class="h-fila">
+      <div class="h-nombre"><h3>Lazo de automejora</h3><p>EL BOT MEJORA SOLO</p></div>
+      <div class="h-celda"><h4>Hoy</h4><span class="et declarado">DECLARADO</span> Diseñado (ADR-0126):
+        la unidad es <b>(proyecto, empresa)</b> y el registro de proyectos ya está en main con 2 fichas.
+        <span class="et rojo">PERO</span> producción <b>todavía no tiene la separación por empresa</b>:
+        46 tablas de calidad, 0 con tenant (re-medido por Víctor el 26-oct).</div>
+      <div class="h-celda"><h4>Para ser genérica</h4>Terminar la migración (el PR en conflicto + la ventana
+        de producción) y encender Restaurant como 2.º proyecto con 2 empresas. Lo aprendido de una empresa
+        <b>vuelve sólo a esa empresa</b>.</div>
+    </div>
+
+    <div class="h-fila">
+      <div class="h-nombre"><h3>Autoaprendizaje</h3><p>FAMILIAS · KB · A/B</p></div>
+      <div class="h-celda"><h4>Hoy</h4><span class="et declarado">DECLARADO</span> El mecanismo existe para
+        el comercial: familias de casos, detectores, destilado de conversaciones, pruebas A/B del dato del bot.</div>
+      <div class="h-celda"><h4>Para ser genérica</h4>Packs por rubro (el primero: restaurant) y la regla de
+        compartir: el <b>mecanismo</b> viaja entre empresas sólo si la empresa opta por recibirlo; el
+        contenido, jamás.</div>
+    </div>
+
+    <div class="h-fila">
+      <div class="h-nombre"><h3>OKR</h3><p>GERENCIAMIENTO POR NÚMERO</p></div>
+      <div class="h-celda"><h4>Hoy</h4><span class="et medido">MEDIDO 26-OCT</span> No existe todavía:
+        0 archivos de OKR en el repo. El precedente que sí vive: los 18 objetivos O1–O18, con
+        <b>5 de 18 en producción y medidos</b> (corte del 23-oct, carta de Víctor). «Terminado» = en
+        producción Y medido.</div>
+      <div class="h-celda"><h4>Para ser genérica</h4><b>Nace genérica desde el día 1</b>: un motor que lee
+        el archivo de OKR de cada empresa; cada KR referencia un instrumento vivo — nunca un número tipeado
+        a mano. «OKR de gerentes y directores» = una <b>vista</b> del mismo archivo, filtrada por dueño.</div>
+    </div>
+
+    <div class="h-fila">
+      <div class="h-nombre"><h3>Consola</h3><p>GOBIERNO DESDE EL TABLERO</p></div>
+      <div class="h-celda"><h4>Hoy</h4><span class="et declarado">DECLARADO</span> En producción: config por
+        proyecto con override por empresa, cerrada sin credencial (carta de Víctor, 26-oct). Es el patrón
+        correcto ya funcionando.</div>
+      <div class="h-celda"><h4>Para ser genérica</h4>El runner que obedece la config y los techos, la bajada
+        automática a modo seco si la consola no responde 24 h, y extenderla a flujograma y OKR cuando sean
+        motores.</div>
+    </div>
+  </div>
+</section>
+
+<section id="s4">
+  <p class="num">04</p>
+  <h2>De punta a punta: una startup entra un lunes</h2>
+  <p class="intro"><span class="et meta">META</span>&nbsp; Así se ve el día 1 de una empresa nueva cuando
+  la plataforma esté completa. Hoy este recorrido existe <strong>a mano y para 2 proyectos</strong>;
+  el objetivo es que sea un día de fichas, sin tocar código.</p>
+
+  <div class="lunes">
+    <div class="paso"><div class="hora">09:00</div><span class="punto"></span>
+      <div class="que"><b>Se escribe la ficha.</b><p>Slug, empresa (tenant), contenedor, base, repo.
+      Desde ese momento el registro la conoce y ninguna herramienta la confunde con otra.</p></div></div>
+    <div class="paso"><div class="hora">10:00</div><span class="punto"></span>
+      <div class="que"><b>Su bot se levanta, con su marca.</b><p>Contenedor propio, su número, su tono.
+      Las conversaciones empiezan a dejar rastro medible desde el primer mensaje.</p></div></div>
+    <div class="paso"><div class="hora">11:00</div><span class="punto"></span>
+      <div class="que"><b>Su flujograma.</b><p>Se copia el formato (no el contenido): SUS cajas, SUS
+      medidores. El tablero dibuja su norte desde el primer día, en gris hasta que cada medidor hable.</p></div></div>
+    <div class="paso"><div class="hora">12:00</div><span class="punto"></span>
+      <div class="que"><b>Sus OKR.</b><p>2–4 resultados clave por área, cada uno leyendo un instrumento
+      vivo. Nadie tipea un «avance»: el número sube solo cuando el instrumento lo mide.</p></div></div>
+    <div class="paso"><div class="hora">15:00</div><span class="punto"></span>
+      <div class="que"><b>La consola la muestra.</b><p>Techos de gasto, prender/apagar, modo seco primero
+      y escribir después. Todo gobernado desde el tablero, por proyecto y por empresa.</p></div></div>
+    <div class="paso"><div class="hora">desde el día 1</div><span class="punto"></span>
+      <div class="que"><b>El lazo aprende — sólo de lo suyo.</b><p>KB, procedimientos y A/B mejoran con SUS
+      conversaciones. Recibe el mecanismo común si opta; su contenido no sale nunca.</p></div></div>
+  </div>
+</section>
+
+<section id="s5">
+  <p class="num">05</p>
+  <h2>Las paredes que no se negocian</h2>
+  <p class="intro">La plataforma comparte el motor <strong>porque</strong> estas cuatro paredes existen.
+  Sin ellas, «multiempresa» sería «datos mezclados».</p>
+  <div class="paredes">
+    <div class="pared"><p class="n">PARED 1</p><h3>El dato no cruza</h3>
+      <p>Lo aprendido de una empresa vuelve sólo a esa empresa. Entre empresas viaja el mecanismo
+      (familias, detectores, plantillas), nunca el contenido.</p></div>
+    <div class="pared"><p class="n">PARED 2</p><h3>Sin empresa, falla ruidoso</h3>
+      <p>Un dato sin tenant no entra: el INSERT falla en vez de caer en la empresa de otro.
+      El silencio es el enemigo; el error a la cara es la protección.</p></div>
+    <div class="pared"><p class="n">PARED 3</p><h3>Contenedor propio</h3>
+      <p>Cada instalación corre en su contenedor con su base. Una empresa caída no tumba a las demás,
+      y una migración se prueba sin tocar al resto.</p></div>
+    <div class="pared"><p class="n">PARED 4</p><h3>El veredicto es por (proyecto, empresa)</h3>
+      <p>Lo que se comparte se juzga sumando empresas y llega sólo a las que optan por recibirlo.
+      Un turno sin empresa no se juzga: se cuenta aparte.</p></div>
+  </div>
+</section>
+
+<section id="s6">
+  <p class="num">06</p>
+  <h2>El estado real, sin maquillaje</h2>
+  <p class="intro">Fuentes: la carta de Víctor del 26-oct (sus mediciones, etiquetadas DECLARADO) y
+  mediciones propias del 26-oct 16:34–16:45 sobre el repositorio al día (etiquetadas MEDIDO).</p>
+
+  <div class="marco-tabla"><table>
+    <thead><tr><th>Frente</th><th>Estado</th><th>Detalle</th><th>Fuente</th></tr></thead>
+    <tbody>
+      <tr><td><b>Registro de proyectos</b></td><td><span class="et medido">EN MAIN</span></td>
+        <td>2 fichas vivas (comercial, restaurant). El lazo dejó de tener un proyecto fijo en el código.</td>
+        <td>medido 26-oct</td></tr>
+      <tr><td><b>Empresa en el ledger</b></td><td><span class="et rojo">TRABADO</span></td>
+        <td>El PR de la migración quedó en conflicto, 444 commits detrás de main. Producción sigue sin
+        tenant: <b>46 tablas de calidad, 0 con empresa</b>. Hay que rebasar, re-verificar y correr la ventana.</td>
+        <td>declarado (Víctor, 26-oct)</td></tr>
+      <tr><td><b>Restaurant 2.º proyecto</b></td><td><span class="et meta">SÓLO QA</span></td>
+        <td>Desplegado en QA el 12-oct; no está en main ni en producción. Faltan registro, esquema y pack
+        del rubro.</td><td>declarado (Víctor, 26-oct)</td></tr>
+      <tr><td><b>Consola</b></td><td><span class="et declarado">EN PROD</span></td>
+        <td>Config por proyecto + override por empresa. Falta el runner que la obedece y el piloto de
+        apagado.</td><td>declarado (Víctor, 26-oct)</td></tr>
+      <tr><td><b>Flujograma genérico</b></td><td><span class="et meta">NO EXISTE</span></td>
+        <td>Hoy los 17 archivos llevan el nombre de UN proyecto. El formato (tabla de cajas + medidores)
+        ya es generalizable.</td><td>medido 26-oct 16:34</td></tr>
+      <tr><td><b>OKR</b></td><td><span class="et meta">NO EXISTE</span></td>
+        <td>0 archivos de OKR. Precedente O1–O18: 5 de 18 en producción y medidos (corte 23-oct);
+        2 rojos reales con arreglo en viaje.</td><td>medido + declarado</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="s7">
+  <p class="num">07</p>
+  <h2>Lo que la reunión tiene que decidir</h2>
+  <p class="intro">Cinco decisiones, cada una con su dueño y una recomendación ya pensada.
+  Sin estas cinco, lo demás es construcción a ciegas.</p>
+
+  <div class="decision"><p class="quien">Decide Víctor</p>
+    <h3>1 · ¿El registro de proyectos del lazo se vuelve EL registro común?</h3>
+    <p>Todas las herramientas (flujograma, OKR, consola) necesitan saber qué proyectos y empresas
+    existen. Hoy ese registro vive adentro del lazo.</p>
+    <p class="reco"><b>Recomendación:</b> promoverlo a registro común — ya funciona, ya tiene el formato,
+    y evita dos registros que se desincronizan.</p></div>
+
+  <div class="decision"><p class="quien">Decide Carlos</p>
+    <h3>2 · ¿Cuál es la segunda empresa del chat: Zymplo o una nueva?</h3>
+    <p>Es la pregunta 4 del 29-sep y sigue sin respuesta. Restaurant prueba el lazo multiempresa,
+    pero no es una segunda instalación del chat completo.</p>
+    <p class="reco"><b>Recomendación:</b> elegirla en esta reunión — es la decisión que le da rumbo
+    a todo lo demás y nadie puede tomarla por Carlos.</p></div>
+
+  <div class="decision"><p class="quien">Decide Carlos</p>
+    <h3>3 · OKR: ¿dónde vive, quiénes son los dueños de área y cada cuánto se corta?</h3>
+    <p>Las tres preguntas de Víctor del 29-sep. Sin dueños de área no se puede ni escribir el primer
+    archivo de OKR.</p>
+    <p class="reco"><b>Recomendación:</b> nombrar los dueños hoy y cortar <b>mensual</b> — esta casa ya
+    mide todos los días; un ciclo trimestral desperdicia esa frecuencia.</p></div>
+
+  <div class="decision"><p class="quien">Deciden los tres</p>
+    <h3>4 · ¿Instalaciones separadas para el chat entero?</h3>
+    <p>La propuesta original de Carlos para el chat (no el lazo) no está decidida. Tocarla ahora
+    compite con terminar la migración del lazo.</p>
+    <p class="reco"><b>Recomendación:</b> decidirla DESPUÉS de que Restaurant corra en producción con
+    2 empresas — con esa evidencia la decisión se toma con número y no con opinión.</p></div>
+
+  <div class="decision"><p class="quien">Ejecuta Víctor · ya en marcha</p>
+    <h3>5 · El orden inmediato de la obra</h3>
+    <p>Rebasar el PR de la migración → re-verificar → ventana de producción → release de Restaurant →
+    modo seco con 2 empresas → escribir.</p>
+    <p class="reco"><b>Recomendación:</b> mantener ese orden (es el que Víctor ya escribió) y medir cada
+    paso en producción antes de declararlo terminado.</p></div>
+</section>
+
+<section id="s8">
+  <p class="num">08</p>
+  <h2>El norte: la fábrica de empresas</h2>
+  <p class="intro">Tres fases. <strong>Se cruzan por portón (un número medido), nunca por fecha.</strong>
+  Cada fase deja valor aunque la siguiente tarde.</p>
+
+  <div class="fases">
+    <div class="fase"><div class="f">1<small>FASE</small></div>
+      <div><h3>El lazo multiempresa, vivo</h3>
+      <p>Terminar la migración de empresa en el ledger, encender Restaurant como segundo proyecto y
+      gobernarlo desde la consola. El aprendizaje de cada empresa queda en su casa, probado con dos
+      empresas reales.</p>
+      <p class="porton">la migración medida en producción + Restaurant escribiendo con 2 empresas sin una
+      sola fila cruzada</p></div></div>
+
+    <div class="fase"><div class="f">2<small>FASE</small></div>
+      <div><h3>Los motores genéricos</h3>
+      <p>El flujograma y el OKR se vuelven motores: formato único, archivo por empresa, estado que sale
+      del medidor. Los 18 objetivos llegan a producción medidos y la capa de OKR de empresa nace sobre
+      ellos.</p>
+      <p class="porton">el flujograma y el OKR de un proyecto nuevo se dan de alta SIN tocar el motor +
+      18 de 18 objetivos en producción y medidos</p></div></div>
+
+    <div class="fase"><div class="f">3<small>FASE</small></div>
+      <div><h3>La fábrica de startups</h3>
+      <p>El lunes del capítulo 04, real: una empresa nueva —propia o de un tercero— operando con bot,
+      norte, OKR y automejora el mismo día, sólo con fichas. La plataforma deja de ser un proyecto y pasa
+      a ser el producto.</p>
+      <p class="porton">una empresa nueva dada de alta de punta a punta en un día, con cero cambios de
+      código, y su primer OKR leyendo instrumentos vivos</p></div></div>
+  </div>
+</section>
+
+<footer>
+  <p><b>Fuentes.</b> Carta de Víctor «multiempresa y OKR» del 26-oct-2026 (sus mediciones figuran como
+  DECLARADO) · mediciones propias del 26-oct 16:34–16:45 -03 sobre el repositorio de infraestructura al
+  día (figuran como MEDIDO) · la decisión «motor único + ficha por empresa» la dictó Carlos el 26-oct
+  16:33 -03.</p>
+  <p>Página privada de trabajo para la reunión Carlos · Víctor · Lucas. No indexada. Los números internos
+  son material de trabajo, no comunicación pública.</p>
+</footer>
+
+</div>
+</body></html>
