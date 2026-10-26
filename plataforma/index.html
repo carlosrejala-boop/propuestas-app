@@ -159,6 +159,25 @@
   .volver{position:fixed;right:18px;bottom:18px;width:42px;height:42px;border-radius:50%;
     background:var(--panel);border:1px solid var(--borde);display:grid;place-items:center;
     font-family:var(--mono);color:var(--vivo);z-index:40}
+  /* v2 · mapa, pantallas de muestra y usos */
+  .intro2{max-width:78ch;font-size:15.5px;color:var(--apagado);margin-top:10px}
+  .nota{margin-top:14px;font-size:14.5px;color:var(--apagado);max-width:78ch}
+  .mapa-caja{background:var(--panel);border:1px solid var(--borde);border-radius:14px;padding:16px;margin-top:22px;overflow-x:auto}
+  .mapa-caja svg{width:100%;height:auto;display:block;min-width:640px}
+  .mapa-leyenda{display:flex;flex-wrap:wrap;gap:16px;margin-top:12px;font-family:var(--mono);font-size:12px;color:var(--suave)}
+  .pt{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:-1px;margin-right:5px}
+  .mock{background:var(--panel);border:1px solid var(--borde);border-radius:14px;padding:14px;margin-top:26px}
+  .mock .marco{overflow-x:auto}
+  .mock svg{width:100%;height:auto;display:block;min-width:620px}
+  .mock figcaption{font-size:13.5px;color:var(--suave);margin-top:10px;line-height:1.55;max-width:80ch}
+  .mock figcaption a{color:var(--azul)}
+  .uso{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:20px}
+  .uso .u{background:var(--panel);border:1px solid var(--borde);border-radius:12px;padding:16px}
+  .uso h3{font-family:var(--display);font-size:16.5px;margin-bottom:4px}
+  .uso .rol{font-family:var(--mono);font-size:11px;color:var(--vivo);letter-spacing:.08em;text-transform:uppercase}
+  .uso p{font-size:13.8px;color:var(--apagado);margin-top:6px}
+  .portada-arte{margin:26px 0 4px;border-radius:16px;overflow:hidden;border:1px solid var(--borde)}
+  .portada-arte img{width:100%;display:block}
   @media print{ body{background:#fff;color:#111} }
 </style></head>
 <body>
@@ -177,17 +196,24 @@
     <span class="chip declarado"><b>DECLARADO</b> · lo reporta una persona o documento</span>
     <span class="chip meta"><b>META</b> · a construir, se cruza por portón</span>
   </div>
+  <figure class="portada-arte">
+    <img src="portada-multiempresa.jpg" width="1600" height="900"
+      alt="Ilustración: un motor central luminoso conectado a cuatro contenedores transparentes y separados — una plataforma, cada empresa en su contenedor">
+  </figure>
 </header>
 
 <nav class="cap" aria-label="Capítulos"><ol>
   <li><a href="#s1">01 La idea</a></li>
   <li><a href="#s2">02 Los 3 niveles</a></li>
   <li><a href="#s3">03 Las herramientas</a></li>
-  <li><a href="#s4">04 De punta a punta</a></li>
-  <li><a href="#s5">05 Las paredes</a></li>
-  <li><a href="#s6">06 Estado real</a></li>
-  <li><a href="#s7">07 Decisiones</a></li>
-  <li><a href="#s8">08 El norte</a></li>
+  <li><a href="#s9">04 El mapa terminado</a></li>
+  <li><a href="#s10">05 Las pantallas</a></li>
+  <li><a href="#s4">06 De punta a punta</a></li>
+  <li><a href="#s11">07 Quién usa qué</a></li>
+  <li><a href="#s5">08 Las paredes</a></li>
+  <li><a href="#s6">09 Estado real</a></li>
+  <li><a href="#s7">10 Decisiones</a></li>
+  <li><a href="#s8">11 El norte</a></li>
 </ol></nav>
 
 <section id="s1">
@@ -372,8 +398,277 @@
   </div>
 </section>
 
-<section id="s4">
+<section id="s9">
   <p class="num">04</p>
+  <h2>El mapa terminado — cómo queda cuando esté al 100&nbsp;%</h2>
+  <p class="intro2"><span class="et meta">META DECLARADA</span> Este dibujo es el <b>objetivo</b>, no una
+  medición de avance: el estado real pieza por pieza, con hora, está en el capítulo 09. Cada caja trae un
+  punto de color que dice qué ya corre, qué corre para un solo proyecto y qué falta construir
+  (medido 26-oct 17:46–17:54 -03).</p>
+  <div class="mapa-caja">
+  <svg viewBox="0 0 980 690" role="img" aria-label="Mapa objetivo: empresas con su ficha, registro común, motor único, tableros y el ciclo de cada misión">
+    <defs><marker id="fl" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#55607a"/></marker></defs>
+    <g font-family="var(--mono)" font-size="12">
+      <!-- empresas -->
+      <g>
+        <rect x="20" y="18" width="214" height="66" rx="10" fill="#141a28" stroke="#2a3245"/>
+        <text x="127" y="44" text-anchor="middle" fill="#dfe6f3" font-weight="700" font-size="13">ALARMAS PY</text>
+        <text x="127" y="63" text-anchor="middle" fill="#8f98ab" font-size="10.5">ficha · tenant · marca propia</text>
+        <rect x="262" y="18" width="214" height="66" rx="10" fill="#141a28" stroke="#2a3245"/>
+        <text x="369" y="44" text-anchor="middle" fill="#dfe6f3" font-weight="700" font-size="13">RESTAURANT</text>
+        <text x="369" y="63" text-anchor="middle" fill="#8f98ab" font-size="10.5">ficha en modo seco (hoy)</text>
+        <rect x="504" y="18" width="214" height="66" rx="10" fill="#141a28" stroke="#2a3245"/>
+        <text x="611" y="44" text-anchor="middle" fill="#dfe6f3" font-weight="700" font-size="13">ZYMPLO MEI · ZYCHAT…</text>
+        <text x="611" y="63" text-anchor="middle" fill="#8f98ab" font-size="10.5">cada una con SU ficha</text>
+        <rect x="746" y="18" width="214" height="66" rx="10" fill="#141a28" stroke="var(--vivo)" stroke-dasharray="5 4"/>
+        <text x="853" y="44" text-anchor="middle" fill="#dfe6f3" font-weight="700" font-size="13">EMPRESA NUEVA</text>
+        <text x="853" y="63" text-anchor="middle" fill="#8f98ab" font-size="10.5">entra un lunes: fichas, no código</text>
+        <line x1="248" y1="14" x2="248" y2="92" stroke="var(--rojo)" stroke-opacity=".5" stroke-dasharray="3 5"/>
+        <line x1="490" y1="14" x2="490" y2="92" stroke="var(--rojo)" stroke-opacity=".5" stroke-dasharray="3 5"/>
+        <line x1="732" y1="14" x2="732" y2="92" stroke="var(--rojo)" stroke-opacity=".5" stroke-dasharray="3 5"/>
+        <text x="20" y="108" fill="var(--rojo)" fill-opacity=".8" font-size="10.5">las líneas punteadas son la PARED DEL DATO: nada la cruza</text>
+      </g>
+      <path d="M127 84 L127 122 M369 84 L369 122 M611 84 L611 122 M853 84 L853 122" stroke="#55607a" marker-end="url(#fl)" fill="none"/>
+      <!-- registro -->
+      <rect x="180" y="128" width="620" height="60" rx="12" fill="#141a28" stroke="var(--azul)"/>
+      <circle cx="202" cy="158" r="5" fill="var(--ambar)"/>
+      <text x="490" y="152" text-anchor="middle" fill="#dfe6f3" font-weight="700" font-size="13">REGISTRO COMÚN · qué proyectos y empresas existen</text>
+      <text x="490" y="172" text-anchor="middle" fill="#8f98ab" font-size="10.5">la FICHA: tenant · contenedor · base · cajas y medidores · KRs — el cargador falla cerrado si falta algo</text>
+      <path d="M490 188 L490 214" stroke="#55607a" marker-end="url(#fl)" fill="none"/>
+      <!-- motor -->
+      <rect x="40" y="218" width="900" height="186" rx="14" fill="#10151f" stroke="#2a3245"/>
+      <text x="490" y="242" text-anchor="middle" fill="var(--vivo)" font-weight="700" font-size="13" letter-spacing="2">EL MOTOR · SE CONSTRUYE UNA SOLA VEZ</text>
+      <g font-size="12">
+        <rect x="64" y="256" width="272" height="56" rx="9" fill="#161d2c" stroke="#2b3447"/>
+        <circle cx="82" cy="278" r="5" fill="var(--vivo)"/>
+        <text x="96" y="276" fill="#dfe6f3" font-weight="600">Conversaciones (el chat)</text>
+        <text x="96" y="296" fill="#8f98ab" font-size="10.5">captura · ruteo · pase a humano 24 h</text>
+        <rect x="354" y="256" width="272" height="56" rx="9" fill="#161d2c" stroke="#2b3447"/>
+        <circle cx="372" cy="278" r="5" fill="var(--ambar)"/>
+        <text x="386" y="276" fill="#dfe6f3" font-weight="600">Flujograma (cajas + medidores)</text>
+        <text x="386" y="296" fill="#8f98ab" font-size="10.5">82 cajas vivas · motor aún sin parámetro</text>
+        <rect x="644" y="256" width="272" height="56" rx="9" fill="#161d2c" stroke="#2b3447"/>
+        <circle cx="662" cy="278" r="5" fill="var(--ambar)"/>
+        <text x="676" y="276" fill="#dfe6f3" font-weight="600">Automejora · el lazo</text>
+        <text x="676" y="296" fill="#8f98ab" font-size="10.5">aprende por (proyecto, empresa)</text>
+        <rect x="64" y="330" width="272" height="56" rx="9" fill="#161d2c" stroke="#2b3447"/>
+        <circle cx="82" cy="352" r="5" fill="var(--vivo)"/>
+        <text x="96" y="350" fill="#dfe6f3" font-weight="600">Misiones + OKR (Gerente-IA)</text>
+        <text x="96" y="370" fill="#8f98ab" font-size="10.5">juez de 7 causas: ningún KR mal medible</text>
+        <rect x="354" y="330" width="272" height="56" rx="9" fill="#161d2c" stroke="var(--azul)" stroke-dasharray="5 4"/>
+        <circle cx="372" cy="352" r="5" fill="var(--azul)"/>
+        <text x="386" y="350" fill="#dfe6f3" font-weight="600">Capa de OKR de EMPRESA</text>
+        <text x="386" y="370" fill="#8f98ab" font-size="10.5">áreas · dueños · ciclo — por construir</text>
+        <rect x="644" y="330" width="272" height="56" rx="9" fill="#161d2c" stroke="#2b3447"/>
+        <circle cx="662" cy="352" r="5" fill="var(--ambar)"/>
+        <text x="676" y="350" fill="#dfe6f3" font-weight="600">Control (encendido · modo · topes)</text>
+        <text x="676" y="370" fill="#8f98ab" font-size="10.5">default por proyecto + override por empresa</text>
+      </g>
+      <path d="M490 404 L490 430" stroke="#55607a" marker-end="url(#fl)" fill="none"/>
+      <!-- tableros -->
+      <g font-size="12">
+        <rect x="64" y="434" width="272" height="56" rx="9" fill="#141a28" stroke="#2b3447"/>
+        <circle cx="82" cy="456" r="5" fill="var(--ambar)"/>
+        <text x="96" y="454" fill="#dfe6f3" font-weight="600">Panel de misiones</text>
+        <text x="96" y="474" fill="#8f98ab" font-size="10.5">todas las empresas · acceso por empresa en obra</text>
+        <rect x="354" y="434" width="272" height="56" rx="9" fill="#141a28" stroke="#2b3447"/>
+        <circle cx="372" cy="456" r="5" fill="var(--vivo)"/>
+        <text x="386" y="454" fill="#dfe6f3" font-weight="600">Consola de agentes</text>
+        <text x="386" y="474" fill="#8f98ab" font-size="10.5">cada cambio firmado: quién · cuándo · versión</text>
+        <rect x="644" y="434" width="272" height="56" rx="9" fill="#141a28" stroke="var(--azul)" stroke-dasharray="5 4"/>
+        <circle cx="662" cy="456" r="5" fill="var(--azul)"/>
+        <text x="676" y="454" fill="#dfe6f3" font-weight="600">Tablero de OKR por dueño</text>
+        <text x="676" y="474" fill="#8f98ab" font-size="10.5">cada gerente ve SUS números vivos</text>
+      </g>
+      <!-- ciclo -->
+      <text x="40" y="528" fill="#8f98ab" font-size="11.5">EL CICLO DE CADA MISIÓN — así corre hoy en Gerente-IA:</text>
+      <g font-size="11">
+        <rect x="40" y="540" width="130" height="46" rx="8" fill="#141a28" stroke="#2b3447"/>
+        <text x="105" y="560" text-anchor="middle" fill="#dfe6f3" font-weight="600">CONTRATO</text>
+        <text x="105" y="577" text-anchor="middle" fill="#8f98ab" font-size="9.5">objetivo + KRs</text>
+        <path d="M170 563 L188 563" stroke="#55607a" marker-end="url(#fl)"/>
+        <rect x="192" y="540" width="130" height="46" rx="8" fill="#141a28" stroke="var(--vivo)"/>
+        <text x="257" y="560" text-anchor="middle" fill="#dfe6f3" font-weight="600">JUEZ</text>
+        <text x="257" y="577" text-anchor="middle" fill="#8f98ab" font-size="9.5">bloquea el KR mal medible</text>
+        <path d="M322 563 L340 563" stroke="#55607a" marker-end="url(#fl)"/>
+        <rect x="344" y="540" width="130" height="46" rx="8" fill="#141a28" stroke="#2b3447"/>
+        <text x="409" y="560" text-anchor="middle" fill="#dfe6f3" font-weight="600">SIMULA</text>
+        <text x="409" y="577" text-anchor="middle" fill="#8f98ab" font-size="9.5">antes de tocar nada</text>
+        <path d="M474 563 L492 563" stroke="#55607a" marker-end="url(#fl)"/>
+        <rect x="496" y="540" width="130" height="46" rx="8" fill="#141a28" stroke="#2b3447"/>
+        <text x="561" y="560" text-anchor="middle" fill="#dfe6f3" font-weight="600">EJECUTA</text>
+        <text x="561" y="577" text-anchor="middle" fill="#8f98ab" font-size="9.5">dentro de sus topes</text>
+        <path d="M626 563 L644 563" stroke="#55607a" marker-end="url(#fl)"/>
+        <rect x="648" y="540" width="130" height="46" rx="8" fill="#141a28" stroke="#2b3447"/>
+        <text x="713" y="560" text-anchor="middle" fill="#dfe6f3" font-weight="600">VERIFICA</text>
+        <text x="713" y="577" text-anchor="middle" fill="#8f98ab" font-size="9.5">con RECIBOS, no promesas</text>
+        <path d="M778 563 L796 563" stroke="#55607a" marker-end="url(#fl)"/>
+        <rect x="800" y="540" width="140" height="46" rx="8" fill="#141a28" stroke="#2b3447"/>
+        <text x="870" y="560" text-anchor="middle" fill="#dfe6f3" font-weight="600">REPLANIFICA</text>
+        <text x="870" y="577" text-anchor="middle" fill="#8f98ab" font-size="9.5">con lo medido</text>
+      </g>
+      <path d="M870 540 C 870 480, 870 240, 812 188" stroke="#55607a" stroke-dasharray="4 4" marker-end="url(#fl)" fill="none" opacity=".7"/>
+      <text x="490" y="640" text-anchor="middle" fill="#8f98ab" font-size="11.5">lo aprendido vuelve a mejorar la FICHA (mecanismo compartido sólo si la empresa opta) — el DATO de una empresa jamás viaja a otra</text>
+    </g>
+  </svg>
+  </div>
+  <div class="mapa-leyenda">
+    <span><span class="pt" style="background:var(--vivo)"></span><b>corre hoy</b> · medido 26-oct</span>
+    <span><span class="pt" style="background:var(--ambar)"></span><b>corre, pero para UN proyecto o a medias</b> · falta parametrizar o mergear</span>
+    <span><span class="pt" style="background:var(--azul)"></span><b>por construir</b> · se cruza por portón, no por fecha</span>
+  </div>
+  <p class="nota">La lectura en una frase: <b>las empresas sólo escriben fichas; el motor es uno; los
+  tableros cortan por empresa; y lo aprendido vuelve a la ficha — nunca al dato de otra empresa.</b>
+  El criterio de aceptación de TODO el mapa: dar de alta una empresa nueva sin tocar una línea del motor.</p>
+</section>
+
+<section id="s10">
+  <p class="num">05</p>
+  <h2>Las pantallas — muestras de cómo se vería terminado</h2>
+  <p class="intro2"><span class="et meta">MAQUETAS</span> Tres pantallas dibujadas para la reunión. Los
+  <b>números que muestran son ilustrativos</b>; los mecanismos son los reales (los que ya están mergeados
+  se citan con su medición). El mecanismo del selector de empresa es el que usan las líderes — mirado y
+  citado en Mobbin el 26-oct 17:49, nunca re-alojado.</p>
+
+  <figure class="mock">
+    <div class="marco">
+    <svg viewBox="0 0 920 470" role="img" aria-label="Maqueta de la consola de agentes con selector de empresa y overrides">
+      <rect x="0" y="0" width="920" height="470" rx="14" fill="#10151f" stroke="#2a3245"/>
+      <rect x="0" y="0" width="920" height="42" rx="14" fill="#141a28"/>
+      <circle cx="22" cy="21" r="5" fill="var(--rojo)"/><circle cx="40" cy="21" r="5" fill="var(--ambar)"/><circle cx="58" cy="21" r="5" fill="var(--vivo)"/>
+      <g font-family="var(--mono)">
+        <text x="80" y="26" fill="#8f98ab" font-size="12">consola · agentes</text>
+        <rect x="688" y="9" width="212" height="24" rx="12" fill="#161d2c" stroke="var(--vivo)"/>
+        <text x="794" y="25" text-anchor="middle" fill="var(--vivo)" font-size="11">EMPRESA: ALARMAS PY ▾</text>
+        <rect x="16" y="56" width="200" height="396" rx="10" fill="#121826"/>
+        <text x="32" y="82" fill="#67718a" font-size="10.5" letter-spacing="1.5">PROYECTOS</text>
+        <rect x="24" y="94" width="184" height="30" rx="7" fill="#1b2435"/>
+        <circle cx="40" cy="109" r="4" fill="var(--vivo)"/><text x="52" y="113" fill="#dfe6f3" font-size="11.5">chat comercial</text>
+        <circle cx="40" cy="143" r="4" fill="var(--vivo)"/><text x="52" y="147" fill="#9aa3b8" font-size="11.5">chat restaurant</text>
+        <circle cx="40" cy="177" r="4" fill="var(--vivo)"/><text x="52" y="181" fill="#9aa3b8" font-size="11.5">gerente-ia</text>
+        <circle cx="40" cy="211" r="4" fill="#55607a"/><text x="52" y="215" fill="#9aa3b8" font-size="11.5">app alarmas</text>
+        <text x="32" y="258" fill="#67718a" font-size="10.5" letter-spacing="1.5">EMPRESA NUEVA</text>
+        <rect x="24" y="270" width="184" height="30" rx="7" fill="none" stroke="var(--vivo)" stroke-dasharray="4 4"/>
+        <text x="116" y="290" text-anchor="middle" fill="var(--vivo)" font-size="11.5">+ dar de alta (ficha)</text>
+        <g>
+          <rect x="236" y="56" width="664" height="60" rx="9" fill="#141a2b" stroke="#273146"/>
+          <text x="254" y="81" fill="#dfe6f3" font-size="12.5" font-weight="600">Modo del agente</text>
+          <text x="254" y="100" fill="#8f98ab" font-size="10.5">seco → propone → escribe · hoy: ESCRIBE</text>
+          <rect x="756" y="71" width="128" height="22" rx="11" fill="#1b2435"/><text x="820" y="86" text-anchor="middle" fill="#9aa3b8" font-size="10">POR PROYECTO</text>
+          <rect x="236" y="124" width="664" height="60" rx="9" fill="#141a2b" stroke="var(--ambar)"/>
+          <text x="254" y="149" fill="#dfe6f3" font-size="12.5" font-weight="600">Tope diario de gasto</text>
+          <text x="254" y="168" fill="#8f98ab" font-size="10.5">40 · firmado: quién, cuándo y el valor anterior quedan guardados</text>
+          <rect x="716" y="139" width="168" height="22" rx="11" fill="#2a2214"/><text x="800" y="154" text-anchor="middle" fill="var(--ambar)" font-size="10">OVERRIDE · ALARMAS PY</text>
+          <rect x="236" y="192" width="664" height="60" rx="9" fill="#141a2b" stroke="#273146"/>
+          <text x="254" y="217" fill="#dfe6f3" font-size="12.5" font-weight="600">STOP de emisiones</text>
+          <text x="254" y="236" fill="#8f98ab" font-size="10.5">se enciende POR EMPRESA · el global queda para la emergencia</text>
+          <rect x="844" y="208" width="40" height="20" rx="10" fill="#273146"/><circle cx="854" cy="218" r="8" fill="#55607a"/>
+          <rect x="236" y="260" width="664" height="60" rx="9" fill="#141a2b" stroke="#273146"/>
+          <text x="254" y="285" fill="#dfe6f3" font-size="12.5" font-weight="600">Comparte mecanismo</text>
+          <text x="254" y="304" fill="#8f98ab" font-size="10.5">lo aprendido acá puede servirle a otra empresa — SÓLO el mecanismo, jamás el dato</text>
+          <rect x="844" y="276" width="40" height="20" rx="10" fill="#14352b"/><circle cx="874" cy="286" r="8" fill="var(--vivo)"/>
+          <rect x="236" y="328" width="664" height="60" rx="9" fill="#141a2b" stroke="#273146"/>
+          <text x="254" y="353" fill="#dfe6f3" font-size="12.5" font-weight="600">Si la consola se cae</text>
+          <text x="254" y="372" fill="#8f98ab" font-size="10.5">24 h sin config fresca → el agente baja SOLO a modo seco (falla cerrado)</text>
+          <rect x="756" y="343" width="128" height="22" rx="11" fill="#13202e"/><text x="820" y="358" text-anchor="middle" fill="var(--azul)" font-size="10">AUTOMÁTICO</text>
+          <text x="254" y="430" fill="#67718a" font-size="10.5">cada cambio queda en la bitácora: quién · cuándo · valor anterior · versión que sube sola</text>
+        </g>
+      </g>
+    </svg>
+    </div>
+    <figcaption><b>La consola.</b> El default es del proyecto; la fila de una empresa lo pisa clave por
+    clave y «heredar» borra el override. Este mecanismo <b>ya está mergeado y lo medí hoy 17:53</b>
+    (consola con selector de empresa, 6 claves cerradas, versión que sólo sube, cambio firmado).
+    El selector de empresa arriba a la derecha es el mecanismo de
+    <a href="https://mobbin.com/screens/41e8b27f-bbca-4be6-9136-a536e37c17b4" rel="noopener">Snowflake</a> y
+    <a href="https://mobbin.com/screens/a14400bb-6617-4890-af09-01c012c69998" rel="noopener">Shopify</a>
+    (cuenta/tienda activa en un menú, con «crear» en el mismo lugar — mirado en Mobbin, 26-oct).</figcaption>
+  </figure>
+
+  <figure class="mock">
+    <div class="marco">
+    <svg viewBox="0 0 920 440" role="img" aria-label="Maqueta del tablero de OKR de empresa con juez">
+      <rect x="0" y="0" width="920" height="440" rx="14" fill="#10151f" stroke="#2a3245"/>
+      <rect x="0" y="0" width="920" height="42" rx="14" fill="#141a28"/>
+      <circle cx="22" cy="21" r="5" fill="var(--rojo)"/><circle cx="40" cy="21" r="5" fill="var(--ambar)"/><circle cx="58" cy="21" r="5" fill="var(--vivo)"/>
+      <g font-family="var(--mono)">
+        <text x="80" y="26" fill="#8f98ab" font-size="12">OKR · ALARMAS PY · corte mensual</text>
+        <rect x="712" y="9" width="188" height="24" rx="12" fill="#161d2c" stroke="var(--azul)"/>
+        <text x="806" y="25" text-anchor="middle" fill="var(--azul)" font-size="11">VISTA: POR DUEÑO ▾</text>
+        <g>
+          <text x="28" y="78" fill="#dfe6f3" font-size="13" font-weight="700">O1 · RETENCIÓN</text><text x="200" y="78" fill="#67718a" font-size="11">dueña: ATC</text>
+          <text x="28" y="102" fill="#9aa3b8" font-size="11.5">KR · bajas del mes, 800 como máximo</text>
+          <rect x="28" y="112" width="500" height="10" rx="5" fill="#1c2334"/><rect x="28" y="112" width="310" height="10" rx="5" fill="var(--vivo)"/>
+          <text x="552" y="121" fill="var(--vivo)" font-size="11.5">en meta ✓</text>
+          <rect x="652" y="106" width="248" height="22" rx="11" fill="#14352b"/><text x="776" y="121" text-anchor="middle" fill="var(--vivo)" font-size="10">instrumento: vigía de la meta · JUEZ: PASA</text>
+          <text x="28" y="170" fill="#dfe6f3" font-size="13" font-weight="700">O2 · ADOPCIÓN DE LA APP</text><text x="280" y="170" fill="#67718a" font-size="11">dueño: producto</text>
+          <text x="28" y="194" fill="#9aa3b8" font-size="11.5">KR · usuarios que abren la app en 28 días</text>
+          <rect x="28" y="204" width="500" height="10" rx="5" fill="#1c2334"/><rect x="28" y="204" width="240" height="10" rx="5" fill="var(--ambar)"/>
+          <text x="552" y="213" fill="var(--ambar)" font-size="11.5">avanza</text>
+          <rect x="592" y="198" width="308" height="22" rx="11" fill="#2a2214"/><text x="746" y="213" text-anchor="middle" fill="var(--ambar)" font-size="10">PASA SIN MEDIR: el número lo lee una persona → se cablea</text>
+          <text x="28" y="262" fill="#dfe6f3" font-size="13" font-weight="700">O3 · VENTAS</text><text x="160" y="262" fill="#67718a" font-size="11">dueño: comercial</text>
+          <text x="28" y="286" fill="#9aa3b8" font-size="11.5">KR · altas del mes rumbo a 5.000</text>
+          <rect x="28" y="296" width="500" height="10" rx="5" fill="#1c2334"/><rect x="28" y="296" width="180" height="10" rx="5" fill="var(--rojo)"/>
+          <text x="552" y="305" fill="var(--rojo)" font-size="11.5">bloqueado</text>
+          <rect x="612" y="290" width="288" height="22" rx="11" fill="#331a20"/><text x="756" y="305" text-anchor="middle" fill="var(--rojo)" font-size="10">JUEZ: BLOQUEADO · ¿altas brutas o netas? (D4)</text>
+          <rect x="28" y="340" width="872" height="66" rx="10" fill="#121826"/>
+          <text x="46" y="366" fill="#8f98ab" font-size="11">El JUEZ es el que ya corre en Gerente-IA: bloquea todo KR sin denominador, sin línea de base, con meta igual a la base,</text>
+          <text x="46" y="384" fill="#8f98ab" font-size="11">con dirección incoherente, que en realidad es una tarea, sin fecha o sin arco. Un KR bloqueado NO se firma: queda en borrador.</text>
+        </g>
+      </g>
+    </svg>
+    </div>
+    <figcaption><b>El tablero de OKR de empresa</b> (la pieza azul del mapa: por construir). Cada KR cita
+    su <b>instrumento vivo</b> — jamás un número tipeado a mano — y pasa por el juez de 7 causas que ya
+    corre en Gerente-IA (medido hoy 17:39). «OKR de gerentes y directores» no es otro sistema: es esta
+    misma pantalla filtrada por dueño. Los valores dibujados son de muestra; el tercero muestra adrede un
+    caso real de esta casa: el 5.000 de altas está <b>bloqueado por definición</b> (D4) hasta que se
+    decida qué cuenta como alta.</figcaption>
+  </figure>
+
+  <figure class="mock">
+    <div class="marco">
+    <svg viewBox="0 0 920 400" role="img" aria-label="Maqueta del flujograma de una empresa con cajas y medidores">
+      <rect x="0" y="0" width="920" height="400" rx="14" fill="#10151f" stroke="#2a3245"/>
+      <rect x="0" y="0" width="920" height="42" rx="14" fill="#141a28"/>
+      <circle cx="22" cy="21" r="5" fill="var(--rojo)"/><circle cx="40" cy="21" r="5" fill="var(--ambar)"/><circle cx="58" cy="21" r="5" fill="var(--vivo)"/>
+      <g font-family="var(--mono)">
+        <text x="80" y="26" fill="#8f98ab" font-size="12">flujograma · RESTAURANT</text>
+        <text x="898" y="26" text-anchor="end" fill="#67718a" font-size="11">un producto nuevo = más cajas, nunca otro flujograma</text>
+        <g font-size="10.5" fill="#67718a" letter-spacing="1.5">
+          <text x="110" y="72" text-anchor="middle">ENTRADA</text><text x="290" y="72" text-anchor="middle">CONVERSA</text><text x="470" y="72" text-anchor="middle">COBRA</text><text x="650" y="72" text-anchor="middle">ENTREGA</text><text x="830" y="72" text-anchor="middle">POSVENTA</text>
+        </g>
+        <g font-size="11">
+          <rect x="30" y="84" width="160" height="62" rx="8" fill="#141a2b" stroke="#273146"/><circle cx="46" cy="102" r="4" fill="var(--vivo)"/><text x="56" y="106" fill="#dfe6f3" font-weight="600">llega el mensaje</text><text x="46" y="128" fill="#8f98ab" font-size="9.5">mide: mensajes/día</text>
+          <rect x="30" y="158" width="160" height="62" rx="8" fill="#141a2b" stroke="#273146"/><circle cx="46" cy="176" r="4" fill="var(--vivo)"/><text x="56" y="180" fill="#dfe6f3" font-weight="600">identifica al cliente</text><text x="46" y="202" fill="#8f98ab" font-size="9.5">mide: % identificado</text>
+          <rect x="210" y="84" width="160" height="62" rx="8" fill="#141a2b" stroke="#273146"/><circle cx="226" cy="102" r="4" fill="var(--vivo)"/><text x="236" y="106" fill="#dfe6f3" font-weight="600">toma el pedido</text><text x="226" y="128" fill="#8f98ab" font-size="9.5">mide: pedidos armados</text>
+          <rect x="210" y="158" width="160" height="62" rx="8" fill="#141a2b" stroke="var(--ambar)"/><circle cx="226" cy="176" r="4" fill="var(--ambar)"/><text x="236" y="180" fill="#dfe6f3" font-weight="600">resuelve la duda</text><text x="226" y="202" fill="var(--ambar)" font-size="9.5">medidor en ROJO · arreglo en viaje</text>
+          <rect x="390" y="84" width="160" height="62" rx="8" fill="#141a2b" stroke="#273146"/><circle cx="406" cy="102" r="4" fill="var(--vivo)"/><text x="416" y="106" fill="#dfe6f3" font-weight="600">cobra</text><text x="406" y="128" fill="#8f98ab" font-size="9.5">mide: cobros confirmados</text>
+          <rect x="390" y="158" width="160" height="62" rx="8" fill="#141a2b" stroke="#55607a" stroke-dasharray="4 4"/><circle cx="406" cy="176" r="4" fill="#55607a"/><text x="416" y="180" fill="#9aa3b8" font-weight="600">reintenta el cobro</text><text x="406" y="202" fill="#67718a" font-size="9.5">SIN MEDIDOR — deuda visible</text>
+          <rect x="570" y="84" width="160" height="62" rx="8" fill="#141a2b" stroke="#273146"/><circle cx="586" cy="102" r="4" fill="var(--vivo)"/><text x="596" y="106" fill="#dfe6f3" font-weight="600">avisa a cocina</text><text x="586" y="128" fill="#8f98ab" font-size="9.5">mide: tiempo al aviso</text>
+          <rect x="570" y="158" width="160" height="62" rx="8" fill="#141a2b" stroke="#273146"/><circle cx="586" cy="176" r="4" fill="var(--vivo)"/><text x="596" y="180" fill="#dfe6f3" font-weight="600">confirma entrega</text><text x="586" y="202" fill="#8f98ab" font-size="9.5">mide: entregas cerradas</text>
+          <rect x="750" y="84" width="150" height="62" rx="8" fill="#141a2b" stroke="#273146"/><circle cx="766" cy="102" r="4" fill="var(--vivo)"/><text x="776" y="106" fill="#dfe6f3" font-weight="600">pide reseña</text><text x="766" y="128" fill="#8f98ab" font-size="9.5">mide: reseñas/semana</text>
+          <rect x="750" y="158" width="150" height="62" rx="8" fill="#141a2b" stroke="#55607a" stroke-dasharray="4 4"/><circle cx="766" cy="176" r="4" fill="#55607a"/><text x="776" y="180" fill="#9aa3b8" font-weight="600">recontacta</text><text x="766" y="202" fill="#67718a" font-size="9.5">SIN MEDIDOR — deuda visible</text>
+        </g>
+        <rect x="30" y="248" width="870" height="56" rx="10" fill="#121826"/>
+        <text x="48" y="272" fill="#8f98ab" font-size="11">El ESTADO de cada caja no se tipea: sale de su MEDIDOR. Una caja sin medidor se ve gris — la deuda queda a la vista,</text>
+        <text x="48" y="290" fill="#8f98ab" font-size="11">no escondida. Es el formato que hoy vive con 82 cajas en el flujograma de AlóChat (medido 17:50), parametrizado por empresa.</text>
+        <g font-size="10.5">
+          <circle cx="46" cy="336" r="4" fill="var(--vivo)"/><text x="58" y="340" fill="#8f98ab">medidor en verde</text>
+          <circle cx="206" cy="336" r="4" fill="var(--ambar)"/><text x="218" y="340" fill="#8f98ab">medidor en rojo, con su arreglo al lado</text>
+          <circle cx="496" cy="336" r="4" fill="#55607a"/><text x="508" y="340" fill="#8f98ab">caja sin medidor (gris = deuda declarada)</text>
+        </g>
+      </g>
+    </svg>
+    </div>
+    <figcaption><b>El flujograma de una empresa.</b> Mismo motor, otra ficha: las cajas y los medidores son
+    de la empresa; el dibujo, el verificador y el tablero son los mismos para todas. Un producto nuevo
+    (delivery, salón, catering) agrega FILAS a este mismo tablero — jamás un flujograma aparte.</figcaption>
+  </figure>
+</section>
+
+<section id="s4">
+  <p class="num">06</p>
   <h2>De punta a punta: una startup entra un lunes</h2>
   <p class="intro"><span class="et meta">META</span>&nbsp; Así se ve el día 1 de una empresa nueva cuando
   la plataforma esté completa. Hoy este recorrido existe <strong>a mano y para 2 proyectos</strong>;
@@ -401,8 +696,40 @@
   </div>
 </section>
 
+<section id="s11">
+  <p class="num">07</p>
+  <h2>Quién usa qué — la funcionalidad, persona por persona</h2>
+  <div class="uso">
+    <div class="u">
+      <h3>🧭 Dirección (Carlos)</h3>
+      <p>Abre el <b>tablero de OKR</b> y ve todas las empresas a la vez, cada número salido de un
+      instrumento vivo. Decide los objetivos y los topes; no toca código ni fichas.</p>
+    </div>
+    <div class="u">
+      <h3>🔧 Infra (Víctor)</h3>
+      <p>Es dueño del <b>motor y del registro</b>: valida cada ficha nueva, mantiene los
+      contenedores separados y el portón que hace fallar ruidoso todo dato sin empresa.</p>
+    </div>
+    <div class="u">
+      <h3>🤖 Misiones (Lucas)</h3>
+      <p>Su circuito de Gerente-IA es <b>el motor de OKR</b>: contrato, juez, simulación, recibos.
+      La capa de empresa se monta encima — su producción no se toca sin su OK.</p>
+    </div>
+    <div class="u">
+      <h3>👔 El gerente de un área</h3>
+      <p>Ve <b>su</b> flujograma y <b>sus</b> KR, con el medidor en rojo y el arreglo al lado.
+      Pide un cambio de tope desde la consola; queda firmado con su nombre.</p>
+    </div>
+    <div class="u">
+      <h3>🏢 Una empresa nueva</h3>
+      <p>Entra un lunes: su ficha al registro, sus cajas al flujograma, sus KR al tablero.
+      <b>Cero código nuevo.</b> Si el alta exige tocar el motor, el motor está mal.</p>
+    </div>
+  </div>
+</section>
+
 <section id="s5">
-  <p class="num">05</p>
+  <p class="num">08</p>
   <h2>Las paredes que no se negocian</h2>
   <p class="intro">La plataforma comparte el motor <strong>porque</strong> estas cuatro paredes existen.
   Sin ellas, «multiempresa» sería «datos mezclados».</p>
@@ -425,10 +752,11 @@
 </section>
 
 <section id="s6">
-  <p class="num">06</p>
+  <p class="num">09</p>
   <h2>El estado real, sin maquillaje</h2>
   <p class="intro">Fuentes: la carta de Víctor del 26-oct (sus mediciones, etiquetadas DECLARADO) y
-  mediciones propias del 26-oct 16:34–16:45 sobre el repositorio al día (etiquetadas MEDIDO).</p>
+  mediciones propias del 26-oct — 16:34–16:45 y el examen exhaustivo de 17:46–17:54, con dos
+  exploradores en paralelo sobre los repositorios al día (etiquetadas MEDIDO, cada una con su hora).</p>
 
   <div class="marco-tabla"><table>
     <thead><tr><th>Frente</th><th>Estado</th><th>Detalle</th><th>Fuente</th></tr></thead>
@@ -437,20 +765,35 @@
         <td>2 fichas vivas (comercial, restaurant). El lazo dejó de tener un proyecto fijo en el código.</td>
         <td>medido 26-oct</td></tr>
       <tr><td><b>Empresa en el ledger</b></td><td><span class="et rojo">TRABADO</span></td>
-        <td>El PR de la migración quedó en conflicto, 444 commits detrás de main. Producción sigue sin
-        tenant: <b>46 tablas de calidad, 0 con empresa</b>. Hay que rebasar, re-verificar y correr la ventana.</td>
-        <td>declarado (Víctor, 26-oct)</td></tr>
+        <td>Medido a las 17:51: el PR de la migración sigue <b>abierto y en conflicto, 451 commits detrás
+        de main</b>; en main la base aún no filtra por empresa (0 reglas de corte por fila) y la migración
+        que agrega la columna dice en su propio texto «NO SE APLICA SOLA». Producción sigue sin tenant:
+        <b>46 tablas de calidad, 0 con empresa</b>. Hay que rebasar, re-verificar y correr la ventana.</td>
+        <td>declarado + medido 17:51</td></tr>
+      <tr><td><b>Candado del tenant (AC2)</b></td><td><span class="et rojo">ROJO</span></td>
+        <td>El criterio «cero empresa fija en el código» <b>no se cumple todavía</b>: quedan 2 valores
+        fijos en 2 archivos del redactor del lazo. El propio check de la casa lo mide y sale rojo —
+        que el rojo se vea es el diseño funcionando.</td><td>medido 17:49</td></tr>
       <tr><td><b>Restaurant 2.º proyecto</b></td><td><span class="et meta">SÓLO QA</span></td>
         <td>Desplegado en QA el 12-oct; no está en main ni en producción. Faltan registro, esquema y pack
         del rubro.</td><td>declarado (Víctor, 26-oct)</td></tr>
-      <tr><td><b>Consola</b></td><td><span class="et declarado">EN PROD</span></td>
-        <td>Config por proyecto + override por empresa. Falta el runner que la obedece y el piloto de
-        apagado.</td><td>declarado (Víctor, 26-oct)</td></tr>
+      <tr><td><b>Consola</b></td><td><span class="et medido">MERGEADA</span></td>
+        <td>El mecanismo ya está en el repo de tableros y lo medí: selector de empresa, default por
+        proyecto + override por empresa clave por clave, cada cambio firmado y con versión que sólo sube
+        (mergeado el 13-oct). «En PROD» lo declara Víctor. Falta el runner que la obedece y el piloto de
+        apagado.</td><td>medido 17:53 + declarado</td></tr>
+      <tr><td><b>Tableros · acceso por empresa</b></td><td><span class="et declarado">A MEDIAS</span></td>
+        <td>El panel de misiones ya muestra la empresa de cada misión y filtra por ella, y cada comando
+        lleva la empresa de su misión (mergeado). Pero <b>el control de ACCESO por empresa todavía no
+        existe</b> — lo dice su propia documentación — y el STOP por empresa está en un PR abierto en
+        conflicto. Quien entra al panel hoy ve todas las empresas.</td><td>medido 17:54</td></tr>
       <tr><td><b>Flujograma</b></td><td><span class="et medido">EXISTE · GENÉRICO NO</span></td>
-        <td>La herramienta <b>existe y corre</b>: 17 archivos, ~104 cajas con su medidor, pulso diario y
-        su versión HTML/PDF para el equipo — todo nombrado para UN proyecto (AlóChat). Lo que no existe
-        es el <b>motor genérico</b> parametrizado por empresa; el formato (tabla de cajas + medidores)
-        ya es generalizable.</td><td>medido 26-oct 16:34 y 17:41</td></tr>
+        <td>La herramienta <b>existe y corre</b>: 17 archivos, <b>82 cajas</b> con su medidor (la 1.ª
+        versión decía «~104»: eran las líneas del archivo, no las cajas — corregido), pulso diario y su
+        versión HTML/PDF para el equipo — todo nombrado para UN proyecto (AlóChat). El motor que dibuja
+        (7.400+ líneas) no recibe hoy ningún parámetro de proyecto, y la tabla de cajas no tiene columna
+        de empresa: ése es el trabajo del motor genérico; el formato ya es generalizable.</td>
+        <td>medido 26-oct 16:34 · 17:41 · 17:50</td></tr>
       <tr><td><b>OKR</b></td><td><span class="et medido">MOTOR SÍ · CAPA NO</span></td>
         <td>El motor con juez <b>existe y corre</b>: Gerente-IA (contratos con KRs, juez de 7 causas,
         panel «Misiones», commit de hoy 17:00). La <b>capa de empresa</b> (áreas, dueños, ciclo) sigue
@@ -462,7 +805,7 @@
 </section>
 
 <section id="s7">
-  <p class="num">07</p>
+  <p class="num">10</p>
   <h2>Lo que la reunión tiene que decidir</h2>
   <p class="intro">Cinco decisiones, cada una con su dueño y una recomendación ya pensada.
   Sin estas cinco, lo demás es construcción a ciegas.</p>
@@ -492,8 +835,12 @@
 
   <div class="decision"><p class="quien">Deciden los tres</p>
     <h3>4 · ¿Instalaciones separadas para el chat entero?</h3>
-    <p>La propuesta original de Carlos para el chat (no el lazo) no está decidida. Tocarla ahora
-    compite con terminar la migración del lazo.</p>
+    <p>La propuesta original de Carlos para el chat (no el lazo) no está decidida. Y el examen de las
+    17:51 encontró que <b>en el repo conviven dos documentos de decisión sin reconciliar</b>: uno propone
+    instalación separada por empresa (y desconfía de la columna de empresa: «falla en silencio») y el
+    otro —el del lazo— apuesta justamente a esa columna; además los documentos aceptados del bot ya
+    operan con N empresas por bot, decididas por la credencial. Tocarla ahora compite con terminar la
+    migración del lazo.</p>
     <p class="reco"><b>Recomendación:</b> decidirla DESPUÉS de que Restaurant corra en producción con
     2 empresas — con esa evidencia la decisión se toma con número y no con opinión.</p></div>
 
@@ -506,7 +853,7 @@
 </section>
 
 <section id="s8">
-  <p class="num">08</p>
+  <p class="num">11</p>
   <h2>El norte: la fábrica de empresas</h2>
   <p class="intro">Tres fases. <strong>Se cruzan por portón (un número medido), nunca por fecha.</strong>
   Cada fase deja valor aunque la siguiente tarde.</p>
@@ -540,9 +887,20 @@
 
 <footer>
   <p><b>Fuentes.</b> Carta de Víctor «multiempresa y OKR» del 26-oct-2026 (sus mediciones figuran como
-  DECLARADO) · mediciones propias del 26-oct 16:34–16:45 y 17:36–17:40 -03 sobre los repositorios al
-  día (figuran como MEDIDO; la segunda tanda incluye el examen a fondo del OKR existente en Gerente-IA,
-  pedido por Carlos) · la decisión «motor único + ficha por empresa» la dictó Carlos el 26-oct 16:33 -03.</p>
+  DECLARADO) · mediciones propias del 26-oct 16:34–16:45, 17:36–17:40 y el examen exhaustivo de
+  17:46–17:54 -03 con dos exploradores en paralelo sobre los repositorios al día (figuran como MEDIDO;
+  incluye el examen a fondo del OKR existente en Gerente-IA, pedido por Carlos) · la decisión
+  «motor único + ficha por empresa» la dictó Carlos el 26-oct 16:33 -03.</p>
+  <p><b>Rastro de las herramientas de diseño.</b> Mobbin (sólo mirado y citado, nunca re-alojado):
+  el selector de cuenta/empresa de <a href="https://mobbin.com/screens/41e8b27f-bbca-4be6-9136-a536e37c17b4" rel="noopener">Snowflake</a>
+  y <a href="https://mobbin.com/screens/a14400bb-6617-4890-af09-01c012c69998" rel="noopener">Shopify</a>,
+  mirados 26-oct 17:49 · 21st.dev: mecanismo de
+  <a href="https://21st.dev/@shadcnstore/components/app-1" rel="noopener">consola con panel lateral</a> y
+  <a href="https://21st.dev/@dgearsonu1/components/dashboard-configuration" rel="noopener">pantalla de configuración con toggles</a>,
+  adaptados a las maquetas del capítulo 05 · Aura: la portada
+  (<a href="https://aura.build/asset/114471" rel="noopener">asset 114471</a>, 2048×1152, 1 prompt,
+  generada 26-oct 17:53) · Figma: esta página es HTML directo; el diseño no pasó por un archivo de
+  Figma en esta pieza, y queda dicho en vez de inventar un nodo.</p>
   <p>Página privada de trabajo para la reunión Carlos · Víctor · Lucas. No indexada. Los números internos
   son material de trabajo, no comunicación pública.</p>
 </footer>
