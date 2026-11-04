@@ -355,10 +355,10 @@ const DECISIONES = [
  // ── MEDICIÓN
  {g:'medicion', id:'PH1', urg:true, t:'Las pantallas de emergencia y de mora salen hacia PostHog',
   q:'¿Aplicamos a PostHog la misma puerta que ya tiene Firebase?',
-  ctx:'Con clave puesta, una visita a la pantalla de robo, de asistencia, de un evento del Centro de Monitoreo o de mora saldría hacia PostHog, identificada por el código del cliente. Firebase no la deja salir, por lo que decidiste en B109. Ninguna prueba lo cubre.',
-  op:[['a','Sí: la misma puerta, sin tocar la lista de pantallas. Lo dejo hecho y probado en local, en un commit aparte; a <code>develop</code> entra por un PR propio (no de polizón en Clasificados), con tu OK'],['b','No']], rec:'a',
+  ctx:'Con clave puesta, una visita a la pantalla de robo, de asistencia, de un evento del Centro de Monitoreo o de mora saldría hacia PostHog, identificada por el código del cliente. Firebase no la deja salir, por lo que decidiste en B109. Hasta hoy ninguna prueba lo cubría.',
+  op:[['a','Sí: la misma puerta, sin tocar la lista de pantallas. Ya está hecho y probado en local, en un commit aparte (<code>bdeaf60e</code>): con el arreglo pasan 330 de 330 pruebas, y sin él fallan 25 (medido 11:50). A <code>develop</code> llega junto con la puerta de Firebase del rediseño, porque en <code>develop</code> esa lista de pantallas todavía no existe'],['b','No']], rec:'a',
   por:'Es la línea dura de la casa: la emergencia no sale de la app. No es una decisión nueva, es la tuya de B109 aplicada al destino nuevo. Son cuatro líneas y una prueba que demuestra que la fuga existía.',
-  destraba:'Cierra el hallazgo ALTO de la unión con develop', despues:'Hoy en local; el PR propio, con tu OK'},
+  destraba:'Cierra el hallazgo ALTO de la unión con develop', despues:'Hecho en local; a develop con el rediseño, con tu OK'},
  {g:'medicion', id:'PH2', t:'PostHog identifica al cliente sin pedirle permiso', q:'¿Ratificás la excepción que tomó Lucas el 28-oct a B109?',
   ctx:'B109 decía que la medición de uso sale sólo con el permiso de la persona. La pantalla que pide ese permiso todavía no existe. El propio código lo advierte: mandar datos de uso identificados sin ella <i>«puede chocar con la ley de datos personales»</i>.',
   op:[['a','PostHog sí, pero <b>anónimo</b> (sin identificar al cliente) hasta que exista la pantalla de permiso; la construimos y recién ahí se identifica'],['b','Ratificar a Lucas: identificado desde ya'],['c','Volver a B109: nada a PostHog hasta la pantalla']], rec:'a',
