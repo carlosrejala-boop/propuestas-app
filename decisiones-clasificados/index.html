@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Clasificados V2 · Decisiones</title>
+<style>
+:root{
+  --suelo:#f6f5f2; --hoja:#ffffff; --tinta:#1d1f22; --tenue:#5d6168; --linea:#e2e0db;
+  --marca:#c4541a; --marca-suave:#fbeee6; --ok:#1f7a4d; --ok-suave:#e6f4ec;
+  --alerta:#b42318; --alerta-suave:#fdecea; --info:#1d4f91; --info-suave:#e8eef8;
+  --sombra:0 1px 2px rgba(0,0,0,.06),0 4px 14px rgba(0,0,0,.04);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --suelo:#141517; --hoja:#1d1f22; --tinta:#eceae6; --tenue:#a3a7ae; --linea:#33363b;
+  --marca:#f08a4b; --marca-suave:#3a2518; --ok:#5cc28e; --ok-suave:#173225;
+  --alerta:#f27a6f; --alerta-suave:#3b1d1b; --info:#7fa8e8; --info-suave:#1a2639;
+  --sombra:none; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --suelo:#141517; --hoja:#1d1f22; --tinta:#eceae6; --tenue:#a3a7ae; --linea:#33363b;
+  --marca:#f08a4b; --marca-suave:#3a2518; --ok:#5cc28e; --ok-suave:#173225;
+  --alerta:#f27a6f; --alerta-suave:#3b1d1b; --info:#7fa8e8; --info-suave:#1a2639;
+  --sombra:none; color-scheme:dark;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--suelo);color:var(--tinta);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.envoltura{max-width:1060px;margin:0 auto;padding-inline:20px;padding-block:28px 80px}
+h1{font-size:1.9rem;line-height:1.2;margin:.2rem 0 .4rem}
+h2{font-size:1.35rem;margin:2.6rem 0 .3rem;padding-top:.6rem;border-top:2px solid var(--linea)}
+h3{font-size:1.05rem;margin:0}
+p{margin:.45rem 0}
+small,.tenue{color:var(--tenue)}
+code{font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--info-suave);padding:1px 5px;border-radius:4px;word-break:break-word}
+a{color:var(--info)}
+.cinta{display:flex;flex-wrap:wrap;gap:8px;margin:.6rem 0 1rem}
+.chip{display:inline-block;font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;background:var(--info-suave);color:var(--info);white-space:nowrap}
+.chip.urg{background:var(--alerta-suave);color:var(--alerta)}
+.chip.rec{background:var(--ok-suave);color:var(--ok)}
+.chip.mar{background:var(--marca-suave);color:var(--marca)}
+.cifras{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:1rem 0}
+.cifra{background:var(--hoja);border:1px solid var(--linea);border-radius:12px;padding:12px 14px;box-shadow:var(--sombra)}
+.cifra b{display:block;font-size:1.7rem;line-height:1.1}
+.cifra span{font-size:13px;color:var(--tenue)}
+.nota{background:var(--hoja);border-left:4px solid var(--marca);border-radius:8px;padding:12px 16px;margin:1rem 0;box-shadow:var(--sombra)}
+.nota.roja{border-left-color:var(--alerta)}
+.nota.verde{border-left-color:var(--ok)}
+.tarjeta{background:var(--hoja);border:1px solid var(--linea);border-radius:14px;padding:16px 18px;margin:14px 0;box-shadow:var(--sombra)}
+.tarjeta.urgente{border-color:var(--alerta);border-width:2px}
+.cabeza{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.cod{font-weight:800;color:var(--marca);font-size:1.05rem}
+.opciones{display:grid;gap:6px;margin:.7rem 0}
+.opcion{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border:1px solid var(--linea);border-radius:10px;cursor:pointer}
+.opcion:hover{border-color:var(--tenue)}
+.opcion input{margin-top:4px;flex:none}
+.opcion.es-rec{border-color:var(--ok);background:var(--ok-suave)}
+.opcion .marca-rec{font-size:11px;font-weight:700;color:var(--ok);margin-left:6px;white-space:nowrap}
+.recomiendo{background:var(--ok-suave);border-radius:10px;padding:10px 12px;margin:.6rem 0}
+.recomiendo b{color:var(--ok)}
+.detalle{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:.5rem}
+.detalle div{background:var(--suelo);border-radius:10px;padding:9px 11px;font-size:14px}
+.detalle div b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--tenue);margin-bottom:2px}
+.nota-libre{width:100%;margin-top:.5rem;font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--linea);border-radius:8px;background:var(--hoja);color:var(--tinta);min-height:38px;resize:vertical}
+.tabla{overflow-x:auto;margin:.8rem 0;border:1px solid var(--linea);border-radius:10px;background:var(--hoja)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--linea)}
+th{background:var(--suelo);font-size:12px;text-transform:uppercase;letter-spacing:.03em;color:var(--tenue)}
+tr:last-child td{border-bottom:0}
+.barra{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--hoja);border:1px solid var(--linea);border-radius:12px;padding:10px 14px;margin:1rem 0;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;box-shadow:var(--sombra)}
+.progreso{flex:1 1 220px;height:8px;background:var(--linea);border-radius:99px;overflow:hidden}
+.progreso i{display:block;height:100%;width:0;background:var(--ok);transition:width .2s}
+button{font:inherit;font-weight:600;border:0;border-radius:9px;padding:8px 14px;cursor:pointer;background:var(--marca);color:#fff}
+button.sec{background:var(--info-suave);color:var(--info)}
+.salida{width:100%;min-height:220px;font:13px/1.45 ui-monospace,Menlo,monospace;padding:10px;border-radius:10px;border:1px solid var(--linea);background:var(--hoja);color:var(--tinta)}
+ol.pasos{padding-left:1.3rem} ol.pasos li{margin:.35rem 0}
+.lista-v li{margin:.2rem 0}
+.indice{columns:2;column-gap:28px;font-size:14px;padding-left:1.2rem}
+@media (max-width:640px){.detalle{grid-template-columns:1fr}.indice{columns:1}h1{font-size:1.5rem}}
+</style>
+</head>
+<body>
+
+<div class="envoltura">
+
+<p class="tenue">Alarmas Py · Clasificados V2 · documento para decidir</p>
+<h1>Lo que decidimos Carlos, Víctor y Orlando para terminar Clasificados V2</h1>
+<p><b>Para:</b> Carlos (decide), Víctor (infra y base) y Orlando (app y web). <b>Armado:</b> 04-nov-2026, con datos medidos entre las 10:57 y las 11:09 -03 sobre la matriz vigente (<code>MATRIZ-VIGENTE-2026-11-04.md</code>, md5 <code>901a9c4f…</code>) y los repositorios locales. Ésta es la versión para compartir: los detalles técnicos de seguridad no van acá, los tiene Carlos en el archivo interno.</p>
+
+<div class="nota">
+<b>Cómo se usa en la reunión.</b> Cada decisión trae las opciones, <b>una</b> recomendación marcada en verde y lo que destraba. Ya viene marcada la opción recomendada; si están de acuerdo no hay que tocar nada. Si cambian algo, toquen otra opción o escriban en la nota. Al final, el botón <b>«Copiar las decisiones»</b> arma un texto que Carlos me pega y con eso sigo sin preguntar nada más.
+</div>
+
+<h2 id="resumen">1 · Dónde estamos</h2>
+<p>Clasificados V2 se mide con 134 criterios (84 de aceptación, 10 de venta agrupada y 40 casos de búsqueda), cada uno en backend, web y app: <b>402 casillas</b>. Recuento de las 10:57:</p>
+<div class="cifras">
+  <div class="cifra"><b>246</b><span>probadas</span></div>
+  <div class="cifra"><b>21</b><span>no aplican a esa plataforma</span></div>
+  <div class="cifra"><b>78</b><span>faltan y las hago yo hoy</span></div>
+  <div class="cifra"><b>54</b><span>esperan una decisión de Carlos</span></div>
+  <div class="cifra"><b>3</b><span>esperan algo de Víctor</span></div>
+</div>
+<p class="tenue">Corrección: a las 10:58 dije «52 de Carlos y 2 de Víctor». Clasifiqué por palabras y dos casillas de AC-074 («lo decide el servidor») cayeron del lado de Carlos cuando son mías, y la casilla web de AC-061 (el archivo de Android sin la huella) es de Víctor. Recontado a mano: <b>54 y 3</b>.</p>
+
+<div class="nota verde">
+<b>Lo mío termina hoy, alrededor de las 15:30</b> (entre 14:45 y 16:30): tres tandas de construir y refutar, a unos 64 minutos cada una (mediana medida el 25-oct). Lo que deciden acá entra en esas tandas sin correr la hora, si llega antes de las 12:00. Una decisión que llega más tarde suma una tanda, alrededor de una hora.
+</div>
+
+<h3 style="margin-top:1rem">El orden de esta reunión</h3>
+<ol class="indice">
+  <li><a href="#seguridad">Seguridad: urgente, primero</a></li>
+  <li><a href="#producto">Producto</a></li>
+  <li><a href="#avisos">Avisos al teléfono y alertas</a></li>
+  <li><a href="#operacion">Operación: moderación y soporte</a></li>
+  <li><a href="#medicion">Medición de uso: PostHog (apareció hoy)</a></li>
+  <li><a href="#qa">La prueba con un cliente suspendido de QA</a></li>
+  <li><a href="#pr">Ramas, PR y producción</a></li>
+  <li><a href="#victor">Lo de Víctor</a></li>
+  <li><a href="#cerrar">Copiar las decisiones</a></li>
+  <li><a href="#anexo">Anexo: las 54 casillas una por una</a></li>
+</ol>
+
+<div class="barra" role="region" aria-label="Avance de la reunión">
+  <span><b id="cuenta-decididas">0</b> de <b id="cuenta-total">0</b> con respuesta confirmada</span>
+  <div class="progreso" aria-hidden="true"><i id="progreso"></i></div>
+  <button class="sec" type="button" id="todo-rec">Sí a todo lo recomendado</button>
+  <button type="button" onclick="document.getElementById('cerrar').scrollIntoView({behavior:'smooth'})">Ir a copiar</button>
+</div>
+
+<h2 id="seguridad">2 · Seguridad · urgente</h2>
+<p>Dos no son de Clasificados pero aparecieron midiendo: el panel de la web (D16) y una clave en un repositorio interno (V11). Pueden estar abiertas hoy en producción, por eso van primero. Las otras tres son de la cuenta gratuita de Clasificados. La fuga hacia PostHog, que también es urgente, está en la sección 6.</p>
+<div id="g-seguridad"></div>
+
+<h2 id="producto">3 · Producto</h2>
+<p>Qué entra en la v1 y cómo se comporta. La regla con la que recomiendo: <b>el objetivo nº 1 es que los 50.000 clientes usen la app</b>, así que lo que mantiene a la persona adentro de Alarmas Py gana, y lo que no destraba el piloto queda para después, por escrito.</p>
+<div id="g-producto"></div>
+
+<h2 id="avisos">4 · Avisos al teléfono y alertas</h2>
+<p>Hoy Clasificados no manda ningún aviso: hay <b>0 envíos</b> de notificación en el código de Clasificados del backend (<code>src/api/marketo</code>). La app ya sabe recibir notificaciones (las usa AlóChat), así que construirlo no pide un servicio nuevo.</p>
+<div id="g-avisos"></div>
+
+<h2 id="operacion">5 · Operación</h2>
+<div id="g-operacion"></div>
+
+<h2 id="medicion">6 · Medición de uso: PostHog</h2>
+<div class="nota roja">
+<b>Apareció hoy, 11:04, al traer <code>develop</code> a la rama de Clasificados, y lo verifiqué yo a las 11:09 leyendo el código.</b> El 28-oct, Lucas sumó PostHog como segundo destino de la medición de la app (PR #305, ya en <code>develop</code>) y tomó dos decisiones que cambian lo que Carlos había decidido en B109 (04-oct):
+<ul class="lista-v">
+<li>mandar los datos <b>identificados</b> por el código del cliente <b>sin</b> la pantalla que pide permiso;</li>
+<li>crear el proyecto «Alarmas Py» <b>dentro de la organización PostHog de otra empresa del grupo</b>.</li>
+</ul>
+Las dos están escritas en el encabezado de <code>api/medicion/posthog.ts</code>. Además encontramos una fuga: la puerta de Firebase no deja salir las pantallas de emergencia ni de mora, y <b>la de PostHog sí las deja salir</b>. En <code>api/medicion/elPermiso.ts</code>, <code>puedeSalirElEvento</code> aplica <code>pantallaQueNoSale</code> y <code>puedeSalirHaciaPosthog</code> no la aplica. Hoy no sale nada porque falta la clave, pero el perfil <code>preview</code> de <code>eas.json</code> ya la trae.
+</div>
+<div id="g-medicion"></div>
+
+<h2 id="qa">7 · La prueba con un cliente suspendido de QA (AC-010)</h2>
+<div class="nota">
+<b>Qué quiere probar AC-010:</b> que una persona con el contrato suspendido o con la cuota vencida pueda igual usar Clasificados: ver avisos, consultar, publicar.
+<br><br>
+<b>Lo que ya está medido (11:02):</b>
+<ul class="lista-v">
+<li><b>Ya lo decidiste el 21-sep:</b> con cuota vencida se cierran los vehículos, el historial y el Club, y <b>Clasificados queda abierto</b> «porque queremos que siga monetizando». Está escrito en la app (<code>api/mora/loQueLaMoraCierra.ts</code>): las cuatro rutas de Clasificados están en la lista de las que quedan abiertas, y una prueba reprueba si aparece una ruta sin clasificar.</li>
+<li><b>El backend no frena a nadie por contrato:</b> el campo <code>isBlocked</code> sólo existe en la respuesta del login, y la función de excepciones para bloqueados tiene 0 llamadores.</li>
+<li><b>El riesgo de hacerlo en QA:</b> QA comparte GPSWox con producción. Entrar con un cliente real suspendido es tocar la cuenta de una persona de verdad.</li>
+</ul>
+</div>
+<div id="g-qa"></div>
+
+<h2 id="pr">8 · Ramas, PR y producción</h2>
+<div class="nota roja">
+<b>Medido a las 11:03.</b> Ninguna de las tres ramas de trabajo está publicada con su nombre. El backend (<code>289a7230</code>) y la app (<code>6523706d</code>) tienen sólo una foto en el respaldo automático. <b>La web no tiene ninguna copia fuera de esta Mac.</b> Y publicar una rama de la web no despliega nada: el deploy de QA sólo corre con <code>develop</code> y el de producción sólo con <code>main</code> (<code>deploy-qa-selfhosted.yml</code> y <code>deploy-prod.yml</code>).
+</div>
+<div id="g-pr"></div>
+
+<h3 style="margin-top:1.4rem">El camino a producción que recomiendo, en orden</h3>
+<ol class="pasos">
+<li><b>Hoy, ya:</b> publicar las tres ramas (D19). No llega a ningún cliente.</li>
+<li><b>Hoy, ~15:30:</b> cierro la tanda 3, refutada. Abro <b>tres PR hacia <code>develop</code></b> (backend, web y app) con plan de prueba y lo aprendido. Orlando revisa app y web; Víctor, el backend y las migraciones.</li>
+<li><b>Antes del merge, Víctor:</b> contesta A1 (la versión de Postgres de QA y PROD tiene que ser 14 o más, porque una migración usa <code>CREATE OR REPLACE TRIGGER</code>), A2 a A6 y A8. Hace el <b>respaldo</b>, manda la lista de migraciones aplicadas en PROD y carga las variables de cada ambiente (B1 y B2).</li>
+<li><b>Merge a <code>develop</code>:</b> la web se despliega sola en QA; el backend en QA lo despliega Víctor a mano con las 8 migraciones en orden.</li>
+<li><b>Piloto interno en QA,</b> con cuentas de la empresa (nunca clientes reales, porque QA comparte GPSWox con producción). Se sale del piloto con <b>0 hallazgos ALTO</b> abiertos.</li>
+<li><b>Producción:</b> con tu autorización expresa y el OK de Víctor. Desde el primer día con cuentas gratuitas <b>no se vuelve al binario viejo</b>: si se vuelve, el registro viejo borra en cascada esas cuentas con sus avisos y conversaciones. Volver atrás pasa a ser restaurar el respaldo.</li>
+<li><b>La app en las tiendas</b> pide un build nuevo, el texto del permiso de cámara (D18), borrar la cuenta desde la app (D4, Apple lo exige) y la huella de Android (A9). Ojo: el 08-oct esta Mac no tenía sesión en EAS (<code>eas whoami</code> daba «Not logged in»); no lo re-medí hoy.</li>
+</ol>
+
+<h2 id="victor">9 · Lo de Víctor</h2>
+<p><b>Las 3 casillas de la matriz que esperan a Víctor:</b></p>
+<div class="tabla"><table>
+<thead><tr><th>casilla</th><th>qué falta</th><th>qué tiene que hacer</th><th>cuánto lleva</th></tr></thead>
+<tbody>
+<tr><td><b>AC-061</b> web y app<br><small>un enlace compartido abre el mismo aviso en la app</small></td><td>La huella SHA-256 de <b>Play App Signing</b>. Sin ella, <code>/.well-known/assetlinks.json</code> sirve <code>[]</code> y Android abre el enlace en el navegador</td><td>(1) Consola de Play → Integridad de la app → Firma de apps → copiar la huella SHA-256 a <code>ANDROID_APP_SHA256_CERT_FINGERPRINTS</code> en la web de QA y PROD. (2) Confirmar que el App ID <code>Alarmas.Py</code> (team <code>C3M8JY3QGX</code>) tiene activado <b>Associated Domains</b> en developer.apple.com; si no, el próximo build de iOS puede fallar al firmar. (3) Que <code>alarmas.com.py</code> y <code>www.alarmas.com.py</code> sirvan los dos archivos de <code>/.well-known/</code> <b>sin redirección</b></td><td>Minutos, si tiene acceso a las dos consolas. <b>Hay que decir quién administra la cuenta de Apple:</b> si es Carlos, (2) lo hace Carlos</td></tr>
+<tr><td><b>AC-070</b> backend<br><small>volver atrás y restaurar, probado y con responsable</small></td><td>El plan de vuelta atrás de las 8 migraciones, que no tienen reversa</td><td>Respaldo antes de migrar · la lista de migraciones que ya tiene PROD (antes de correr nada) · las 8 en orden · la regla de no volver al binario viejo si hay cuentas gratuitas · y <b>probar la restauración</b> del respaldo en una base aparte de QA, con él como responsable</td><td>Una mañana. Recomiendo hacerlo primero en QA, el día del merge</td></tr>
+</tbody></table></div>
+
+<p><b>Su paquete completo</b> (ya entregado a Carlos el 04-nov a las 02:2x, carpeta <code>_entregables/2026-11-03-CLASIFICADOS-V2-PARA-VICTOR/</code>):</p>
+<div class="tabla"><table>
+<thead><tr><th>cuándo</th><th>qué</th></tr></thead>
+<tbody>
+<tr><td><b>Ya, sin esperar el PR</b></td><td>A1 versión de Postgres en QA y PROD (14 o más) · A2 cuántas instancias del backend y si <code>OAUTH_CODE_EXCHANGE_ENABLED</code> está encendida · A3 la configuración de seguridad de Redis · A4 dónde van las variables de la web · A5 duración de los tokens · A6 Postmark configurado · A7 consultar GPSWox desde QA · A8 el proxy (<code>TRUST_PROXY</code>, <code>X-Forwarded-*</code>, cuerpo de 10 MB para fotos) · <b>A9 la huella y Associated Domains</b> · A10 dónde guardamos las fotos (bucket con CDN o volumen) · A11 quién lee Redis y <code>/queues</code></td></tr>
+<tr><td><b>Con el PR aprobado</b></td><td><b>B1 respaldo y las 8 migraciones</b> · B2 los valores de las 15 variables del backend y las 4 de la web · recién ahí el merge · B3 el SQL del rol de moderador (cuando Carlos diga quiénes, D13)</td></tr>
+<tr><td><b>Una respuesta y lo hacemos nosotros</b></td><td>B4 si los runners tienen Docker o Postgres · B5 dos renombres de índices de AlóChat</td></tr>
+<tr><td><b>Aparte, de antes</b></td><td>C1 y C2 dos puntos de acceso del panel de la web (detalle interno) · C3 tests y lint antes de desplegar la web · C4 el lockfile · C5 y C6 dos mejoras de la recuperación de contraseña de clientes</td></tr>
+</tbody></table></div>
+
+<h2 id="cerrar">10 · Copiar las decisiones</h2>
+<p>Revisen que cada decisión tenga una opción marcada, toquen el botón y Carlos me pega el texto en el chat. Si el navegador no deja copiar, el texto queda igual en el recuadro para seleccionarlo a mano.</p>
+<p><button type="button" id="copiar">Copiar las decisiones</button> <span id="copiado" class="tenue" role="status"></span></p>
+<textarea class="salida" id="salida" readonly aria-label="Texto con las decisiones"></textarea>
+
+<h2 id="anexo">11 · Anexo: las 54 casillas que esperan a Carlos</h2>
+<p class="tenue">Sale de la matriz vigente, filtrada a las casillas que no están probadas ni son «no aplica» y que dependen de una decisión. B = backend · W = web · A = app.</p>
+<div class="tabla"><table>
+<thead><tr><th>criterio</th><th>qué pide</th><th>plataformas</th><th>la destraba</th></tr></thead>
+<tbody id="anexo-cuerpo"></tbody>
+</table></div>
+<p class="tenue">Además, si D7 sale «sólo web», 5 casillas de la venta agrupada en la app (VG-02, 06, 08, 09 y 10) pasan a «no aplica: la app abre el enlace público», y me ahorran una tanda.</p>
+
+</div>
+
+<script>
+const DECISIONES = [
+ // ── SEGURIDAD
+ {g:'seguridad', id:'D16', urg:true, t:'Una falla de acceso en el panel de administración de la web',
+  q:'¿Lo arreglamos nosotros, en un cambio aparte de Clasificados y coordinado con Víctor?',
+  ctx:'Medido el 04-nov a las 00:0x en las dos ramas principales de la web: el acceso al panel depende de una configuración que el código completa solo cuando falta, y de un usuario que se crea solo. El detalle técnico está en el archivo interno. No sabemos cómo está el servidor real: eso sólo lo ve Víctor, y no se prueba contra producción.',
+  op:[['a','Un cambio propio, coordinado: primero Víctor completa la configuración en el servidor; después el cambio hace que el panel no arranque sin ella y deja de crear el usuario automático'],['b','Dejarlo en manos de Víctor']],
+  rec:'a', por:'Si en producción quedó como viene de fábrica, alguien de afuera podría entrar al panel. El orden importa: si el cambio llega antes que la configuración, el panel no arranca. <b>Hoy mismo:</b> que Víctor revise el panel de producción con el detalle del archivo interno.',
+  destraba:'Ninguna casilla de Clasificados; cierra C1 y C2 del paquete de Víctor', despues:'Víctor pone el valor → nosotros el cambio → Víctor despliega'},
+ {g:'seguridad', id:'D1', urg:true, t:'Recuperar la contraseña no cierra las sesiones abiertas',
+  q:'¿Construimos ahora que, al cambiar la contraseña, se cierren todas las sesiones?',
+  ctx:'Hoy, cuando la persona cambia la contraseña, las sesiones que ya estaban abiertas siguen abiertas: si alguien le había robado la cuenta, sigue adentro.',
+  op:[['a','Construirlo ahora: un número de versión de sesión en cada usuario, que viaja en el token y se invalida al cambiar la contraseña. Lo hacemos nosotros; Víctor despliega la migración'],['b','Dejarlo escrito como límite de la v1']],
+  rec:'a', por:'La recuperación es justamente lo que usa alguien al que le robaron la cuenta. Es el mismo hueco que C6 (clientes), así que el arreglo sirve para los dos.',
+  destraba:'Cierra AC6-L1 y C6', despues:'Una tanda mía (~1 h) + una migración que despliega Víctor'},
+ {g:'seguridad', id:'V11', urg:true, t:'Una clave de una base de desarrollo quedó escrita en un repositorio interno (A909)',
+  q:'¿Le mandamos a Víctor este pendiente viejo ya, aunque los otros viejos esperen (D20)?',
+  ctx:'Medido el 21-oct: la clave de un usuario de la base de desarrollo, con permiso de escritura, está escrita en texto claro en varios archivos de un repositorio interno. <b>No lo re-medí hoy.</b> Es uno de los pendientes viejos con Víctor que D20 propone re-medir antes de mandar.',
+  op:[['a','Sí: lo re-mido hoy sin imprimir la clave y, si sigue, va ya con su paso (rotar la clave y sacarla del repo)'],['b','No: va con los demás pendientes viejos, después de re-medirlos']],
+  rec:'a', por:'Una clave viva en un repo es un riesgo cada día que pasa, y re-medirla lleva minutos. Los otros pendientes viejos pueden esperar; éste no.',
+  destraba:'Ninguna casilla de Clasificados', despues:'Lo re-mido y te lo dejo listo para mandar'},
+ {g:'seguridad', id:'D2', t:'Una serie de pedidos de recuperación deja ver si una cuenta gratuita existe',
+  q:'¿Lo cerramos, o lo aceptamos como límite escrito?',
+  ctx:'Un pedido suelto contesta siempre igual, pero una serie de pedidos puede dejar deducir si una cuenta gratuita existe.',
+  op:[['a','Cerrarlo: la pantalla contesta siempre lo mismo, aunque pierda claridad para la persona'],['b','Aceptarlo como límite escrito']],
+  rec:'b', por:'El alta ya lo deja ver en un solo pedido («ya hay una cuenta con ese correo»): cerrar sólo la recuperación le quita claridad a la persona y no cierra el hueco. Lo de los clientes (C5) es otra versión de la app.',
+  destraba:'Ninguna; se escribe el límite', despues:'Nada que construir'},
+ {g:'seguridad', id:'D3', t:'El correo del código llega en inglés',
+  q:'¿Aprobás este texto para el correo?',
+  ctx:'Medido el 03-nov a las 22:0x: sale con el asunto «Your OTP Code», en inglés, firmado «Alarmas». Ya está programada la propuesta en español, inglés y portugués (backend <code>bacb7b3</code>). <b>El mismo correo es el del alta de clientes:</b> cuando se despliegue, a ellos también les cambia.',
+  op:[['a','Asunto «Tu código de Alarmas Py»; en la recuperación, «Recuperá tu contraseña de Alarmas Py», con el código, cuánto dura y «si no lo pediste, ignorá este correo»'],['b','Otro texto (escribilo en la nota)']],
+  rec:'a', por:'Hoy una persona que habla español recibe un correo en inglés. El texto nuevo dice qué es, cuánto dura y qué hacer si no lo pidió.',
+  destraba:'Cierra AC6-L2 y AC6-L5', despues:'Ya programado; cambiar una frase es cambiar una tabla'},
+
+ // ── PRODUCTO
+ {g:'producto', id:'D4', t:'Borrar la cuenta gratuita', q:'¿Se puede borrar la cuenta desde la app antes del piloto?',
+  ctx:'Hoy no se puede: <code>delete-client</code> da 404 (medido el 03-nov). Si la app deja crear una cuenta, Apple exige poder borrarla desde la app. Lo que dice la Ley 7593/2025 no lo medí.',
+  op:[['a','Sí, antes del piloto'],['b','Después del piloto']], rec:'a',
+  por:'Sin esto la app no pasa la revisión de Apple con cuentas nuevas, y además es lo correcto para la persona.',
+  destraba:'AC-063 (3 casillas)', despues:'Una tanda mía; Víctor despliega'},
+ {g:'producto', id:'D5', t:'«Borrar mi aviso» no borra las fotos', q:'¿Al borrar un aviso se dejan de servir sus fotos?',
+  ctx:'Hoy las fotos siguen publicadas, la limpieza viene apagada y las fotos retiradas no las limpia nadie. La pantalla promete algo que no pasa.',
+  op:[['a','Sí: dejar de servirlas al borrar y prender la limpieza (lo hacemos nosotros)'],['b','Dejarlo así y sacar la promesa de la pantalla']], rec:'a',
+  por:'Una foto puede mostrar la casa o la cara de alguien. Si la persona borra, tiene que borrarse.',
+  destraba:'FOTR-M6', despues:'Parte de la tanda 2'},
+ {g:'producto', id:'D6', t:'¿Un aviso reservado se puede consultar?', q:'Hoy la ficha dice «Reservado» y el chat dice «ya no está disponible».',
+  ctx:'Las dos pantallas se contradicen.', op:[['a','Sí, con el rótulo «Reservado» a la vista'],['b','No']], rec:'a',
+  por:'Una reserva puede caerse, y el que pregunta es un comprador. Cerrarle la puerta es perder la venta siguiente.',
+  destraba:'Ordena AC-033 (la parte de liberar la hago igual)', despues:'Parte de la tanda 2'},
+ {g:'producto', id:'D7', t:'Venta agrupada en la app', q:'¿La v1 de la venta agrupada es sólo web, o también la construimos en la app?',
+  ctx:'El enlace público de la venta agrupada ya funciona sin sesión, en cualquier teléfono.',
+  op:[['a','Sólo web en la v1; la app abre el enlace público'],['b','Construirla también en la app (entrada y «Mis ventas»)']], rec:'a',
+  por:'El enlace ya funciona sin cuenta en el teléfono; construirla en la app pide pantallas nuevas y no destraba nada del piloto.',
+  destraba:'5 casillas de la app pasan a «no aplica»', despues:'Me ahorra una tanda'},
+ {g:'producto', id:'D8', t:'Precio «gratis»', q:'¿Se puede publicar con precio 0 y el rótulo «Gratis»?',
+  ctx:'Hoy la base exige un precio mayor que 0. El caso de búsqueda «mesa gratis» (SR-016) está escrito y no se puede cumplir.',
+  op:[['a','Sí, precio 0 con el rótulo «Gratis»'],['b','No']], rec:'a',
+  por:'El encargo pide artículos generales, y regalar algo es de lo que más se publica en un clasificado.',
+  destraba:'SR-016 (3 casillas)', despues:'Parte de la tanda 2'},
+ {g:'producto', id:'D9', t:'La categoría Servicios', q:'¿Entran servicios (electricista, limpieza) en la v1?',
+  ctx:'No está en el catálogo. El encargo dice «artículos generales nuevos y usados».',
+  op:[['a','Agregarla ahora'],['b','Dejarla fuera de la v1, por escrito']], rec:'b',
+  por:'Un servicio no tiene foto, estado ni entrega como un artículo: pide su propia ficha, con unidad, cobertura y «a convenir». Es otro producto.',
+  destraba:'AC-019, SR-025 y SR-026 (9 casillas) pasan a «fuera de la v1»', despues:'Nada que construir'},
+ {g:'producto', id:'D10', t:'Avisos patrocinados', q:'¿Entran en la v1?', ctx:'Hoy no existe el modelo.',
+  op:[['a','Definir quién paga, cuánto y la etiqueta'],['b','Fuera de la v1, por escrito']], rec:'b',
+  por:'Primero hace falta que la gente publique. Patrocinar un mercado vacío no mueve nada.',
+  destraba:'AC-046 (3 casillas)', despues:'Nada que construir'},
+ {g:'producto', id:'D11', t:'Contacto por WhatsApp', q:'¿El comprador puede pasar a WhatsApp desde el aviso?',
+  ctx:'Hoy sólo existe la señal que marca un enlace <code>wa.me</code> escrito en un aviso.',
+  op:[['a','Sí, optativo, con consentimiento y aviso de que la conversación sale de la plataforma'],['b','Fuera de la v1, por escrito']], rec:'b',
+  por:'El chat de la app es el que se puede moderar y medir, y el objetivo nº 1 es que la gente use la app. Mandarla a WhatsApp es mandarla afuera. Se revisa con los datos del piloto.',
+  destraba:'AC-054 (3 casillas)', despues:'Nada que construir'},
+ {g:'producto', id:'D12', t:'La IA de la búsqueda y de las fotos', q:'¿Qué modelo, con qué tope de gasto y cuándo se hacen llamadas reales?',
+  ctx:'Hoy todo corre con un proveedor falso. No hay tope de gasto ni límite por persona en la búsqueda sin cuenta. La búsqueda exacta funciona sin IA: los casos de búsqueda están probados en las tres plataformas.',
+  op:[['a','Piloto sin IA; después, un modelo chico con un tope mensual fijo y un límite por persona'],['b','IA desde el piloto'],['c','Sin IA en la v1']], rec:'a',
+  por:'La búsqueda ya anda sin IA, así que el piloto no la necesita. Con el piloto se mide cuánta gente la usaría, y recién ahí se fija el tope con un número real. El modelo y el precio se miden antes de llamarlo, no se suponen.',
+  destraba:'AC-072, 073, 076 y 079 (7 casillas)', despues:'Después del piloto: una tanda + el banco de 69 casos con el modelo real'},
+ {g:'producto', id:'D15', t:'Editar un vehículo publicado le saca el sello de «km verificado por GPS»', q:'¿Confirmás que así se queda?',
+  ctx:'Ya está construido: si se cambia la marca, el modelo, el año o el tipo, la base saca el sello, por cualquier camino (medido 03-nov 23:5x). Los km que declara el vendedor siguen editables.',
+  op:[['a','Sí, se pierde'],['b','No, se conserva']], rec:'a',
+  por:'El sello afirma algo de ESE vehículo. Si cambia cuál es el vehículo, el sello hablaría de un auto que ningún GPS midió.',
+  destraba:'Ninguna; confirma lo hecho', despues:'Nada'},
+ {g:'producto', id:'D18', t:'El texto del permiso de cámara y fotos en iOS', q:'¿Lo ampliamos para que nombre todos los usos?',
+  ctx:'Hoy dice «tu documento, tu vehículo o lo que publicás en Clasificados», pero la app también usa la cámara para la foto de perfil, escanear facturas y los adjuntos de AlóChat.',
+  op:[['a','«…para tu foto de perfil, tus documentos, tus facturas, los adjuntos del chat y lo que publicás en Clasificados»'],['b','Dejarlo como está']], rec:'a',
+  por:'Apple revisa que el texto diga para qué se usa el permiso; uno incompleto es un motivo conocido de rechazo. Es una línea por idioma.',
+  destraba:'RAPP-3 (va con el build nativo de hoy)', despues:'Tanda 3'},
+ {g:'producto', id:'N1', t:'Cuándo vence un aviso', q:'¿Los avisos vencen? ¿A los cuántos días?',
+  ctx:'Sin número de decisión hasta hoy. Hoy no vencen nunca.',
+  op:[['a','Vencen a los 60 días, igual para todas las categorías; aviso 3 días antes (si la persona aceptó avisos) y renovar con un toque, gratis'],['b','Plazo distinto por categoría (escribilo en la nota)'],['c','No vencen en la v1']], rec:'a',
+  por:'Un aviso viejo que ya se vendió y sigue publicado es lo que más hace perder confianza en un clasificado. Un solo plazo es fácil de explicar; con los datos del piloto se ajusta por categoría.',
+  destraba:'AC-036 (3 casillas)', despues:'Una tanda mía'},
+ {g:'producto', id:'N2', t:'Adjuntos en el chat', q:'¿El chat de Clasificados deja mandar archivos?',
+  ctx:'Hoy no deja. Si se agregan, hace falta controlar tipo y tamaño y pasar un antivirus.',
+  op:[['a','Sin adjuntos en la v1, por escrito: las fotos van en el aviso'],['b','Sí, con antivirus y límites']], rec:'a',
+  por:'Las fotos ya están en el aviso. Un adjunto en el chat es la puerta más común para mandar algo malicioso, y no lo pide el piloto.',
+  destraba:'AC-055 (1 casilla)', despues:'Nada que construir'},
+ {g:'producto', id:'N3', t:'Búsquedas guardadas en la app', q:'¿La app lleva la pantalla «Mis búsquedas», como la web?',
+  ctx:'La web la tiene; la app sólo tiene el código que habla con el servidor.',
+  op:[['a','Sí: la construimos para que web y app hagan el mismo recorrido'],['b','No en la v1']], rec:'a',
+  por:'El encargo dice «el mismo recorrido en web y app». Sin la pantalla, una búsqueda guardada en la web no se ve en el teléfono.',
+  destraba:'AC-058 (1 casilla) y ayuda a AC-060', despues:'Tanda 2'},
+
+ // ── AVISOS
+ {g:'avisos', id:'N5', t:'Aviso al teléfono cuando te contestan', q:'¿Clasificados avisa al teléfono cuando llega una consulta o una respuesta?',
+  ctx:'Hoy no hay ningún aviso: el vendedor sólo se entera si abre la app.',
+  op:[['a','Sí: aviso al teléfono por cada consulta o respuesta nueva, sin repetir si la conversación ya está abierta'],['b','No en la v1']], rec:'a',
+  por:'Una consulta que nadie ve es una venta perdida y una persona que no vuelve. Es lo que más trae gente de vuelta a la app, que es el objetivo nº 1.',
+  destraba:'AC-050 (3 casillas)', despues:'Dos tandas mías'},
+ {g:'avisos', id:'N4', t:'Alertas de búsqueda guardada', q:'¿Por qué canal avisamos que apareció algo nuevo para una búsqueda guardada?',
+  ctx:'Hoy la alerta se arma en la base, pero no sale por ningún canal.',
+  op:[['a','Aviso al teléfono, con permiso explícito, como máximo uno por día y por búsqueda; el correo después del piloto'],['b','Correo'],['c','Ninguno en la v1']], rec:'a',
+  por:'El teléfono trae a la persona a la app; el correo la deja en el buzón. Un tope de uno por día evita que lo silencien.',
+  destraba:'AC-059 (3 casillas)', despues:'Va con N5'},
+
+ // ── OPERACIÓN
+ {g:'operacion', id:'D13', t:'Quién modera', q:'¿Quiénes moderan y quién revisa las apelaciones?',
+  ctx:'El rol de moderador hoy sólo se da por SQL (medido el 03-nov a las 21:58).',
+  op:[['a','Dos personas de ATC: una modera y otra revisa las apelaciones (escribí los nombres en la nota)'],['b','Otra organización (escribila)']], rec:'a',
+  por:'La que revisa una apelación no puede ser la misma que tomó la decisión. Víctor hace el INSERT en QA y PROD.',
+  destraba:'B3 de Víctor', despues:'Víctor, cuando estén los nombres'},
+ {g:'operacion', id:'D14', t:'Dónde vive la consola de moderación', q:'¿Sólo en la web?',
+  ctx:'Hoy existe en la web.', op:[['a','Sólo en la web'],['b','También en la app']], rec:'a',
+  por:'Moderar es trabajo de escritorio, con listas largas.', destraba:'Ninguna; confirma lo hecho', despues:'Nada'},
+ {g:'operacion', id:'N7', t:'Horario y canal de soporte', q:'¿Qué horario y qué canal le decimos a quien denuncia un aviso?',
+  ctx:'El acuse de una denuncia no puede prometer un plazo que no existe. El horario real de ATC <b>no lo medí</b>.',
+  op:[['a','Canal: AlóChat. Plazo escrito en el acuse: «lo revisamos dentro de 24 horas hábiles». El horario exacto lo confirma ATC'],['b','Otro canal o plazo (escribilo)']], rec:'a',
+  por:'AlóChat ya es el canal de la empresa y está atendido. Un plazo concreto es mejor que «pronto», y 24 horas hábiles se puede cumplir.',
+  destraba:'AC-056 (3 casillas)', despues:'Cambiar un texto, tanda 2'},
+ {g:'operacion', id:'N6', t:'Las tres funciones de prioridad 2', q:'¿Entran a la v1 comparar muebles por medidas, listas compartidas y pago integrado?',
+  ctx:'Las tres son AC de prioridad 2 y no existen.',
+  op:[['a','Fuera de la v1, por escrito'],['b','Alguna entra (escribí cuál)']], rec:'a',
+  por:'Ninguna destraba el piloto. El pago integrado, además, pide proveedor, contrato y manejo de disputas: es un proyecto propio.',
+  destraba:'AC-082, 083 y 084 (9 casillas) pasan a «fuera de la v1»', despues:'Nada que construir'},
+
+ // ── MEDICIÓN
+ {g:'medicion', id:'PH1', urg:true, t:'Las pantallas de emergencia y de mora salen hacia PostHog',
+  q:'¿Aplicamos a PostHog la misma puerta que ya tiene Firebase?',
+  ctx:'Con clave puesta, una visita a la pantalla de robo, de asistencia, de un evento del Centro de Monitoreo o de mora saldría hacia PostHog, identificada por el código del cliente. Firebase no la deja salir, por lo que decidiste en B109. Ninguna prueba lo cubre.',
+  op:[['a','Sí: la misma puerta, sin tocar la lista de pantallas. Lo dejo hecho y probado en local, en un commit aparte; a <code>develop</code> entra por un PR propio (no de polizón en Clasificados), con tu OK'],['b','No']], rec:'a',
+  por:'Es la línea dura de la casa: la emergencia no sale de la app. No es una decisión nueva, es la tuya de B109 aplicada al destino nuevo. Son cuatro líneas y una prueba que demuestra que la fuga existía.',
+  destraba:'Cierra el hallazgo ALTO de la unión con develop', despues:'Hoy en local; el PR propio, con tu OK'},
+ {g:'medicion', id:'PH2', t:'PostHog identifica al cliente sin pedirle permiso', q:'¿Ratificás la excepción que tomó Lucas el 28-oct a B109?',
+  ctx:'B109 decía que la medición de uso sale sólo con el permiso de la persona. La pantalla que pide ese permiso todavía no existe. El propio código lo advierte: mandar datos de uso identificados sin ella <i>«puede chocar con la ley de datos personales»</i>.',
+  op:[['a','PostHog sí, pero <b>anónimo</b> (sin identificar al cliente) hasta que exista la pantalla de permiso; la construimos y recién ahí se identifica'],['b','Ratificar a Lucas: identificado desde ya'],['c','Volver a B109: nada a PostHog hasta la pantalla']], rec:'a',
+  por:'Sin identificar igual se mide lo que importa para el objetivo nº 1 (cuántos abren, cuántos vuelven, por dónde se van), y no hay riesgo legal. Identificar suma poco antes de tener el permiso, y es lo único que choca con la ley.',
+  destraba:'Ninguna de Clasificados; ordena la medición de toda la app', despues:'Hablarlo con Lucas; la pantalla de permiso, una tanda'},
+ {g:'medicion', id:'PH3', t:'El proyecto PostHog de Alarmas Py vive en la organización de otra empresa del grupo', q:'¿Se queda ahí o se muda a una organización de Alarmas Py?',
+  ctx:'La regla de Alarmas Py prohíbe usar cuentas e infra de otra empresa. El estándar común de las herramientas dice «PostHog Cloud US, una sola organización, un proyecto por producto». Lucas tomó la excepción el 28-oct. Hay un precedente: la cuenta de Figma, que decidiste dejar donde estaba el 21-sep, acotada a la cuenta y la facturación.',
+  op:[['a','Se queda, como excepción acotada igual que Figma: cuenta y facturación; los datos en un proyecto propio, la persona sólo por id interno (nunca correo ni nombre) y acceso de administrador para Alarmas Py'],['b','Mudarlo ya a una organización de Alarmas Py, mientras no hay clave en producción (es lo más barato que va a ser)']], rec:'a',
+  por:'Coincide con el estándar que ya fijaste para todos los productos y con el precedente de Figma, y los datos quedan separados por proyecto. Si preferís la separación total, hoy es el día más barato para mudarlo: todavía no hay clave en producción.',
+  destraba:'Ninguna de Clasificados', despues:'Escribirlo en el CLAUDE.md de la casa, como se hizo con Figma'},
+
+ // ── QA
+ {g:'qa', id:'OK-QA', t:'Cómo cerramos AC-010', q:'¿Cómo probamos que un cliente suspendido o en mora puede usar Clasificados?',
+  ctx:'Ver el recuadro de arriba: la regla ya la decidiste el 21-sep y el backend no frena por contrato.',
+  op:[['a','Lo pruebo local con los dobles de GPSWox y del ERP haciendo de cliente en mora; si querés además una prueba en QA, Víctor arma una cuenta de prueba suspendida (nunca un cliente real)'],['b','Sólo local'],['c','En QA con un cliente real suspendido']], rec:'a',
+  por:'Lo local prueba la regla sin tocar a nadie. La cuenta de prueba de Víctor confirma el ambiente real sin entrar en la cuenta de una persona: QA comparte GPSWox con producción.',
+  destraba:'AC-010 (3 casillas)', despues:'Local en la tanda 2; QA cuando Víctor tenga la cuenta'},
+
+ // ── PR
+ {g:'pr', id:'D19', urg:true, t:'Publicar las tres ramas', q:'¿Publico ya las ramas de trabajo en GitHub (sin PR)?',
+  ctx:'Medido a las 11:03: la web no tiene ninguna copia fuera de esta Mac; backend y app, sólo la foto del respaldo. Publicar una rama que no es <code>develop</code> ni <code>main</code> no despliega nada.',
+  op:[['a','Sí, ya: las tres ramas, sin PR'],['b','Esperar al PR']], rec:'a',
+  por:'Si la Mac se rompe, se pierde todo el trabajo web de Clasificados. Publicar la rama no le llega a ningún cliente. Esta Mac ya se reinició hoy.',
+  destraba:'Resguardo', despues:'Lo hago apenas digas que sí'},
+ {g:'pr', id:'PR', t:'Abrir los PR hacia develop', q:'¿Abro los tres PR cuando cierre la tanda 3, hoy ~15:30?',
+  ctx:'Cada PR lleva plan de prueba, la evidencia por plataforma y lo aprendido. Orlando revisa app y web; Víctor, el backend y las migraciones.',
+  op:[['a','Sí, hoy al cerrar la tanda 3'],['b','Esperar a que estén todas las decisiones construidas']], rec:'a',
+  por:'Revisar tres PR grandes lleva tiempo; empezar hoy lo acorta. Lo que se decida después entra como commits nuevos en el mismo PR.',
+  destraba:'El camino a QA', despues:'Yo los abro; ustedes revisan'},
+ {g:'pr', id:'PROD', t:'Producción', q:'¿Con qué condición pasa a producción?',
+  ctx:'Producción no se toca sin tu autorización expresa y sin el OK de Víctor.',
+  op:[['a','Después de un piloto interno en QA con 0 hallazgos ALTO abiertos, con respaldo probado (AC-070) y con tu autorización expresa ese día'],['b','Otra condición (escribila)']], rec:'a',
+  por:'Las migraciones no tienen reversa y, una vez que hay cuentas gratuitas, volver atrás es restaurar el respaldo. Por eso el respaldo se prueba antes, no se supone.',
+  destraba:'El lanzamiento', despues:'Víctor despliega; vos autorizás'},
+ {g:'pr', id:'D20', t:'Los 121 pendientes viejos con Víctor', q:'¿Van en el paquete de Clasificados?',
+  ctx:'Son de antes de Clasificados, del libro general (712 filas, medido el 04-nov 00:4x). No están re-medidos.',
+  op:[['a','Mandarlos como están'],['b','Mandar sólo Clasificados y re-medir los 121 en un frente aparte antes de mandarlos (con la excepción de A909, ver V11)']], rec:'b',
+  por:'Mandarle pendientes viejos sin medir es pedirle cosas que quizás ya hizo, y eso le quita peso a lo que sí urge.',
+  destraba:'Ninguna de Clasificados', despues:'Un frente aparte, después de hoy'},
+ {g:'pr', id:'D17', t:'El caché del backend nunca usó Redis', q:'¿Lo pasamos a Redis de verdad?',
+  ctx:'Medido el 04-nov a las 00:25: por un nombre de opción mal puesto desde dic-2024, el caché vive en la memoria de cada proceso. Con una sola instancia anda igual. Con dos o más, y sólo si <code>OAUTH_CODE_EXCHANGE_ENABLED=true</code>, el login con Google, Facebook o Apple falla de a ratos.',
+  op:[['a','Sí, en un cambio aparte, si Víctor dice que hay más de una instancia y la bandera encendida (A2)'],['b','Dejarlo en memoria, escrito como límite']], rec:'a',
+  por:'Depende de un dato que sólo tiene Víctor. Si hay una sola instancia o la bandera está apagada, no hay falla y no hace falta tocar nada.',
+  destraba:'Ninguna de Clasificados', despues:'Espera la respuesta A2 de Víctor'}
+];
+
+const ANEXO = [
+ ['AC-010','Contrato suspendido no hereda restricciones de cobranza','B W A','OK-QA'],
+ ['AC-019','Servicio con unidad y cobertura; «a convenir» no es cero','B W A','D9'],
+ ['AC-036','Aviso vence: recordatorio optativo y renovación confirmada','B W A','N1'],
+ ['AC-046','Anuncios patrocinados con etiqueta y los mismos filtros','B W A','D10'],
+ ['AC-050','Vendedor responde desde otro cliente; sin aviso redundante','B W A','N5'],
+ ['AC-054','WhatsApp optativo con consentimiento','B W A','D11'],
+ ['AC-055','Adjunto malicioso: tipo, tamaño, escaneo, acceso','B','N2'],
+ ['AC-056','Soporte fuera de horario con horario y canal reales','B W A','N7'],
+ ['AC-058','Búsqueda guardada con filtros exactos y borrado en todos lados','A','N3'],
+ ['AC-059','Nueva coincidencia dispara alerta vigente y deduplicada','B W A','N4'],
+ ['AC-063','Eliminar cuenta: flujo real y retención documentados','B W A','D4'],
+ ['AC-072','Interpretación conversacional con chips corregibles','B W A','D12'],
+ ['AC-073','IA sin inventario exacto: cero resultados, nunca ids inventados','W A','D12'],
+ ['AC-076','Sugerencia desde foto con procedencia y confirmación','B','D12'],
+ ['AC-079','Evaluación previa: dataset versionado y resultados','B','D12'],
+ ['AC-082','Comparar muebles sólo con dimensiones compatibles','B W A','N6'],
+ ['AC-083','Lista compartida con invitación, roles y privacidad','B W A','N6'],
+ ['AC-084','Pago integrado futuro con proveedor y disputa','B W A','N6'],
+ ['SR-016','«mesa gratis»','B W A','D8'],
+ ['SR-025','«electricista en Luque mañana»','B W A','D9'],
+ ['SR-026','«limpieza por hora en Asunción»','B W A','D9']
+];
+
+const GUARDA = 'clasif-v2-decisiones-04nov';
+let estado = {};
+try { estado = JSON.parse(localStorage.getItem(GUARDA) || '{}') || {}; } catch (e) { estado = {}; }
+function guardar(){ try { localStorage.setItem(GUARDA, JSON.stringify(estado)); } catch (e) {} }
+
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function pintar(){
+  for (const d of DECISIONES){
+    const cont = document.getElementById('g-' + d.g);
+    if (!cont) continue;
+    const elegida = (estado[d.id] && estado[d.id].op) || d.rec;
+    const nota = (estado[d.id] && estado[d.id].nota) || '';
+    const art = document.createElement('article');
+    art.className = 'tarjeta' + (d.urg ? ' urgente' : '');
+    art.id = 'dec-' + d.id;
+    art.innerHTML =
+      '<div class="cabeza"><span class="cod">' + esc(d.id) + '</span><h3>' + esc(d.t) + '</h3>' +
+      (d.urg ? '<span class="chip urg">urgente</span>' : '') + '</div>' +
+      '<p><b>' + d.q + '</b></p>' +
+      '<p class="tenue">' + d.ctx + '</p>' +
+      '<div class="opciones" role="radiogroup" aria-label="Opciones de ' + esc(d.id) + '">' +
+      d.op.map(o => '<label class="opcion' + (o[0] === d.rec ? ' es-rec' : '') + '">' +
+        '<input type="radio" name="op-' + esc(d.id) + '" value="' + o[0] + '"' + (o[0] === elegida ? ' checked' : '') + '>' +
+        '<span><b>(' + o[0] + ')</b> ' + o[1] + (o[0] === d.rec ? '<span class="marca-rec">✓ recomendado</span>' : '') + '</span></label>').join('') +
+      '</div>' +
+      '<div class="recomiendo"><b>Recomiendo (' + d.rec + ').</b> ' + d.por + '</div>' +
+      '<div class="detalle"><div><b>Destraba</b>' + d.destraba + '</div><div><b>Después</b>' + d.despues + '</div></div>' +
+      '<textarea class="nota-libre" data-id="' + esc(d.id) + '" placeholder="Nota (nombres, otro texto, una condición)…" aria-label="Nota sobre ' + esc(d.id) + '">' + esc(nota) + '</textarea>' +
+      '<label style="display:flex;gap:8px;align-items:center;margin-top:.5rem;font-size:14px"><input type="checkbox" class="confirma" data-id="' + esc(d.id) + '"' + (estado[d.id] && estado[d.id].ok ? ' checked' : '') + '> Confirmado en la reunión</label>';
+    cont.appendChild(art);
+  }
+  document.querySelectorAll('input[type=radio]').forEach(r => r.addEventListener('change', e => {
+    const id = e.target.name.slice(3);
+    estado[id] = Object.assign({}, estado[id], {op: e.target.value, ok: true});
+    const c = document.querySelector('.confirma[data-id="' + id + '"]'); if (c) c.checked = true;
+    guardar(); refrescar();
+  }));
+  document.querySelectorAll('.nota-libre').forEach(t => t.addEventListener('input', e => {
+    const id = e.target.dataset.id; estado[id] = Object.assign({}, estado[id], {nota: e.target.value}); guardar(); refrescar();
+  }));
+  document.querySelectorAll('.confirma').forEach(c => c.addEventListener('change', e => {
+    const id = e.target.dataset.id; estado[id] = Object.assign({}, estado[id], {ok: e.target.checked}); guardar(); refrescar();
+  }));
+  const cuerpo = document.getElementById('anexo-cuerpo');
+  cuerpo.innerHTML = ANEXO.map(a => '<tr><td><b>' + a[0] + '</b></td><td>' + esc(a[1]) + '</td><td>' + a[2] + '</td><td><a href="#dec-' + a[3] + '">' + a[3] + '</a></td></tr>').join('');
+  document.getElementById('cuenta-total').textContent = DECISIONES.length;
+}
+
+function textoFinal(){
+  const l = ['Decisiones de Clasificados V2 · reunión del 04-nov-2026 (Carlos, Víctor, Orlando)', ''];
+  for (const d of DECISIONES){
+    const s = estado[d.id] || {};
+    const op = s.op || d.rec;
+    const texto = (d.op.find(o => o[0] === op) || ['',''])[1].replace(/<[^>]+>/g,'');
+    l.push(d.id + ' · ' + d.t.replace(/<[^>]+>/g,'') + ' → (' + op + ')' + (op === d.rec ? ' [recomendada]' : ' [DISTINTA de la recomendada]') + (s.ok ? '' : ' [sin confirmar]'));
+    l.push('   ' + texto);
+    if (s.nota && s.nota.trim()) l.push('   Nota: ' + s.nota.trim());
+  }
+  return l.join('\n');
+}
+
+function refrescar(){
+  const n = DECISIONES.filter(d => estado[d.id] && estado[d.id].ok).length;
+  document.getElementById('cuenta-decididas').textContent = n;
+  document.getElementById('progreso').style.width = (100 * n / DECISIONES.length) + '%';
+  document.getElementById('salida').value = textoFinal();
+}
+
+document.getElementById('todo-rec').addEventListener('click', () => {
+  for (const d of DECISIONES){
+    estado[d.id] = Object.assign({}, estado[d.id], {op: d.rec, ok: true});
+    const r = document.querySelector('input[name="op-' + d.id + '"][value="' + d.rec + '"]'); if (r) r.checked = true;
+    const c = document.querySelector('.confirma[data-id="' + d.id + '"]'); if (c) c.checked = true;
+  }
+  guardar(); refrescar();
+});
+
+document.getElementById('copiar').addEventListener('click', async () => {
+  const t = textoFinal(); const s = document.getElementById('salida'); s.value = t;
+  const aviso = document.getElementById('copiado');
+  try { await navigator.clipboard.writeText(t); aviso.textContent = 'Copiado. Pegalo en el chat de Claude.'; }
+  catch (e) { s.focus(); s.select(); aviso.textContent = 'No pude copiar solo: el texto quedó seleccionado, copialo con ⌘C.'; }
+});
+
+pintar(); refrescar();
+</script>
+
+</body>
+</html>
