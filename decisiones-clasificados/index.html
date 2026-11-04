@@ -249,6 +249,18 @@ const DECISIONES = [
   op:[['a','Asunto «Tu código de Alarmas Py»; en la recuperación, «Recuperá tu contraseña de Alarmas Py», con el código, cuánto dura y «si no lo pediste, ignorá este correo»'],['b','Otro texto (escribilo en la nota)']],
   rec:'a', por:'Hoy una persona que habla español recibe un correo en inglés. El texto nuevo dice qué es, cuánto dura y qué hacer si no lo pidió.',
   destraba:'Cierra AC6-L2 y AC6-L5', despues:'Ya programado; cambiar una frase es cambiar una tabla'},
+ {g:'seguridad', id:'D21', t:'El registro de señales de uso acepta cualquier dato que le manden',
+  q:'¿Limitamos a una lista fija lo que se guarda en las señales de uso?',
+  ctx:'Medido el 04-nov a las 12:00 en una copia local: el servidor guardó tal cual 5 datos que no corresponden (un correo, una clave, un texto y una ubicación) dentro de una señal de uso, y no tiene tope de tamaño. Hoy la app sólo manda la plataforma y la versión, y cada señal la lee sólo su dueño: es una puerta abierta, no una fuga en curso. Agregado a las 12:2x, después de la refutación del backend.',
+  op:[['a','Sí: el servidor guarda sólo una lista fija de datos por tipo de señal, rechaza el resto y pone un tope de tamaño'],['b','Dejarlo así y escribirlo como límite']],
+  rec:'a', por:'Es un cambio chico en el servidor y cierra la puerta antes de que alguien la use sin querer. AC-069 pide que lo que se mide no lleve correo, clave, texto de mensajes ni ubicación precisa.',
+  destraba:'AC-069 en el backend (1 casilla, junto con lo que falta medir)', despues:'Un cambio aparte en el backend, con su prueba'},
+ {g:'seguridad', id:'D22', t:'La moderación guarda el texto del mensaje que marcó',
+  q:'¿La moderación puede conservar el texto del mensaje que marcó como sospechoso, y por cuánto tiempo?',
+  ctx:'Medido el 04-nov: cuando un mensaje del chat parece una estafa (por ejemplo, pedir una seña por transferencia por adelantado), el caso de moderación guarda el texto completo (hasta 2.000 caracteres) y cada repetición, hasta 500. No hay plazo de borrado. No choca con AC-069, que habla de lo que se mide en la web y la app: es una decisión de producto y legal. Agregado a las 12:2x.',
+  op:[['a','Sí, como evidencia del caso, visible sólo para quien modera, con un plazo de borrado después de cerrado el caso (por ejemplo 180 días; el plazo lo confirma quien lleve lo legal)'],['b','Guardar sólo un recorte y el motivo, sin el texto completo'],['c','Dejarlo como está, sin plazo']],
+  rec:'a', por:'Sin el texto, quien modera o revisa una apelación no puede ver qué se dijo y la persona no puede defenderse. Lo que no se sostiene es guardar mensajes privados sin fecha de borrado.',
+  destraba:'Ninguna casilla; fija cuánto tiempo se guarda', despues:'El plazo de borrado, un cambio aparte en el backend'},
 
  // ── PRODUCTO
  {g:'producto', id:'D4', t:'Borrar la cuenta gratuita', q:'¿Se puede borrar la cuenta desde la app antes del piloto?',
